@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/mvibot/floorCleaningRobot_ws/build/lower_layer_mvibot/mvibot_kernel" "/home/mvibot/floorCleaningRobot_ws/build/lower_layer_mvibot/mvibot_core" "TARGETS" "mvibot_kernel" "mvibot_core" "DESTINATION" "lib/lower_layer_mvibot")

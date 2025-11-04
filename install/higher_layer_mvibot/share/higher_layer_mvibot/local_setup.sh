@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/higher_layer_mvibot/ament_cmake_environment_hooks/local_setup.sh

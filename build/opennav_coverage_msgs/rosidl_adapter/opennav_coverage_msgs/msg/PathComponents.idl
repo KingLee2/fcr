@@ -1,0 +1,25 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from opennav_coverage_msgs/msg/PathComponents.msg
+// generated code does not contain a copyright notice
+
+#include "nav_msgs/msg/Path.idl"
+#include "opennav_coverage_msgs/msg/Swath.idl"
+#include "std_msgs/msg/Header.idl"
+
+module opennav_coverage_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "An ordered set of swaths (if route generated) and turns (if path generated)")
+    struct PathComponents {
+      std_msgs::msg::Header header;
+
+      sequence<opennav_coverage_msgs::msg::Swath> swaths;
+
+      sequence<nav_msgs::msg::Path> turns;
+
+      boolean contains_turns;
+
+      boolean swaths_ordered;
+    };
+  };
+};

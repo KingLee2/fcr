@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mvibot">
+<xacro:property name="width" value="0.57" />
+<xacro:property name="lenght" value="1.351" />
+<xacro:property name="height" value="0.907" />
+<xacro:property name="R" value="0.085" />
+<xacro:property name="L" value="0.52" />
+<xacro:arg name="mvibot_seri" default="mvibot"/>
+  <!--color robot ########################-->
+  <material name="robot_color">
+    <color rgba="${0/255} ${100/255} ${100/255} 0.8"/>
+  </material>
+  <material name="robot_color2">
+    <color rgba="${255/255} ${255/255} ${0/255} 1.0"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="white1">
+    <color rgba="0 1 0 1"/>
+  </material>
+
+<!--link robot ########################-->
+  <link name="$(arg mvibot_seri)/base_footprint" >
+    </link>
+
+  <link name="$(arg mvibot_seri)/base_link">
+    <visual>
+      <!-- <origin rpy="${pi/2} 0 ${pi/2}" xyz="0 0 0" /> -->
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry>
+          <!-- <mesh filename="file:///home/hitech/catkin_ws/src/rosmvibot/param/ABC7.stl" scale="0.001 0.001 0.001" /> -->
+          <!-- <mesh filename="ABC7.stl" scale="0.001 0.001 0.001" /> -->
+          <mesh filename="file:/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/urdf/mesh/moshi_mini.stl" scale="1 1 1"/>
+          <!-- <mesh filename="package://public/moshi/moshi.obj" scale="1 1 1"/> -->
+      </geometry>
+      <material name="robot_color"/>
+    </visual>
+  </link>
+  <!--base_link #########################-->
+  <joint name="$(arg mvibot_seri)/base_link" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0.0 0"/>
+        <parent link="$(arg mvibot_seri)/base_footprint"/>
+        <child link="$(arg mvibot_seri)/base_link"/>
+  </joint>
+  
+  <!--base_wheel_left#########################-->
+  <link name="$(arg mvibot_seri)/base_wheel_left">
+  </link>
+  
+  
+  <joint name="base_wheel_left" type="fixed">     <!--type: loai khop, fixed: co dinh-->
+     <origin rpy="${-pi/2} 0 0" xyz="0 ${L/2} 0"/>
+     <parent link="$(arg mvibot_seri)/base_link"/>
+     <child link="$(arg mvibot_seri)/base_wheel_left"/>
+  </joint>
+     
+  <!--base_wheel_right #########################-->
+  <link name="$(arg mvibot_seri)/base_wheel_right">
+  </link>
+  
+  <joint name="base_wheel_right" type="fixed">     <!--type: loai khop, fixed: co dinh-->
+     <origin rpy="${pi/2} 0 0" xyz="0 ${-L/2} 0"/>
+     <parent link="$(arg mvibot_seri)/base_link"/>
+     <child link="$(arg mvibot_seri)/base_wheel_right"/>
+  </joint>
+  
+  <!--base_lidar_2 #########################-->
+  <link name="$(arg mvibot_seri)/base_lidar_2">
+  </link>
+  
+  <joint name="base_lidar_2" type="fixed">     <!--type: loai khop, fixed: co dinh-->
+     <origin rpy="0 0 ${pi/2}" xyz="-0.546 -0.24 0.222"/>
+     <parent link="$(arg mvibot_seri)/base_link"/>
+     <child link="$(arg mvibot_seri)/base_lidar_2"/>
+  </joint>
+  
+  
+    <!--base_lidar_1 #########################-->
+  <link name="$(arg mvibot_seri)/base_lidar_1">
+        
+  </link>
+  
+  <joint name="base_lidar_1" type="fixed">     <!--type: loai khop, fixed: co dinh-->
+     <origin rpy="0 0 ${-pi/2}" xyz="0.392 0.241 0.222"/>
+     <parent link="$(arg mvibot_seri)/base_link"/>
+     <child link="$(arg mvibot_seri)/base_lidar_1"/>
+  </joint>
+
+  <!--MB22_916b/base_camera 1 update to 2-->
+    <joint name="camera2_$(arg mvibot_seri)" type="fixed">
+        <origin rpy="${-pi/2} 0 ${-pi/9}" xyz="0.438 0.126 0.411"/>
+        <parent link="$(arg mvibot_seri)/base_link"/>
+        <child link="camera2_$(arg mvibot_seri)"/>
+    </joint>
+    <link name="camera2_$(arg mvibot_seri)">
+    </link>
+    <!--MB22_916b/base_camera 2 update to 1-->
+    <joint name="camera1_$(arg mvibot_seri)" type="fixed">
+        <origin rpy="${-pi/2} 0 ${pi/9}" xyz="0.438 -0.126 0.411"/>
+        <parent link="$(arg mvibot_seri)/base_link"/>
+        <child link="camera1_$(arg mvibot_seri)"/>
+    </joint>
+    <link name="camera1_$(arg mvibot_seri)">
+    </link>
+
+</robot>

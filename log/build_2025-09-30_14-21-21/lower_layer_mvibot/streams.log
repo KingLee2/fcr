@@ -1,0 +1,176 @@
+[0.009s] Invoking command in '/home/mvibot/floorCleaningRobot_ws/build/lower_layer_mvibot': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_demo:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/mvibot/floorCleaningRobot_ws/build/lower_layer_mvibot -- -j16 -l16
+[0.050s] [ 50%] Built target mvibot_kernel
+[0.060s] [ 75%] [32mBuilding CXX object CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o[0m
+[1.980s] In file included from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/mvibot_core.cpp:2[m[K:
+[1.980s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:[m[K In member function ‘[01m[Kvoid socket_client::[01;32m[Kprocess_data_uart_read[m[K()[m[K’:
+[1.981s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:123:46:[m[K [01;31m[Kerror: [m[K‘[01m[Kmutex_motor[m[K’ was not declared in this scope; did you mean ‘[01m[Kmutex_tool[m[K’?
+[1.981s]   123 |             std::lock_guard<std::mutex> lock([01;31m[Kmutex_motor[m[K);
+[1.981s]       |                                              [01;31m[K^~~~~~~~~~~[m[K
+[1.981s]       |                                              [32m[Kmutex_tool[m[K
+[1.989s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:[m[K In member function ‘[01m[Kvoid socket_client::[01;32m[Kprocess_data_uart_write[m[K()[m[K’:
+[1.989s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:253:42:[m[K [01;31m[Kerror: [m[K‘[01m[Kmutex_motor[m[K’ was not declared in this scope; did you mean ‘[01m[Kmutex_tool[m[K’?
+[1.989s]   253 |         std::lock_guard<std::mutex> lock([01;31m[Kmutex_motor[m[K);
+[1.989s]       |                                          [01;31m[K^~~~~~~~~~~[m[K
+[1.989s]       |                                          [32m[Kmutex_tool[m[K
+[1.990s] In file included from [01m[K/opt/ros/jazzy/include/rclcpp/rclcpp/logging.hpp:24[m[K,
+[1.990s]                  from [01m[K/opt/ros/jazzy/include/rclcpp/rclcpp/copy_all_parameter_values.hpp:27[m[K,
+[1.990s]                  from [01m[K/opt/ros/jazzy/include/rclcpp/rclcpp/rclcpp.hpp:171[m[K,
+[1.990s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../mvibot_core/../common/library_ros.h:2[m[K,
+[1.990s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../mvibot_core/mvibot_core_init.h:2[m[K,
+[1.990s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:2[m[K:
+[1.990s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:308:46:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%f[m[K’ expects argument of type ‘[01m[Kdouble[m[K’, but argument 5 has type ‘[01m[Kint[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat=-Wformat=]8;;[m[K]
+[1.990s]   308 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), [01;35m[K"Motor Left| v_set1: %f, w_set1: %f"[m[K, data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.990s]       |                                              [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.991s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:308:68:[m[K [01;36m[Knote: [m[Kformat string is defined here
+[1.991s]   308 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), "Motor Left| v_set1: [01;36m[K%f[m[K, w_set1: %f", data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.991s]       |                                                                   [01;36m[K~^[m[K
+[1.991s]       |                                                                    [01;36m[K|[m[K
+[1.991s]       |                                                                    [01;36m[Kdouble[m[K
+[1.991s]       |                                                                   [32m[K%d[m[K
+[1.991s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:308:46:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%f[m[K’ expects argument of type ‘[01m[Kdouble[m[K’, but argument 6 has type ‘[01m[Kint[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat=-Wformat=]8;;[m[K]
+[1.991s]   308 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), [01;35m[K"Motor Left| v_set1: %f, w_set1: %f"[m[K, data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.991s]       |                                              [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.991s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:308:80:[m[K [01;36m[Knote: [m[Kformat string is defined here
+[1.991s]   308 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), "Motor Left| v_set1: %f, w_set1: [01;36m[K%f[m[K", data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.991s]       |                                                                               [01;36m[K~^[m[K
+[1.991s]       |                                                                                [01;36m[K|[m[K
+[1.991s]       |                                                                                [01;36m[Kdouble[m[K
+[1.991s]       |                                                                               [32m[K%d[m[K
+[1.991s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:314:46:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%f[m[K’ expects argument of type ‘[01m[Kdouble[m[K’, but argument 5 has type ‘[01m[Kint[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat=-Wformat=]8;;[m[K]
+[1.992s]   314 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), [01;35m[K"Motor Right| v_set1: %f, w_set1: %f"[m[K, data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.992s]       |                                              [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.992s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:314:69:[m[K [01;36m[Knote: [m[Kformat string is defined here
+[1.992s]   314 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), "Motor Right| v_set1: [01;36m[K%f[m[K, w_set1: %f", data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.992s]       |                                                                    [01;36m[K~^[m[K
+[1.992s]       |                                                                     [01;36m[K|[m[K
+[1.992s]       |                                                                     [01;36m[Kdouble[m[K
+[1.992s]       |                                                                    [32m[K%d[m[K
+[1.992s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:314:46:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%f[m[K’ expects argument of type ‘[01m[Kdouble[m[K’, but argument 6 has type ‘[01m[Kint[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat=-Wformat=]8;;[m[K]
+[1.992s]   314 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), [01;35m[K"Motor Right| v_set1: %f, w_set1: %f"[m[K, data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.992s]       |                                              [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[1.992s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:314:81:[m[K [01;36m[Knote: [m[Kformat string is defined here
+[1.992s]   314 |     RCLCPP_INFO(rclcpp::get_logger("Motor"), "Motor Right| v_set1: %f, w_set1: [01;36m[K%f[m[K", data_tran[motor2_set_speedH], data_tran[motor2_set_speedL]);
+[1.992s]       |                                                                                [01;36m[K~^[m[K
+[1.992s]       |                                                                                 [01;36m[K|[m[K
+[1.992s]       |                                                                                 [01;36m[Kdouble[m[K
+[1.992s]       |                                                                                [32m[K%d[m[K
+[1.993s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:[m[K In member function ‘[01m[Kvoid socket_client::[01;32m[Kread_data_socket[m[K()[m[K’:
+[1.993s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:409:33:[m[K [01;35m[Kwarning: [m[Kcomparison of unsigned expression in ‘[01m[K>= 0[m[K’ is always true [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wtype-limits-Wtype-limits]8;;[m[K]
+[1.993s]   409 |                 for(size_t k=j;[01;35m[Kk>=0[m[K;k--){
+[1.993s]       |                                [01;35m[K~^~~[m[K
+[1.994s] In file included from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/config.h:3[m[K,
+[1.994s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/mvibot_core.cpp:3[m[K:
+[1.994s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/exec.h:[m[K In function ‘[01m[Kstd::string[01;32m[K exec[m[K(std::string)[m[K’:
+[1.994s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/exec.h:6:20:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Kstatus[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-variable-Wunused-variable]8;;[m[K]
+[1.994s]     6 |         static int [01;35m[Kstatus[m[K;
+[1.994s]       |                    [01;35m[K^~~~~~[m[K
+[1.995s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/config.h:[m[K In lambda function:
+[1.995s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/config.h:30:72:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Kstd::lock_guard<std::recursive_mutex>::lock_guard(std::mutex&)[m[K’
+[1.995s]    30 |                 std::lock_guard<std::recursive_mutex> lock(mutex_common[01;31m[K)[m[K;
+[1.995s]       |                                                                        [01;31m[K^[m[K
+[1.995s] In file included from [01m[K/usr/include/c++/13/mutex:45[m[K,
+[1.995s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/library_basic.h:24[m[K,
+[1.995s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/data_uart.h:1[m[K,
+[1.995s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/socket_client.h:1[m[K:
+[1.995s] [01m[K/usr/include/c++/13/bits/std_mutex.h:248:16:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::lock_guard<_Mutex>::[01;32m[Klock_guard[m[K(mutex_type&) [35m[K[with _Mutex = std::recursive_mutex; mutex_type = std::recursive_mutex][m[K[m[K’
+[1.995s]   248 |       explicit [01;36m[Klock_guard[m[K(mutex_type& __m) : _M_device(__m)
+[1.995s]       |                [01;36m[K^~~~~~~~~~[m[K
+[1.995s] [01m[K/usr/include/c++/13/bits/std_mutex.h:248:39:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::mutex[m[K’ to ‘[01m[Kstd::lock_guard<std::recursive_mutex>::mutex_type&[m[K’ {aka ‘[01m[Kstd::recursive_mutex&[m[K’}
+[1.995s]   248 |       explicit lock_guard([01;36m[Kmutex_type& __m[m[K) : _M_device(__m)
+[1.996s]       |                           [01;36m[K~~~~~~~~~~~~^~~[m[K
+[1.996s] [01m[K/usr/include/c++/13/bits/std_mutex.h:251:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::lock_guard<_Mutex>::[01;32m[Klock_guard[m[K(mutex_type&, std::adopt_lock_t) [35m[K[with _Mutex = std::recursive_mutex; mutex_type = std::recursive_mutex][m[K[m[K’
+[1.996s]   251 |       [01;36m[Klock_guard[m[K(mutex_type& __m, adopt_lock_t) noexcept : _M_device(__m)
+[1.996s]       |       [01;36m[K^~~~~~~~~~[m[K
+[1.996s] [01m[K/usr/include/c++/13/bits/std_mutex.h:251:7:[m[K [01;36m[Knote: [m[K  candidate expects 2 arguments, 1 provided
+[2.007s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/config.h:[m[K In member function ‘[01m[Kvoid config::[01;32m[Kpub_information_robot[m[K()[m[K’:
+[2.007s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/config.h:191:22:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::vector<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.007s]   191 |         for(int i=0;[01;35m[Ki<list.size()[m[K;i++){
+[2.007s]       |                     [01;35m[K~^~~~~~~~~~~~[m[K
+[2.007s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/config.h:211:22:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::vector<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.007s]   211 |         for(int i=0;[01;35m[Ki<list.size()[m[K;i++){
+[2.008s]       |                     [01;35m[K~^~~~~~~~~~~~[m[K
+[2.064s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:[m[K In member function ‘[01m[Kvoid sensor::[01;32m[Kcheck_sensor[m[K()[m[K’:
+[2.064s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:230:58:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%s[m[K’ expects argument of type ‘[01m[Kchar*[m[K’, but argument 5 has type ‘[01m[Kstd::string[m[K’ {aka ‘[01m[Kstd::__cxx11::basic_string<char>[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat=-Wformat=]8;;[m[K]
+[2.065s]   230 |                 RCLCPP_INFO(rclcpp::get_logger("sensor"),[01;35m[K"Sensor startup success. Start up mode: %s"[m[K,mode);
+[2.065s]       |                                                          [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[2.065s] In file included from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/mvibot_core.cpp:6[m[K:
+[2.065s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:230:99:[m[K [01;36m[Knote: [m[Kformat string is defined here
+[2.065s]   230 |                 RCLCPP_INFO(rclcpp::get_logger("sensor"),"Sensor startup success. Start up mode: [01;36m[K%s[m[K",mode);
+[2.065s]       |                                                                                                  [01;36m[K~^[m[K
+[2.065s]       |                                                                                                   [01;36m[K|[m[K
+[2.065s]       |                                                                                                   [01;36m[Kchar*[m[K
+[2.067s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:[m[K In lambda function:
+[2.067s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:272:87:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+[2.067s]   272 |             auto laser_scan1_callback = [this]([01;35m[Ksensor_msgs::msg::LaserScan::SharedPtr msg[m[K)->void{
+[2.067s]       |                                                [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[2.067s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:[m[K In lambda function:
+[2.067s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:281:87:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+[2.067s]   281 |             auto laser_scan2_callback = [this]([01;35m[Ksensor_msgs::msg::LaserScan::SharedPtr msg[m[K)->void{
+[2.067s]       |                                                [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[2.067s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:[m[K In lambda function:
+[2.067s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:290:88:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+[2.067s]   290 |             auto camera1_scan_callback = [this]([01;35m[Ksensor_msgs::msg::LaserScan::SharedPtr msg[m[K)->void{
+[2.067s]       |                                                 [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[2.068s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:[m[K In lambda function:
+[2.068s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/sensor.h:299:88:[m[K [01;35m[Kwarning: [m[Kunused parameter ‘[01m[Kmsg[m[K’ [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter-Wunused-parameter]8;;[m[K]
+[2.068s]   299 |             auto camera2_scan_callback = [this]([01;35m[Ksensor_msgs::msg::LaserScan::SharedPtr msg[m[K)->void{
+[2.068s]       |                                                 [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~[m[K
+[2.117s] In file included from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/mvibot_core.cpp:7[m[K:
+[2.117s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/music.h:[m[K In lambda function:
+[2.117s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/music.h:24:72:[m[K [01;31m[Kerror: [m[Kno matching function for call to ‘[01m[Kstd::lock_guard<std::recursive_mutex>::lock_guard(std::mutex&)[m[K’
+[2.117s]    24 |                 std::lock_guard<std::recursive_mutex> lock(mutex_common[01;31m[K)[m[K;
+[2.117s]       |                                                                        [01;31m[K^[m[K
+[2.117s] [01m[K/usr/include/c++/13/bits/std_mutex.h:248:16:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::lock_guard<_Mutex>::[01;32m[Klock_guard[m[K(mutex_type&) [35m[K[with _Mutex = std::recursive_mutex; mutex_type = std::recursive_mutex][m[K[m[K’
+[2.117s]   248 |       explicit [01;36m[Klock_guard[m[K(mutex_type& __m) : _M_device(__m)
+[2.117s]       |                [01;36m[K^~~~~~~~~~[m[K
+[2.117s] [01m[K/usr/include/c++/13/bits/std_mutex.h:248:39:[m[K [01;36m[Knote: [m[K  no known conversion for argument 1 from ‘[01m[Kstd::mutex[m[K’ to ‘[01m[Kstd::lock_guard<std::recursive_mutex>::mutex_type&[m[K’ {aka ‘[01m[Kstd::recursive_mutex&[m[K’}
+[2.118s]   248 |       explicit lock_guard([01;36m[Kmutex_type& __m[m[K) : _M_device(__m)
+[2.118s]       |                           [01;36m[K~~~~~~~~~~~~^~~[m[K
+[2.118s] [01m[K/usr/include/c++/13/bits/std_mutex.h:251:7:[m[K [01;36m[Knote: [m[Kcandidate: ‘[01m[Kstd::lock_guard<_Mutex>::[01;32m[Klock_guard[m[K(mutex_type&, std::adopt_lock_t) [35m[K[with _Mutex = std::recursive_mutex; mutex_type = std::recursive_mutex][m[K[m[K’
+[2.118s]   251 |       [01;36m[Klock_guard[m[K(mutex_type& __m, adopt_lock_t) noexcept : _M_device(__m)
+[2.118s]       |       [01;36m[K^~~~~~~~~~[m[K
+[2.118s] [01m[K/usr/include/c++/13/bits/std_mutex.h:251:7:[m[K [01;36m[Knote: [m[K  candidate expects 2 arguments, 1 provided
+[2.147s] In file included from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/mvibot_core.cpp:8[m[K:
+[2.147s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/led.h:[m[K In member function ‘[01m[Kvoid led::[01;32m[Kled_control[m[K()[m[K’:
+[2.147s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/led.h:67:17:[m[K [01;31m[Kerror: [m[K‘[01m[Klocal_battery_soc[m[K’ was not declared in this scope; did you mean ‘[01m[Kloal_battery_soc[m[K’?
+[2.147s]    67 |                 [01;31m[Klocal_battery_soc[m[K = battery_soc;
+[2.147s]       |                 [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+[2.147s]       |                 [32m[Kloal_battery_soc[m[K
+[2.153s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/led.h:72:50:[m[K [01;31m[Kerror: [m[K‘[01m[Kmutex_motor[m[K’ was not declared in this scope; did you mean ‘[01m[Kmutex_tool[m[K’?
+[2.153s]    72 |                 std::lock_guard<std::mutex> lock([01;31m[Kmutex_motor[m[K);
+[2.153s]       |                                                  [01;31m[K^~~~~~~~~~~[m[K
+[2.153s]       |                                                  [32m[Kmutex_tool[m[K
+[2.157s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/led.h:105:16:[m[K [01;31m[Kerror: [m[K‘[01m[Klocal_battery_soc[m[K’ was not declared in this scope; did you mean ‘[01m[Kloal_battery_soc[m[K’?
+[2.157s]   105 |             if([01;31m[Klocal_battery_soc[m[K <= local_low_battery && local_battery_soc!=-1){
+[2.157s]       |                [01;31m[K^~~~~~~~~~~~~~~~~[m[K
+[2.157s]       |                [32m[Kloal_battery_soc[m[K
+[2.202s] In file included from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/gpio.h:2[m[K,
+[2.202s]                  from [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/mvibot_core.cpp:11[m[K:
+[2.202s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/string_Iv2.h:[m[K In member function ‘[01m[Kvoid string_Iv2::[01;32m[Kdetect[m[K(std::string, std::string, std::string, std::string)[m[K’:
+[2.202s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/string_Iv2.h:17:26:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::__cxx11::basic_string<char>::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.203s]    17 |             for(int i=0;[01;35m[Ki<data.length()[m[K;i++){
+[2.203s]       |                         [01;35m[K~^~~~~~~~~~~~~~[m[K
+[2.203s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/string_Iv2.h:21:36:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::__cxx11::basic_string<char>::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.203s]    21 |                     for(int j=i+1;[01;35m[Kj<data.length()[m[K;j++){
+[2.203s]       |                                   [01;35m[K~^~~~~~~~~~~~~~[m[K
+[2.203s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/string_Iv2.h:43:46:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::__cxx11::basic_string<char>::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.203s]    43 |                                 for(int k=0;[01;35m[Kk<data_.length()[m[K;k++){
+[2.203s]       |                                             [01;35m[K~^~~~~~~~~~~~~~~[m[K
+[2.203s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/string_Iv2.h:64:26:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::__cxx11::basic_string<char>::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.203s]    64 |             for(int i=0;[01;35m[Ki<data.length()[m[K;i++){
+[2.203s]       |                         [01;35m[K~^~~~~~~~~~~~~~[m[K
+[2.204s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/string_Iv2.h:[m[K In member function ‘[01m[Kvoid string_Iv2::[01;32m[Kprint[m[K()[m[K’:
+[2.204s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/../common/string_Iv2.h:83:22:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::vector<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.204s]    83 |         for(int i=0;[01;35m[Ki<data1.size()[m[K;i++){
+[2.204s]       |                     [01;35m[K~^~~~~~~~~~~~~[m[K
+[2.208s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/gpio.h:[m[K In lambda function:
+[2.208s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/gpio.h:21:31:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::vector<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.208s]    21 |                 for(int i=1; [01;35m[Ki< data1.data1.size()[m[K; i++){
+[2.208s]       |                              [01;35m[K~^~~~~~~~~~~~~~~~~~~~[m[K
+[2.208s] [01m[K/home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/src/../include/lower_layer_mvibot/mvibot_core/gpio.h:23:35:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::vector<float>::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+[2.209s]    23 |                     for(int j=0; [01;35m[Kj< output_user.data.size()[m[K;j++){
+[2.209s]       |                                  [01;35m[K~^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[7.464s] gmake[2]: *** [CMakeFiles/mvibot_core.dir/build.make:76: CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o] Error 1
+[7.464s] gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/mvibot_core.dir/all] Error 2
+[7.464s] gmake: *** [Makefile:146: all] Error 2
+[7.466s] Invoked command in '/home/mvibot/floorCleaningRobot_ws/build/lower_layer_mvibot' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_demo:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/mvibot/floorCleaningRobot_ws/build/lower_layer_mvibot -- -j16 -l16

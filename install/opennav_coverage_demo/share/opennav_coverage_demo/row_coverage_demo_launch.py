@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage_demo/launch/row_coverage_demo_launch.py

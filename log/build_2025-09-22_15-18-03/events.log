@@ -1,0 +1,378 @@
+[0.000000] (-) TimerEvent: {}
+[0.000442] (-) JobUnselected: {'identifier': 'fields2cover'}
+[0.000468] (-) JobUnselected: {'identifier': 'higher_layer_mvibot'}
+[0.000483] (-) JobUnselected: {'identifier': 'ira_laser_tools'}
+[0.000495] (-) JobUnselected: {'identifier': 'lower_layer_mvibot'}
+[0.000506] (-) JobUnselected: {'identifier': 'mission_layer_mvibot'}
+[0.000516] (-) JobUnselected: {'identifier': 'opennav_coverage_bt'}
+[0.000526] (-) JobUnselected: {'identifier': 'opennav_coverage_demo'}
+[0.000535] (-) JobUnselected: {'identifier': 'opennav_coverage_msgs'}
+[0.000544] (-) JobUnselected: {'identifier': 'opennav_coverage_navigator'}
+[0.000554] (-) JobUnselected: {'identifier': 'opennav_row_coverage'}
+[0.000563] (-) JobUnselected: {'identifier': 'pointcloud_to_laserscan'}
+[0.000572] (-) JobUnselected: {'identifier': 'realsense2_camera'}
+[0.000582] (-) JobUnselected: {'identifier': 'realsense2_camera_msgs'}
+[0.000591] (-) JobUnselected: {'identifier': 'realsense2_description'}
+[0.000600] (-) JobUnselected: {'identifier': 'sllidar_ros2'}
+[0.000611] (opennav_coverage) JobQueued: {'identifier': 'opennav_coverage', 'dependencies': OrderedDict({'fields2cover': '/home/mvibot/floorCleaningRobot_ws/install/fields2cover', 'opennav_coverage_msgs': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs'})}
+[0.000628] (opennav_coverage) JobStarted: {'identifier': 'opennav_coverage'}
+[0.009119] (opennav_coverage) JobProgress: {'identifier': 'opennav_coverage', 'progress': 'cmake'}
+[0.009627] (opennav_coverage) Command: {'cmd': ['/usr/bin/cmake', '/home/mvibot/floorCleaningRobot_ws/src/opennav_coverage/opennav_coverage', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage'], 'cwd': '/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'mvibot', 'LC_TIME': 'vi_VN', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib:/home/mvibot/floorCleaningRobot_ws/install/fields2cover/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/ortools_vendor/lib:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/mvibot', 'OLDPWD': '/home/mvibot/floorCleaningRobot_ws/src', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'LC_MONETARY': 'vi_VN', 'SYSTEMD_EXEC_PID': '2683', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1001/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'mvibot', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1001.slice/user@1001.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'PKG_CONFIG_PATH': '/home/mvibot/floorCleaningRobot_ws/install/fields2cover/lib/x86_64-linux-gnu/pkgconfig:/home/mvibot/floorCleaningRobot_ws/install/fields2cover/lib/pkgconfig', 'USERNAME': 'mvibot', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/ortools_vendor/bin:/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/king-mvibot:@/tmp/.ICE-unix/2642,unix/king-mvibot:/tmp/.ICE-unix/2642', 'XDG_MENU_PREFIX': 'gnome-', 'LC_ADDRESS': 'vi_VN', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/bcd6c0e9_9aac_4115_8255_bbaf268925b4', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1001', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'LC_TELEPHONE': 'vi_VN', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1001/.mutter-Xwaylandauth.NI5KD3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.114', 'SSH_AUTH_SOCK': '/run/user/1001/keyring/ssh', 'ROS_DOMAIN_ID': '10', 'AMENT_PREFIX_PATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LC_NAME': 'vi_VN', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'vi_VN', 'LC_IDENTIFICATION': 'vi_VN', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'LC_NUMERIC': 'vi_VN', 'LC_PAPER': 'vi_VN', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:/home/mvibot/floorCleaningRobot_ws/install/fields2cover:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy'}), 'shell': False}
+[0.048395] (opennav_coverage) StdoutLine: {'line': b'-- The C compiler identification is GNU 13.3.0\n'}
+[0.087209] (opennav_coverage) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 13.3.0\n'}
+[0.097611] (opennav_coverage) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.099915] (-) TimerEvent: {}
+[0.156422] (opennav_coverage) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.163627] (opennav_coverage) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.163746] (opennav_coverage) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.164119] (opennav_coverage) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.169991] (opennav_coverage) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.200041] (-) TimerEvent: {}
+[0.237521] (opennav_coverage) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.244992] (opennav_coverage) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[0.245201] (opennav_coverage) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.245558] (opennav_coverage) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[0.248339] (opennav_coverage) StdoutLine: {'line': b'-- Found ament_cmake: 2.5.4 (/opt/ros/jazzy/share/ament_cmake/cmake)\n'}
+[0.300144] (-) TimerEvent: {}
+[0.358141] (opennav_coverage) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[0.400255] (-) TimerEvent: {}
+[0.413191] (opennav_coverage) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[0.454708] (opennav_coverage) StdoutLine: {'line': b'-- Found ament_index_cpp: 1.8.1 (/opt/ros/jazzy/share/ament_index_cpp/cmake)\n'}
+[0.457332] (opennav_coverage) StdoutLine: {'line': b'-- Found rclcpp: 28.1.12 (/opt/ros/jazzy/share/rclcpp/cmake)\n'}
+[0.500375] (-) TimerEvent: {}
+[0.504170] (opennav_coverage) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)\n'}
+[0.517685] (opennav_coverage) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)\n'}
+[0.532871] (opennav_coverage) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.550218] (opennav_coverage) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.600486] (-) TimerEvent: {}
+[0.623146] (opennav_coverage) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.3.2 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)\n'}
+[0.626296] (opennav_coverage) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)\n'}
+[0.686558] (opennav_coverage) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  \n'}
+[0.700580] (-) TimerEvent: {}
+[0.701437] (opennav_coverage) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") \n'}
+[0.719498] (opennav_coverage) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[0.784320] (opennav_coverage) StdoutLine: {'line': b'-- Found rclcpp_action: 28.1.12 (/opt/ros/jazzy/share/rclcpp_action/cmake)\n'}
+[0.800679] (-) TimerEvent: {}
+[0.824431] (opennav_coverage) StdoutLine: {'line': b'-- Found rclcpp_lifecycle: 28.1.12 (/opt/ros/jazzy/share/rclcpp_lifecycle/cmake)\n'}
+[0.853207] (opennav_coverage) StdoutLine: {'line': b'-- Found rclcpp_components: 28.1.12 (/opt/ros/jazzy/share/rclcpp_components/cmake)\n'}
+[0.886375] (opennav_coverage) StdoutLine: {'line': b'-- Found std_msgs: 5.3.6 (/opt/ros/jazzy/share/std_msgs/cmake)\n'}
+[0.899107] (opennav_coverage) StdoutLine: {'line': b'-- Found visualization_msgs: 5.3.6 (/opt/ros/jazzy/share/visualization_msgs/cmake)\n'}
+[0.900774] (-) TimerEvent: {}
+[0.961489] (opennav_coverage) StdoutLine: {'line': b'-- Found nav2_util: 1.3.8 (/opt/ros/jazzy/share/nav2_util/cmake)\n'}
+[1.000874] (-) TimerEvent: {}
+[1.101092] (-) TimerEvent: {}
+[1.116814] (opennav_coverage) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.3.0 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)\n'}
+[1.117884] (opennav_coverage) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[1.118155] (opennav_coverage) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[1.160960] (opennav_coverage) StdoutLine: {'line': b'-- Found opennav_coverage_msgs: 0.0.1 (/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/share/opennav_coverage_msgs/cmake)\n'}
+[1.194764] (opennav_coverage) StdoutLine: {'line': b'-- Found GDAL: /usr/lib/x86_64-linux-gnu/libgdal.so (found suitable version "3.8.4", minimum required is "3.0") \n'}
+[1.195440] (opennav_coverage) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[1.201184] (-) TimerEvent: {}
+[1.255819] (opennav_coverage) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[1.256632] (opennav_coverage) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[1.269410] (opennav_coverage) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.17.3 (/opt/ros/jazzy/share/ament_lint_auto/cmake)\n'}
+[1.272099] (opennav_coverage) StdoutLine: {'line': b'-- Found ament_cmake_gtest: 2.5.4 (/opt/ros/jazzy/share/ament_cmake_gtest/cmake)\n'}
+[1.301287] (-) TimerEvent: {}
+[1.365380] (opennav_coverage) StdoutLine: {'line': b"-- Found gtest sources under '/opt/ros/jazzy/src/gtest_vendor': C++ tests using 'Google Test' will be built\n"}
+[1.401390] (-) TimerEvent: {}
+[1.410015] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'copyright' to check source files copyright and LICENSE\n"}
+[1.412384] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[1.413003] (opennav_coverage) StdoutLine: {'line': b'-- Configured cppcheck include dirs: /home/mvibot/floorCleaningRobot_ws/src/opennav_coverage/opennav_coverage/include\n'}
+[1.413108] (opennav_coverage) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[1.415126] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'cpplint' to check C / C++ code against the Google style\n"}
+[1.415216] (opennav_coverage) StdoutLine: {'line': b'-- Configured cpplint exclude dirs and/or files: \n'}
+[1.416185] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[1.416274] (opennav_coverage) StdoutLine: {'line': b"-- Configured 'flake8' exclude dirs and/or files: \n"}
+[1.417331] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[1.418215] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[1.419433] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[1.419523] (opennav_coverage) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[1.420100] (opennav_coverage) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[1.422986] (opennav_coverage) StdoutLine: {'line': b'-- Configuring done (1.4s)\n'}
+[1.491827] (opennav_coverage) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[1.501486] (-) TimerEvent: {}
+[1.514539] (opennav_coverage) StdoutLine: {'line': b'-- Build files have been written to: /home/mvibot/floorCleaningRobot_ws/build/opennav_coverage\n'}
+[1.528688] (opennav_coverage) CommandEnded: {'returncode': 0}
+[1.529115] (opennav_coverage) JobProgress: {'identifier': 'opennav_coverage', 'progress': 'build'}
+[1.529134] (opennav_coverage) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage', '--', '-j16', '-l16'], 'cwd': '/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'mvibot', 'LC_TIME': 'vi_VN', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'XDG_SESSION_TYPE': 'wayland', 'CLUTTER_DISABLE_MIPMAPPED_TEXT': '1', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib:/home/mvibot/floorCleaningRobot_ws/install/fields2cover/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/ortools_vendor/lib:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/mvibot', 'OLDPWD': '/home/mvibot/floorCleaningRobot_ws/src', 'DESKTOP_SESSION': 'ubuntu', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'LC_MONETARY': 'vi_VN', 'SYSTEMD_EXEC_PID': '2683', 'GSM_SKIP_SSH_AGENT_WORKAROUND': 'true', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1001/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'IM_CONFIG_PHASE': '1', 'WAYLAND_DISPLAY': 'wayland-0', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'mvibot', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'MEMORY_PRESSURE_WATCH': '/sys/fs/cgroup/user.slice/user-1001.slice/user@1001.service/session.slice/org.gnome.Shell@wayland.service/memory.pressure', 'XDG_SESSION_CLASS': 'user', 'PKG_CONFIG_PATH': '/home/mvibot/floorCleaningRobot_ws/install/fields2cover/lib/x86_64-linux-gnu/pkgconfig:/home/mvibot/floorCleaningRobot_ws/install/fields2cover/lib/pkgconfig', 'USERNAME': 'mvibot', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'PATH': '/opt/ros/jazzy/opt/ortools_vendor/bin:/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin', 'SESSION_MANAGER': 'local/king-mvibot:@/tmp/.ICE-unix/2642,unix/king-mvibot:/tmp/.ICE-unix/2642', 'XDG_MENU_PREFIX': 'gnome-', 'LC_ADDRESS': 'vi_VN', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/bcd6c0e9_9aac_4115_8255_bbaf268925b4', 'GNOME_SETUP_DISPLAY': ':1', 'XDG_RUNTIME_DIR': '/run/user/1001', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'LC_TELEPHONE': 'vi_VN', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1001/.mutter-Xwaylandauth.NI5KD3', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'GNOME_TERMINAL_SERVICE': ':1.114', 'SSH_AUTH_SOCK': '/run/user/1001/keyring/ssh', 'ROS_DOMAIN_ID': '10', 'AMENT_PREFIX_PATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LC_NAME': 'vi_VN', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'vi_VN', 'LC_IDENTIFICATION': 'vi_VN', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'QT_IM_MODULE': 'ibus', 'PWD': '/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'LC_NUMERIC': 'vi_VN', 'LC_PAPER': 'vi_VN', 'COLCON': '1', 'MEMORY_PRESSURE_WRITE': 'c29tZSAyMDAwMDAgMjAwMDAwMAA=', 'VTE_VERSION': '7600', 'CMAKE_PREFIX_PATH': '/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:/home/mvibot/floorCleaningRobot_ws/install/fields2cover:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy'}), 'shell': False}
+[1.566756] (opennav_coverage) StdoutLine: {'line': b'[ 17%] \x1b[32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/coverage_server.cpp.o\x1b[0m\n'}
+[1.567023] (opennav_coverage) StdoutLine: {'line': b'[ 17%] \x1b[32mBuilding CXX object gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o\x1b[0m\n'}
+[1.567135] (opennav_coverage) StdoutLine: {'line': b'[ 17%] \x1b[32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/headland_generator.cpp.o\x1b[0m\n'}
+[1.567232] (opennav_coverage) StdoutLine: {'line': b'[ 17%] \x1b[32mBuilding CXX object gtest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o\x1b[0m\n'}
+[1.567319] (opennav_coverage) StdoutLine: {'line': b'[ 17%] \x1b[32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/swath_generator.cpp.o\x1b[0m\n'}
+[1.567403] (opennav_coverage) StdoutLine: {'line': b'[ 20%] \x1b[32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/route_generator.cpp.o\x1b[0m\n'}
+[1.567466] (opennav_coverage) StdoutLine: {'line': b'[ 24%] \x1b[32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/path_generator.cpp.o\x1b[0m\n'}
+[1.567542] (opennav_coverage) StdoutLine: {'line': b'[ 27%] \x1b[32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/visualizer.cpp.o\x1b[0m\n'}
+[1.601596] (-) TimerEvent: {}
+[1.701862] (-) TimerEvent: {}
+[1.802135] (-) TimerEvent: {}
+[1.902416] (-) TimerEvent: {}
+[2.002699] (-) TimerEvent: {}
+[2.103003] (-) TimerEvent: {}
+[2.203315] (-) TimerEvent: {}
+[2.303659] (-) TimerEvent: {}
+[2.327717] (opennav_coverage) StdoutLine: {'line': b'[ 31%] \x1b[32m\x1b[1mLinking CXX static library libgtest_main.a\x1b[0m\n'}
+[2.355746] (opennav_coverage) StdoutLine: {'line': b'[ 31%] Built target gtest_main\n'}
+[2.403759] (-) TimerEvent: {}
+[2.504052] (-) TimerEvent: {}
+[2.604352] (-) TimerEvent: {}
+[2.704675] (-) TimerEvent: {}
+[2.805030] (-) TimerEvent: {}
+[2.905290] (-) TimerEvent: {}
+[3.005545] (-) TimerEvent: {}
+[3.105861] (-) TimerEvent: {}
+[3.206164] (-) TimerEvent: {}
+[3.306435] (-) TimerEvent: {}
+[3.406703] (-) TimerEvent: {}
+[3.506986] (-) TimerEvent: {}
+[3.607247] (-) TimerEvent: {}
+[3.707508] (-) TimerEvent: {}
+[3.807778] (-) TimerEvent: {}
+[3.908040] (-) TimerEvent: {}
+[4.008307] (-) TimerEvent: {}
+[4.108572] (-) TimerEvent: {}
+[4.208842] (-) TimerEvent: {}
+[4.309112] (-) TimerEvent: {}
+[4.409350] (-) TimerEvent: {}
+[4.509612] (-) TimerEvent: {}
+[4.609878] (-) TimerEvent: {}
+[4.710141] (-) TimerEvent: {}
+[4.810449] (-) TimerEvent: {}
+[4.854678] (opennav_coverage) StdoutLine: {'line': b'[ 34%] \x1b[32m\x1b[1mLinking CXX static library libgtest.a\x1b[0m\n'}
+[4.907825] (opennav_coverage) StdoutLine: {'line': b'[ 34%] Built target gtest\n'}
+[4.910536] (-) TimerEvent: {}
+[5.010840] (-) TimerEvent: {}
+[5.111177] (-) TimerEvent: {}
+[5.211454] (-) TimerEvent: {}
+[5.311734] (-) TimerEvent: {}
+[5.412013] (-) TimerEvent: {}
+[5.512284] (-) TimerEvent: {}
+[5.612550] (-) TimerEvent: {}
+[5.712818] (-) TimerEvent: {}
+[5.813087] (-) TimerEvent: {}
+[5.913349] (-) TimerEvent: {}
+[6.013607] (-) TimerEvent: {}
+[6.113841] (-) TimerEvent: {}
+[6.214082] (-) TimerEvent: {}
+[6.314302] (-) TimerEvent: {}
+[6.414582] (-) TimerEvent: {}
+[6.514815] (-) TimerEvent: {}
+[6.615051] (-) TimerEvent: {}
+[6.715293] (-) TimerEvent: {}
+[6.815491] (-) TimerEvent: {}
+[6.915733] (-) TimerEvent: {}
+[7.016010] (-) TimerEvent: {}
+[7.116254] (-) TimerEvent: {}
+[7.216490] (-) TimerEvent: {}
+[7.316721] (-) TimerEvent: {}
+[7.416951] (-) TimerEvent: {}
+[7.517203] (-) TimerEvent: {}
+[7.617433] (-) TimerEvent: {}
+[7.717660] (-) TimerEvent: {}
+[7.817883] (-) TimerEvent: {}
+[7.918139] (-) TimerEvent: {}
+[8.018366] (-) TimerEvent: {}
+[8.118595] (-) TimerEvent: {}
+[8.218819] (-) TimerEvent: {}
+[8.319102] (-) TimerEvent: {}
+[8.419365] (-) TimerEvent: {}
+[8.519596] (-) TimerEvent: {}
+[8.619845] (-) TimerEvent: {}
+[8.720074] (-) TimerEvent: {}
+[8.820333] (-) TimerEvent: {}
+[8.920549] (-) TimerEvent: {}
+[9.020955] (-) TimerEvent: {}
+[9.121225] (-) TimerEvent: {}
+[9.221482] (-) TimerEvent: {}
+[9.321767] (-) TimerEvent: {}
+[9.383625] (opennav_coverage) StdoutLine: {'line': b'[ 37%] \x1b[32m\x1b[1mLinking CXX shared library libopennav_coverage_core.so\x1b[0m\n'}
+[9.421886] (-) TimerEvent: {}
+[9.522154] (-) TimerEvent: {}
+[9.622379] (-) TimerEvent: {}
+[9.679046] (opennav_coverage) StdoutLine: {'line': b'[ 37%] Built target opennav_coverage_core\n'}
+[9.694830] (opennav_coverage) StdoutLine: {'line': b'[ 48%] \x1b[32mBuilding CXX object test/CMakeFiles/test_robot.dir/test_robot.cpp.o\x1b[0m\n'}
+[9.695128] (opennav_coverage) StdoutLine: {'line': b'[ 48%] \x1b[32mBuilding CXX object CMakeFiles/opennav_coverage.dir/src/main.cpp.o\x1b[0m\n'}
+[9.695235] (opennav_coverage) StdoutLine: {'line': b'[ 48%] \x1b[32mBuilding CXX object test/CMakeFiles/test_viz.dir/test_viz.cpp.o\x1b[0m\n'}
+[9.695332] (opennav_coverage) StdoutLine: {'line': b'[ 51%] \x1b[32mBuilding CXX object test/CMakeFiles/test_server.dir/test_server.cpp.o\x1b[0m\n'}
+[9.697218] (opennav_coverage) StdoutLine: {'line': b'[ 55%] \x1b[32mBuilding CXX object test/CMakeFiles/test_headland.dir/test_headland.cpp.o\x1b[0m\n'}
+[9.697412] (opennav_coverage) StdoutLine: {'line': b'[ 58%] \x1b[32mBuilding CXX object test/CMakeFiles/test_utils.dir/test_utils.cpp.o\x1b[0m\n'}
+[9.697906] (opennav_coverage) StdoutLine: {'line': b'[ 62%] \x1b[32mBuilding CXX object test/CMakeFiles/test_path.dir/test_path.cpp.o\x1b[0m\n'}
+[9.698090] (opennav_coverage) StdoutLine: {'line': b'[ 65%] \x1b[32mBuilding CXX object test/CMakeFiles/test_swath.dir/test_swath.cpp.o\x1b[0m\n'}
+[9.703135] (opennav_coverage) StdoutLine: {'line': b'[ 68%] \x1b[32mBuilding CXX object test/CMakeFiles/test_route.dir/test_route.cpp.o\x1b[0m\n'}
+[9.722475] (-) TimerEvent: {}
+[9.822732] (-) TimerEvent: {}
+[9.923005] (-) TimerEvent: {}
+[10.023281] (-) TimerEvent: {}
+[10.123568] (-) TimerEvent: {}
+[10.223838] (-) TimerEvent: {}
+[10.324122] (-) TimerEvent: {}
+[10.424453] (-) TimerEvent: {}
+[10.524837] (-) TimerEvent: {}
+[10.625149] (-) TimerEvent: {}
+[10.725461] (-) TimerEvent: {}
+[10.825785] (-) TimerEvent: {}
+[10.926144] (-) TimerEvent: {}
+[11.026450] (-) TimerEvent: {}
+[11.126775] (-) TimerEvent: {}
+[11.227052] (-) TimerEvent: {}
+[11.327382] (-) TimerEvent: {}
+[11.427718] (-) TimerEvent: {}
+[11.528049] (-) TimerEvent: {}
+[11.628397] (-) TimerEvent: {}
+[11.728742] (-) TimerEvent: {}
+[11.829070] (-) TimerEvent: {}
+[11.929416] (-) TimerEvent: {}
+[12.029755] (-) TimerEvent: {}
+[12.130057] (-) TimerEvent: {}
+[12.230404] (-) TimerEvent: {}
+[12.330747] (-) TimerEvent: {}
+[12.431054] (-) TimerEvent: {}
+[12.531388] (-) TimerEvent: {}
+[12.631707] (-) TimerEvent: {}
+[12.732037] (-) TimerEvent: {}
+[12.832378] (-) TimerEvent: {}
+[12.932728] (-) TimerEvent: {}
+[13.033055] (-) TimerEvent: {}
+[13.133582] (-) TimerEvent: {}
+[13.233922] (-) TimerEvent: {}
+[13.334265] (-) TimerEvent: {}
+[13.434607] (-) TimerEvent: {}
+[13.534997] (-) TimerEvent: {}
+[13.635354] (-) TimerEvent: {}
+[13.735679] (-) TimerEvent: {}
+[13.836023] (-) TimerEvent: {}
+[13.936374] (-) TimerEvent: {}
+[14.036719] (-) TimerEvent: {}
+[14.137050] (-) TimerEvent: {}
+[14.237378] (-) TimerEvent: {}
+[14.337724] (-) TimerEvent: {}
+[14.438063] (-) TimerEvent: {}
+[14.538393] (-) TimerEvent: {}
+[14.639898] (-) TimerEvent: {}
+[14.740299] (-) TimerEvent: {}
+[14.840631] (-) TimerEvent: {}
+[14.849700] (opennav_coverage) StdoutLine: {'line': b'[ 72%] \x1b[32m\x1b[1mLinking CXX executable opennav_coverage\x1b[0m\n'}
+[14.940780] (-) TimerEvent: {}
+[14.992207] (opennav_coverage) StdoutLine: {'line': b'[ 75%] \x1b[32m\x1b[1mLinking CXX executable test_robot\x1b[0m\n'}
+[15.040923] (-) TimerEvent: {}
+[15.109053] (opennav_coverage) StdoutLine: {'line': b'[ 79%] \x1b[32m\x1b[1mLinking CXX executable test_headland\x1b[0m\n'}
+[15.141071] (-) TimerEvent: {}
+[15.241467] (-) TimerEvent: {}
+[15.341912] (-) TimerEvent: {}
+[15.359600] (opennav_coverage) StdoutLine: {'line': b'[ 82%] \x1b[32m\x1b[1mLinking CXX executable test_swath\x1b[0m\n'}
+[15.379543] (opennav_coverage) StdoutLine: {'line': b'[ 82%] Built target test_robot\n'}
+[15.442080] (-) TimerEvent: {}
+[15.449015] (opennav_coverage) StdoutLine: {'line': b'[ 86%] \x1b[32m\x1b[1mLinking CXX executable test_path\x1b[0m\n'}
+[15.525351] (opennav_coverage) StdoutLine: {'line': b'[ 89%] \x1b[32m\x1b[1mLinking CXX executable test_route\x1b[0m\n'}
+[15.542321] (-) TimerEvent: {}
+[15.642926] (-) TimerEvent: {}
+[15.687202] (opennav_coverage) StdoutLine: {'line': b'[ 89%] Built target opennav_coverage\n'}
+[15.743098] (-) TimerEvent: {}
+[15.843605] (-) TimerEvent: {}
+[15.944193] (-) TimerEvent: {}
+[16.044775] (-) TimerEvent: {}
+[16.145374] (-) TimerEvent: {}
+[16.245867] (-) TimerEvent: {}
+[16.282359] (opennav_coverage) StdoutLine: {'line': b'[ 89%] Built target test_headland\n'}
+[16.345988] (-) TimerEvent: {}
+[16.446314] (-) TimerEvent: {}
+[16.545899] (opennav_coverage) StdoutLine: {'line': b'[ 89%] Built target test_swath\n'}
+[16.546377] (-) TimerEvent: {}
+[16.589386] (opennav_coverage) StdoutLine: {'line': b'[ 89%] Built target test_path\n'}
+[16.634441] (opennav_coverage) StdoutLine: {'line': b'[ 89%] Built target test_route\n'}
+[16.646485] (-) TimerEvent: {}
+[16.746751] (-) TimerEvent: {}
+[16.847023] (-) TimerEvent: {}
+[16.947298] (-) TimerEvent: {}
+[17.047566] (-) TimerEvent: {}
+[17.147814] (-) TimerEvent: {}
+[17.148922] (opennav_coverage) StdoutLine: {'line': b'[ 93%] \x1b[32m\x1b[1mLinking CXX executable test_server\x1b[0m\n'}
+[17.247942] (-) TimerEvent: {}
+[17.348205] (-) TimerEvent: {}
+[17.448442] (-) TimerEvent: {}
+[17.525383] (opennav_coverage) StdoutLine: {'line': b'[ 96%] \x1b[32m\x1b[1mLinking CXX executable test_utils\x1b[0m\n'}
+[17.548550] (-) TimerEvent: {}
+[17.648834] (-) TimerEvent: {}
+[17.705388] (opennav_coverage) StdoutLine: {'line': b'[ 96%] Built target test_server\n'}
+[17.748937] (-) TimerEvent: {}
+[17.849206] (-) TimerEvent: {}
+[17.906525] (opennav_coverage) StdoutLine: {'line': b'[ 96%] Built target test_utils\n'}
+[17.949289] (-) TimerEvent: {}
+[18.049483] (-) TimerEvent: {}
+[18.149718] (-) TimerEvent: {}
+[18.249949] (-) TimerEvent: {}
+[18.350207] (-) TimerEvent: {}
+[18.450437] (-) TimerEvent: {}
+[18.550678] (-) TimerEvent: {}
+[18.650917] (-) TimerEvent: {}
+[18.751189] (-) TimerEvent: {}
+[18.851445] (-) TimerEvent: {}
+[18.951683] (-) TimerEvent: {}
+[19.051922] (-) TimerEvent: {}
+[19.152171] (-) TimerEvent: {}
+[19.252410] (-) TimerEvent: {}
+[19.352647] (-) TimerEvent: {}
+[19.452855] (-) TimerEvent: {}
+[19.553096] (-) TimerEvent: {}
+[19.653336] (-) TimerEvent: {}
+[19.753574] (-) TimerEvent: {}
+[19.853809] (-) TimerEvent: {}
+[19.954102] (-) TimerEvent: {}
+[20.054342] (-) TimerEvent: {}
+[20.154585] (-) TimerEvent: {}
+[20.254807] (-) TimerEvent: {}
+[20.355032] (-) TimerEvent: {}
+[20.455254] (-) TimerEvent: {}
+[20.555479] (-) TimerEvent: {}
+[20.655704] (-) TimerEvent: {}
+[20.755924] (-) TimerEvent: {}
+[20.856173] (-) TimerEvent: {}
+[20.956399] (-) TimerEvent: {}
+[21.056625] (-) TimerEvent: {}
+[21.156851] (-) TimerEvent: {}
+[21.257074] (-) TimerEvent: {}
+[21.357300] (-) TimerEvent: {}
+[21.457521] (-) TimerEvent: {}
+[21.557747] (-) TimerEvent: {}
+[21.657978] (-) TimerEvent: {}
+[21.758202] (-) TimerEvent: {}
+[21.858423] (-) TimerEvent: {}
+[21.958665] (-) TimerEvent: {}
+[22.058889] (-) TimerEvent: {}
+[22.159121] (-) TimerEvent: {}
+[22.259343] (-) TimerEvent: {}
+[22.359567] (-) TimerEvent: {}
+[22.459790] (-) TimerEvent: {}
+[22.560014] (-) TimerEvent: {}
+[22.660208] (-) TimerEvent: {}
+[22.760430] (-) TimerEvent: {}
+[22.860658] (-) TimerEvent: {}
+[22.960881] (-) TimerEvent: {}
+[23.061109] (-) TimerEvent: {}
+[23.161334] (-) TimerEvent: {}
+[23.261526] (-) TimerEvent: {}
+[23.361745] (-) TimerEvent: {}
+[23.461976] (-) TimerEvent: {}
+[23.562202] (-) TimerEvent: {}
+[23.662455] (-) TimerEvent: {}
+[23.762754] (-) TimerEvent: {}
+[23.862994] (-) TimerEvent: {}
+[23.963232] (-) TimerEvent: {}
+[24.063469] (-) TimerEvent: {}
+[24.163714] (-) TimerEvent: {}
+[24.263963] (-) TimerEvent: {}
+[24.364202] (-) TimerEvent: {}
+[24.422742] (opennav_coverage) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable test_viz\x1b[0m\n'}
+[24.464289] (-) TimerEvent: {}
+[24.564524] (-) TimerEvent: {}
+[24.664766] (-) TimerEvent: {}
+[24.765032] (-) TimerEvent: {}
+[24.806509] (opennav_coverage) StderrLine: {'line': b"/usr/bin/ld: CMakeFiles/test_viz.dir/test_viz.cpp.o: undefined reference to symbol '_ZNK11OGRGeometry11exportToWktEPPc13OGRwkbVariant'\n"}
+[24.806682] (opennav_coverage) StderrLine: {'line': b'/usr/bin/ld: /lib/x86_64-linux-gnu/libgdal.so.34: error adding symbols: DSO missing from command line\n'}
+[24.811413] (opennav_coverage) StderrLine: {'line': b'collect2: error: ld returned 1 exit status\n'}
+[24.812671] (opennav_coverage) StderrLine: {'line': b'gmake[2]: *** [test/CMakeFiles/test_viz.dir/build.make:290: test/test_viz] Error 1\n'}
+[24.812839] (opennav_coverage) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:298: test/CMakeFiles/test_viz.dir/all] Error 2\n'}
+[24.813135] (opennav_coverage) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[24.814511] (opennav_coverage) CommandEnded: {'returncode': 2}
+[24.820114] (opennav_coverage) JobEnded: {'identifier': 'opennav_coverage', 'rc': 2}
+[24.830570] (-) EventReactorShutdown: {}

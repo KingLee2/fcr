@@ -1,0 +1,25 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from opennav_coverage_msgs/msg/RouteMode.msg
+// generated code does not contain a copyright notice
+
+
+module opennav_coverage_msgs {
+  module msg {
+    struct RouteMode {
+      @verbatim (language="comment", text=
+        "BOUSTROPHEDON, SNAKE, SPIRAL, CUSTOM")
+      @default (value="UNKNOWN")
+      string mode;
+
+      @verbatim (language="comment", text=
+        "Specific mode setting" "\n"
+        "If mode=SPIRAL, this is the number of swaths to spiral")
+      @default (value=4)
+      uint16 spiral_n;
+
+      @verbatim (language="comment", text=
+        "If mode=CUSTOM, this is the order of swaths to set. Must be specified.")
+      sequence<uint16> custom_order;
+    };
+  };
+};

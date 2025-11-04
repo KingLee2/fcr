@@ -1,0 +1,16 @@
+[Unit]
+Description=floor cleaning robot startup script
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/mvibot/floorCleaningRobot_ws
+ExecStart=/bin/bash /home/mvibot/floorCleaningRobot_ws/robot_startup/config_internet.rc
+Restart=on-failure
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

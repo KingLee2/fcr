@@ -1,0 +1,84 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from opennav_coverage_msgs/action/ComputeCoveragePath.action
+// generated code does not contain a copyright notice
+
+#include "builtin_interfaces/msg/Duration.idl"
+#include "nav_msgs/msg/Path.idl"
+#include "opennav_coverage_msgs/msg/Coordinates.idl"
+#include "opennav_coverage_msgs/msg/HeadlandMode.idl"
+#include "opennav_coverage_msgs/msg/PathComponents.idl"
+#include "opennav_coverage_msgs/msg/PathMode.idl"
+#include "opennav_coverage_msgs/msg/RouteMode.idl"
+#include "opennav_coverage_msgs/msg/RowSwathMode.idl"
+#include "opennav_coverage_msgs/msg/SwathMode.idl"
+
+module opennav_coverage_msgs {
+  module action {
+    @verbatim (language="comment", text=
+      "goal definition")
+    struct ComputeCoveragePath_Goal {
+      @verbatim (language="comment", text=
+        "Whether to perform all 4 stages: Headlands, Swath (Required), Route, Path")
+      @default (value=TRUE)
+      boolean generate_headland;
+
+      @default (value=TRUE)
+      boolean generate_route;
+
+      @default (value=TRUE)
+      boolean generate_path;
+
+      @verbatim (language="comment", text=
+        "The field specification to use." "\n"
+        "If using polygons, bounding polygon must be first, followed by inner cutouts" "\n"
+        "Both must specify if the data is cartesian or GPS coordinates" "\n"
+        "If using Row Coverage Server, must use gml field.")
+      @default (value=FALSE)
+      boolean use_gml_file;
+
+      string gml_field;
+
+      sequence<opennav_coverage_msgs::msg::Coordinates> polygons;
+
+      @default (value="map")
+      string frame_id;
+
+      @verbatim (language="comment", text=
+        "Modes of operation of each stage, if used")
+      opennav_coverage_msgs::msg::HeadlandMode headland_mode;
+
+      opennav_coverage_msgs::msg::SwathMode swath_mode;
+
+      opennav_coverage_msgs::msg::RowSwathMode row_swath_mode;
+
+      opennav_coverage_msgs::msg::RouteMode route_mode;
+
+      opennav_coverage_msgs::msg::PathMode path_mode;
+    };
+    module ComputeCoveragePath_Result_Constants {
+      @verbatim (language="comment", text=
+        "Error codes" "\n"        "Note: The expected priority order of the errors should match the message order")
+      const uint16 NONE = 0;
+      const uint16 INTERNAL_F2C_ERROR = 801;
+      const uint16 INVALID_MODE_SET = 802;
+      const uint16 INVALID_REQUEST = 803;
+      const uint16 INVALID_COORDS = 803;
+    };
+    @verbatim (language="comment", text=
+      "result definition")
+    struct ComputeCoveragePath_Result {
+      nav_msgs::msg::Path nav_path;
+
+      opennav_coverage_msgs::msg::PathComponents coverage_path;
+
+      builtin_interfaces::msg::Duration planning_time;
+
+      uint16 error_code;
+    };
+    @verbatim (language="comment", text=
+      "feedback definition")
+    struct ComputeCoveragePath_Feedback {
+      uint8 structure_needs_at_least_one_member;
+    };
+  };
+};

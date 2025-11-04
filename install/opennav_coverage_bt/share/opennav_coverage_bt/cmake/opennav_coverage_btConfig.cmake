@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage_bt/ament_cmake_core/opennav_coverage_btConfig.cmake

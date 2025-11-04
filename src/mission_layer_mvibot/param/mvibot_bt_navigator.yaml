@@ -1,0 +1,34 @@
+bt_navigator:
+  ros__parameters:
+    global_frame: map
+    robot_base_frame: $(var mvibot_seri)/base_link #mvibot/base_footprint
+    odom_topic: /odometry/filtered
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    wait_for_service_timeout: 1000
+    action_server_result_timeout: 900.0
+    # navigators: ["navigate_to_pose", "navigate_through_poses"]
+    navigators: ['navigate_to_pose', 'navigate_through_poses', 'navigate_complete_coverage']
+    navigate_to_pose:
+      plugin: "nav2_bt_navigator::NavigateToPoseNavigator"
+    navigate_through_poses:
+      plugin: "nav2_bt_navigator::NavigateThroughPosesNavigator"
+    navigate_complete_coverage: #add
+      plugin: "opennav_coverage_navigator/CoverageNavigator" #add
+    # 'default_nav_through_poses_bt_xml' and 'default_nav_to_pose_bt_xml' are use defaults:
+    # nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml
+    # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
+    # 'default_coverage_bt_xml' uses defaults:
+    # opennav_coverage_bt/behavior_tree/navigate_w_basic_complete_coverage.xml
+    # They can be set here or via a RewrittenYaml remap from a parent launch file to Nav2.
+
+    # plugin_lib_names is used to add custom BT plugins to the executor (vector of strings).
+    # Built-in plugins are added automatically
+    # plugin_lib_names: []
+    plugin_lib_names: #add
+      - opennav_compute_complete_coverage_action_bt_node #add
+      - opennav_cancel_complete_coverage_action_bt_node #add
+    error_code_names:
+      - compute_path_error_code
+      - follow_path_error_code
+      - compute_coverage_error_code #add

@@ -1,0 +1,31 @@
+# scan_to_scan_filter_chain:
+/**:
+  ros__parameters:
+    filter1:
+      name: speckle_filter
+      type: laser_filters/LaserScanSpeckleFilter
+      params:
+        filter_type: 0
+        max_range: 1.0
+        max_range_difference: 0.1
+        filter_window: 1
+    filter2:
+      name: intensity_filter
+      type: laser_filters/LaserScanIntensityFilter
+      params:
+        lower_threshold: 10.
+        upper_threshold: 200.
+        disp_histogram: 0
+    filter3:
+      name: box_filter
+      type: laser_filters/LaserScanBoxFilter
+      params:
+        box_frame: mvibot/base_link # $(arg mvibot_seri)/base_footprint
+        min_x: -0.705
+        max_x: 0.65
+        min_y: -0.285
+        max_y: 0.285
+        min_z: -1.0
+        max_z: 1.0
+        invert: false #activate to remove all points outside of the box
+

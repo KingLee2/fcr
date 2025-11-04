@@ -1,0 +1,44 @@
+[0.011s] Invoking command in '/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage': AMENT_PREFIX_PATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com LD_LIBRARY_PATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/cmake --build /home/mvibot/floorCleaningRobot_ws/build/opennav_coverage -- -j16 -l16
+[0.048s] [ 13%] Built target gtest
+[0.048s] [ 13%] Built target gtest_main
+[0.088s] [ 17%] [32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/coverage_server.cpp.o[0m
+[0.088s] [ 20%] [32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/headland_generator.cpp.o[0m
+[0.089s] [ 24%] [32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/swath_generator.cpp.o[0m
+[0.090s] [ 27%] [32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/route_generator.cpp.o[0m
+[0.091s] [ 31%] [32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/path_generator.cpp.o[0m
+[0.093s] [ 34%] [32mBuilding CXX object CMakeFiles/opennav_coverage_core.dir/src/visualizer.cpp.o[0m
+[7.485s] [ 37%] [32m[1mLinking CXX shared library libopennav_coverage_core.so[0m
+[7.787s] [ 37%] Built target opennav_coverage_core
+[7.817s] [ 44%] [32mBuilding CXX object test/CMakeFiles/test_robot.dir/test_robot.cpp.o[0m
+[7.817s] [ 44%] [32mBuilding CXX object test/CMakeFiles/test_viz.dir/test_viz.cpp.o[0m
+[7.820s] [ 48%] [32mBuilding CXX object test/CMakeFiles/test_route.dir/test_route.cpp.o[0m
+[7.820s] [ 51%] [32mBuilding CXX object test/CMakeFiles/test_utils.dir/test_utils.cpp.o[0m
+[7.823s] [ 55%] [32mBuilding CXX object test/CMakeFiles/test_server.dir/test_server.cpp.o[0m
+[7.826s] [ 62%] [32mBuilding CXX object test/CMakeFiles/test_headland.dir/test_headland.cpp.o[0m
+[7.826s] [ 62%] [32mBuilding CXX object test/CMakeFiles/test_path.dir/test_path.cpp.o[0m
+[7.826s] [ 65%] [32mBuilding CXX object test/CMakeFiles/test_swath.dir/test_swath.cpp.o[0m
+[7.828s] [ 68%] [32mBuilding CXX object CMakeFiles/opennav_coverage.dir/src/main.cpp.o[0m
+[13.221s] [ 72%] [32m[1mLinking CXX executable opennav_coverage[0m
+[13.269s] [ 75%] [32m[1mLinking CXX executable test_robot[0m
+[13.616s] [ 75%] Built target test_robot
+[13.659s] [ 79%] [32m[1mLinking CXX executable test_swath[0m
+[13.719s] [ 82%] [32m[1mLinking CXX executable test_route[0m
+[13.985s] [ 82%] Built target opennav_coverage
+[14.062s] [ 86%] [32m[1mLinking CXX executable test_path[0m
+[14.278s] [ 89%] [32m[1mLinking CXX executable test_headland[0m
+[14.798s] [ 89%] Built target test_swath
+[14.832s] [ 89%] Built target test_route
+[15.039s] [ 89%] Built target test_path
+[15.130s] [ 89%] Built target test_headland
+[15.737s] [ 93%] [32m[1mLinking CXX executable test_utils[0m
+[16.128s] [ 93%] Built target test_utils
+[17.026s] [ 96%] [32m[1mLinking CXX executable test_server[0m
+[17.526s] [ 96%] Built target test_server
+[21.408s] [100%] [32m[1mLinking CXX executable test_viz[0m
+[21.788s] /usr/bin/ld: CMakeFiles/test_viz.dir/test_viz.cpp.o: undefined reference to symbol '_ZNK11OGRGeometry11exportToWktEPPc13OGRwkbVariant'
+[21.789s] /usr/bin/ld: /lib/x86_64-linux-gnu/libgdal.so.34: error adding symbols: DSO missing from command line
+[21.794s] collect2: error: ld returned 1 exit status
+[21.795s] gmake[2]: *** [test/CMakeFiles/test_viz.dir/build.make:290: test/test_viz] Error 1
+[21.795s] gmake[1]: *** [CMakeFiles/Makefile2:298: test/CMakeFiles/test_viz.dir/all] Error 2
+[21.795s] gmake: *** [Makefile:146: all] Error 2
+[21.797s] Invoked command in '/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage' returned '2': AMENT_PREFIX_PATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com LD_LIBRARY_PATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/cmake --build /home/mvibot/floorCleaningRobot_ws/build/opennav_coverage -- -j16 -l16

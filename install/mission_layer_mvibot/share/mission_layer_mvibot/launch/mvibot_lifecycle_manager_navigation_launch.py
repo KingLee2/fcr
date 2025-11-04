@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/launch/mvibot_lifecycle_manager_navigation_launch.py

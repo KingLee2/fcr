@@ -1,0 +1,42 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/action/compute_coverage_path__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/action/compute_coverage_path__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/action/navigate_complete_coverage__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/action/navigate_complete_coverage__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/coordinate__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/coordinate__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/coordinates__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/coordinates__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/headland_mode__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/headland_mode__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/path_components__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/path_components__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/path_mode__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/path_mode__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/route_mode__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/route_mode__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/row_swath_mode__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/row_swath_mode__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/swath__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/swath__type_support.cpp.o.d"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/swath_mode__type_support.cpp.o"
+  "CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/opennav_coverage_msgs/msg/swath_mode__type_support.cpp.o.d"
+  "libopennav_coverage_msgs__rosidl_typesupport_cpp.pdb"
+  "libopennav_coverage_msgs__rosidl_typesupport_cpp.so"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/action/compute_coverage_path__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/action/navigate_complete_coverage__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/coordinate__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/coordinates__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/headland_mode__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/path_components__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/path_mode__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/route_mode__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/row_swath_mode__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/swath__type_support.cpp"
+  "rosidl_typesupport_cpp/opennav_coverage_msgs/msg/swath_mode__type_support.cpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/opennav_coverage_msgs__rosidl_typesupport_cpp.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

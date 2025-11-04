@@ -1,0 +1,1265 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath",
+      "fields": [
+        {
+          "name": "goal",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Goal"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "result",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Result"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "feedback",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Feedback"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "send_goal_service",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "get_result_service",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "feedback_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_FeedbackMessage"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "builtin_interfaces/msg/Duration",
+        "fields": [
+          {
+            "name": "sec",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "nanosec",
+            "type": {
+              "type_id": 7,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "builtin_interfaces/msg/Time",
+        "fields": [
+          {
+            "name": "sec",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "nanosec",
+            "type": {
+              "type_id": 7,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "geometry_msgs/msg/Point",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "z",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "geometry_msgs/msg/Point32",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "z",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "geometry_msgs/msg/Pose",
+        "fields": [
+          {
+            "name": "position",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "geometry_msgs/msg/Point"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "orientation",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "geometry_msgs/msg/Quaternion"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "geometry_msgs/msg/PoseStamped",
+        "fields": [
+          {
+            "name": "header",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "std_msgs/msg/Header"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "pose",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "geometry_msgs/msg/Pose"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "geometry_msgs/msg/Quaternion",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.0"
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.0"
+          },
+          {
+            "name": "z",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.0"
+          },
+          {
+            "name": "w",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "1.0"
+          }
+        ]
+      },
+      {
+        "type_name": "nav_msgs/msg/Path",
+        "fields": [
+          {
+            "name": "header",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "std_msgs/msg/Header"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "poses",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "geometry_msgs/msg/PoseStamped"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Feedback",
+        "fields": [
+          {
+            "name": "structure_needs_at_least_one_member",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_FeedbackMessage",
+        "fields": [
+          {
+            "name": "goal_id",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "unique_identifier_msgs/msg/UUID"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "feedback",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Feedback"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult",
+        "fields": [
+          {
+            "name": "request_message",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Request"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "response_message",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Response"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "event_message",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Event"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Event",
+        "fields": [
+          {
+            "name": "info",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "service_msgs/msg/ServiceEventInfo"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "request",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Request"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "response",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Response"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Request",
+        "fields": [
+          {
+            "name": "goal_id",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "unique_identifier_msgs/msg/UUID"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Response",
+        "fields": [
+          {
+            "name": "status",
+            "type": {
+              "type_id": 2,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "result",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Result"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Goal",
+        "fields": [
+          {
+            "name": "generate_headland",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "True"
+          },
+          {
+            "name": "generate_route",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "True"
+          },
+          {
+            "name": "generate_path",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "True"
+          },
+          {
+            "name": "use_gml_file",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "False"
+          },
+          {
+            "name": "gml_field",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "polygons",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/Coordinates"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "frame_id",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "map"
+          },
+          {
+            "name": "headland_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/HeadlandMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "swath_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/SwathMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "row_swath_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/RowSwathMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "route_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/RouteMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "path_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/PathMode"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Result",
+        "fields": [
+          {
+            "name": "nav_path",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "nav_msgs/msg/Path"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "coverage_path",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/PathComponents"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "planning_time",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "builtin_interfaces/msg/Duration"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "error_code",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal",
+        "fields": [
+          {
+            "name": "request_message",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Request"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "response_message",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Response"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "event_message",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Event"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Event",
+        "fields": [
+          {
+            "name": "info",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "service_msgs/msg/ServiceEventInfo"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "request",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Request"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "response",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Response"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Request",
+        "fields": [
+          {
+            "name": "goal_id",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "unique_identifier_msgs/msg/UUID"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "goal",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Goal"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Response",
+        "fields": [
+          {
+            "name": "accepted",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "stamp",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "builtin_interfaces/msg/Time"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/Coordinate",
+        "fields": [
+          {
+            "name": "axis1",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "axis2",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/Coordinates",
+        "fields": [
+          {
+            "name": "coordinates",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/Coordinate"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/HeadlandMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "width",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "2.0"
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/PathComponents",
+        "fields": [
+          {
+            "name": "header",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "std_msgs/msg/Header"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "swaths",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/Swath"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "turns",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "nav_msgs/msg/Path"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "contains_turns",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "swaths_ordered",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/PathMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "continuity_mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "turn_point_distance",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.1"
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/RouteMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "spiral_n",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "4"
+          },
+          {
+            "name": "custom_order",
+            "type": {
+              "type_id": 149,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/RowSwathMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "skip_ids",
+            "type": {
+              "type_id": 150,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.0"
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/Swath",
+        "fields": [
+          {
+            "name": "start",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "geometry_msgs/msg/Point32"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "end",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "geometry_msgs/msg/Point32"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/SwathMode",
+        "fields": [
+          {
+            "name": "objective",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "best_angle",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.0"
+          },
+          {
+            "name": "step_angle",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.017453"
+          }
+        ]
+      },
+      {
+        "type_name": "service_msgs/msg/ServiceEventInfo",
+        "fields": [
+          {
+            "name": "event_type",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "stamp",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "builtin_interfaces/msg/Time"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "client_gid",
+            "type": {
+              "type_id": 51,
+              "capacity": 16,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "sequence_number",
+            "type": {
+              "type_id": 8,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "std_msgs/msg/Header",
+        "fields": [
+          {
+            "name": "stamp",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "builtin_interfaces/msg/Time"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "frame_id",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "unique_identifier_msgs/msg/UUID",
+        "fields": [
+          {
+            "name": "uuid",
+            "type": {
+              "type_id": 51,
+              "capacity": 16,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath",
+      "hash_string": "RIHS01_f03d45c58b7b5466d093826a1dbac63aeffc0d7bd91558ccbf01e900dbfaf3c1"
+    },
+    {
+      "type_name": "builtin_interfaces/msg/Duration",
+      "hash_string": "RIHS01_e8d009f659816f758b75334ee1a9ca5b5c0b859843261f14c7f937349599d93b"
+    },
+    {
+      "type_name": "builtin_interfaces/msg/Time",
+      "hash_string": "RIHS01_b106235e25a4c5ed35098aa0a61a3ee9c9b18d197f398b0e4206cea9acf9c197"
+    },
+    {
+      "type_name": "geometry_msgs/msg/Point",
+      "hash_string": "RIHS01_6963084842a9b04494d6b2941d11444708d892da2f4b09843b9c43f42a7f6881"
+    },
+    {
+      "type_name": "geometry_msgs/msg/Point32",
+      "hash_string": "RIHS01_2fc4db7cae16a4582c79a56b66173a8d48d52c7dc520ddc55a0d4bcf2a4bfdbc"
+    },
+    {
+      "type_name": "geometry_msgs/msg/Pose",
+      "hash_string": "RIHS01_d501954e9476cea2996984e812054b68026ae0bfae789d9a10b23daf35cc90fa"
+    },
+    {
+      "type_name": "geometry_msgs/msg/PoseStamped",
+      "hash_string": "RIHS01_10f3786d7d40fd2b54367835614bff85d4ad3b5dab62bf8bca0cc232d73b4cd8"
+    },
+    {
+      "type_name": "geometry_msgs/msg/Quaternion",
+      "hash_string": "RIHS01_8a765f66778c8ff7c8ab94afcc590a2ed5325a1d9a076ffff38fbce36f458684"
+    },
+    {
+      "type_name": "nav_msgs/msg/Path",
+      "hash_string": "RIHS01_1957a5bb3cee5da65c4e52e52b65a93df227efce4c20f8458b36e73066ca334b"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Feedback",
+      "hash_string": "RIHS01_5efb94f4420999a3342fe402030b7e78e1edb24a1c8c9f28cc245dd2a57977a5"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_FeedbackMessage",
+      "hash_string": "RIHS01_fb2a89e27f8c96d6ce3c287bc0fa7a7d7ee6398f1f1734d82bb6e598421d2d89"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult",
+      "hash_string": "RIHS01_bd4082dfaf56d439a37b55562a26bff9e8bc8344302fc50a9a653b4b6121e947"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Event",
+      "hash_string": "RIHS01_48402a23f7d48235662eb7edc1717073ffeb9c27a49789a37eb085cdede95269"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Request",
+      "hash_string": "RIHS01_8ead09b3d1c4c41bff2012e0e66286c4b4e12e99dcdbfdfc06bcb014e87bd47e"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_GetResult_Response",
+      "hash_string": "RIHS01_dfff25746a6b10885285381ae33002bf607ddef1e3fdd5c40d789ee56eba8d4a"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Goal",
+      "hash_string": "RIHS01_06563c6578a43cbb9b74cb5f6b861543f265adc95f1c3ca7f8dd8913a7311913"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Result",
+      "hash_string": "RIHS01_22713b6dff7565b1a2afdfbe3704ef477cf5fe9fe980e62413c8625fcc483458"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal",
+      "hash_string": "RIHS01_720ee8155960df0543d3c6b7abab7ba6d3258396112e5be75245a9b62718ce6f"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Event",
+      "hash_string": "RIHS01_23f804186e1b43d08fe3b7938b363fee7d57fdef97a3cde3f3cb7400309500c6"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Request",
+      "hash_string": "RIHS01_7eaba84e9fcc03ae8694a9f315ef525c6fdd2c5e4773612f2a3485d7d161fed2"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Response",
+      "hash_string": "RIHS01_97e2fa90352b94d1acd9981651052d774cc95186eb7b751af006d8132f2ea06c"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/Coordinate",
+      "hash_string": "RIHS01_f244ab3caae5034dca7c7f899b4bbeb8c50f758374dc38c703da94ef91a23f6b"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/Coordinates",
+      "hash_string": "RIHS01_fdf0463a9790c8f1502f806939b8b5ade2ae0a9fdb200597cce3103a99aa9fb2"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/HeadlandMode",
+      "hash_string": "RIHS01_115de25c24af0e4254726fda73e935e175c24ec42663919bfd9a0ecbc52895ee"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/PathComponents",
+      "hash_string": "RIHS01_f35ddecbecaba3fa0e48f85d7d10d59f3c95d74ad036b708a0e42b196db1f8a6"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/PathMode",
+      "hash_string": "RIHS01_f96ae892a75e03be23311c15d15d20e255d4faf1fc47992c788a54d10223e1d3"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/RouteMode",
+      "hash_string": "RIHS01_6ca2f7e3d2a5052a85d29af399648b009deca3df1ebc2796fbd0c802b1f5a50f"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/RowSwathMode",
+      "hash_string": "RIHS01_a6cc67e92d1e497005446e97d9da2643624373d742d2028a7b3f92bd0966a162"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/Swath",
+      "hash_string": "RIHS01_25d89c4043000b73e9fbbbeee1dbe3bbdc61516248759d036fc3bd9591d509b0"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/SwathMode",
+      "hash_string": "RIHS01_aa63915b564db2cf5e58cdbe2313e73bb849f2eaea4e9cb4cee167a731478352"
+    },
+    {
+      "type_name": "service_msgs/msg/ServiceEventInfo",
+      "hash_string": "RIHS01_41bcbbe07a75c9b52bc96bfd5c24d7f0fc0a08c0cb7921b3373c5732345a6f45"
+    },
+    {
+      "type_name": "std_msgs/msg/Header",
+      "hash_string": "RIHS01_f49fb3ae2cf070f793645ff749683ac6b06203e41c891e17701b1cb597ce6a01"
+    },
+    {
+      "type_name": "unique_identifier_msgs/msg/UUID",
+      "hash_string": "RIHS01_1b8e8aca958cbea28fe6ef60bf6c19b683c97a9ef60bb34752067d0f2f7ab437"
+    }
+  ]
+}

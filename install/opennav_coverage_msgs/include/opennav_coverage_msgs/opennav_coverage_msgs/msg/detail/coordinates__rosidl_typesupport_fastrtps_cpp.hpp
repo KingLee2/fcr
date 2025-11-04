@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage_msgs/rosidl_typesupport_fastrtps_cpp/opennav_coverage_msgs/msg/detail/coordinates__rosidl_typesupport_fastrtps_cpp.hpp

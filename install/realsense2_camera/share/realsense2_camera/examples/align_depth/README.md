@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/src/realsense-ros/realsense2_camera/examples/align_depth/README.md

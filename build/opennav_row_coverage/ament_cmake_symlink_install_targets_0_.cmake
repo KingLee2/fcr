@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/mvibot/floorCleaningRobot_ws/build/opennav_row_coverage/libopennav_row_coverage_core.so" "TARGETS" "opennav_row_coverage_core" "ARCHIVE_DESTINATION" "lib" "LIBRARY_DESTINATION" "lib" "RUNTIME_DESTINATION" "bin")

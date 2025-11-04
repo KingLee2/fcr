@@ -1,0 +1,21 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/tf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/action/detail/tf_subscription__type_support_c.cpp.o"
+  "CMakeFiles/tf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/action/detail/tf_subscription__type_support_c.cpp.o.d"
+  "CMakeFiles/tf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/msg/detail/tf_array__type_support_c.cpp.o"
+  "CMakeFiles/tf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/msg/detail/tf_array__type_support_c.cpp.o.d"
+  "CMakeFiles/tf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/srv/detail/republish_t_fs__type_support_c.cpp.o"
+  "CMakeFiles/tf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/srv/detail/republish_t_fs__type_support_c.cpp.o.d"
+  "libtf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.pdb"
+  "libtf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.so"
+  "rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/action/detail/tf_subscription__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/action/detail/tf_subscription__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/msg/detail/tf_array__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/msg/detail/tf_array__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/srv/detail/republish_t_fs__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/tf2_web_republisher_interfaces/srv/detail/republish_t_fs__type_support_c.cpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/tf2_web_republisher_interfaces__rosidl_typesupport_fastrtps_c.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

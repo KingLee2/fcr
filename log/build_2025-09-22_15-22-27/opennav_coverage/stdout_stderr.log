@@ -1,0 +1,58 @@
+-- Found ament_cmake: 2.5.4 (/opt/ros/jazzy/share/ament_cmake/cmake)
+-- Override CMake install command with custom implementation using symlinks instead of copying resources
+-- Found ament_index_cpp: 1.8.1 (/opt/ros/jazzy/share/ament_index_cpp/cmake)
+-- Found rclcpp: 28.1.12 (/opt/ros/jazzy/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+-- Found rosidl_generator_cpp: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 7.3.2 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found rclcpp_action: 28.1.12 (/opt/ros/jazzy/share/rclcpp_action/cmake)
+-- Found rclcpp_lifecycle: 28.1.12 (/opt/ros/jazzy/share/rclcpp_lifecycle/cmake)
+-- Found rclcpp_components: 28.1.12 (/opt/ros/jazzy/share/rclcpp_components/cmake)
+-- Found std_msgs: 5.3.6 (/opt/ros/jazzy/share/std_msgs/cmake)
+-- Found visualization_msgs: 5.3.6 (/opt/ros/jazzy/share/visualization_msgs/cmake)
+-- Found nav2_util: 1.3.8 (/opt/ros/jazzy/share/nav2_util/cmake)
+-- Found eigen3_cmake_module: 0.3.0 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)
+-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+-- Found opennav_coverage_msgs: 0.0.1 (/home/mvibot/floorCleaningRobot_ws/install/opennav_coverage_msgs/share/opennav_coverage_msgs/cmake)
+-- Found GDAL: /usr/lib/x86_64-linux-gnu/libgdal.so (found version "3.8.4") 
+-- Found ament_lint_auto: 0.17.3 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+-- Found ament_cmake_gtest: 2.5.4 (/opt/ros/jazzy/share/ament_cmake_gtest/cmake)
+-- Found gtest sources under '/opt/ros/jazzy/src/gtest_vendor': C++ tests using 'Google Test' will be built
+-- Added test 'copyright' to check source files copyright and LICENSE
+-- Added test 'cppcheck' to perform static code analysis on C / C++ code
+-- Configured cppcheck include dirs: /home/mvibot/floorCleaningRobot_ws/src/opennav_coverage/opennav_coverage/include
+-- Configured cppcheck exclude dirs and/or files: 
+-- Added test 'cpplint' to check C / C++ code against the Google style
+-- Configured cpplint exclude dirs and/or files: 
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Configured 'flake8' exclude dirs and/or files: 
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'uncrustify' to check C / C++ code style
+-- Configured uncrustify additional arguments: 
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done (0.8s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/mvibot/floorCleaningRobot_ws/build/opennav_coverage
+[ 13%] Built target gtest_main
+[ 13%] Built target gtest
+[ 37%] Built target opennav_coverage_core
+[ 44%] Built target test_utils
+[ 51%] Built target test_server
+[ 58%] Built target test_swath
+[ 65%] Built target test_robot
+[ 72%] Built target test_route
+[ 79%] Built target opennav_coverage
+[ 86%] Built target test_path
+[ 89%] [32m[1mLinking CXX executable test_viz[0m
+[ 96%] Built target test_headland
+/usr/bin/ld: CMakeFiles/test_viz.dir/test_viz.cpp.o: undefined reference to symbol '_ZNK11OGRGeometry11exportToWktEPPc13OGRwkbVariant'
+/usr/bin/ld: /lib/x86_64-linux-gnu/libgdal.so.34: error adding symbols: DSO missing from command line
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [test/CMakeFiles/test_viz.dir/build.make:290: test/test_viz] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:298: test/CMakeFiles/test_viz.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

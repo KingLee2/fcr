@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage_msgs/rosidl_generator_py/opennav_coverage_msgs/opennav_coverage_msgs_s__rosidl_typesupport_c.so" "TARGETS" "opennav_coverage_msgs_s__rosidl_typesupport_c" "DESTINATION" "lib/python3.12/site-packages/opennav_coverage_msgs")

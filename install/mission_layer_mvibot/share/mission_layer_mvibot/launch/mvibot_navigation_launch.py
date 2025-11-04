@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/launch/mvibot_navigation_launch.py

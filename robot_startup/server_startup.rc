@@ -1,0 +1,111 @@
+#!/bin/bash
+echo start
+echo run ros2 jazzy....
+echo start
+source /opt/ros/jazzy/setup.bash
+source /home/mvibot/floorCleaningRobot_ws/install/setup.bash
+# export ROS_DOMAIN_ID=11
+# name and mode for robot
+name_seri="$(</home/mvibot/floorCleaningRobot_ws/config/name_seri)"
+mode="$(</home/mvibot/floorCleaningRobot_ws/config/mode)"
+robot_type_connect="$(</home/mvibot/floorCleaningRobot_ws/config/robot_type_connect)"
+# # lan port control
+# lan_port="$(</home/mvibot/floorCleaningRobot_ws/config/lan_port)"
+# lan_type="$(</home/mvibot/floorCleaningRobot_ws/config/lan_type)"
+# lan_ipv4="$(</home/mvibot/floorCleaningRobot_ws/config/lan_ipv4)"
+# lan_ipv4_dns="$(</home/mvibot/floorCleaningRobot_ws/config/lan_ipv4_dns)"
+# lan_ipv4_gateway="$(</home/mvibot/floorCleaningRobot_ws/config/lan_ipv4_gateway)"
+# # wifi card control
+# wifi_port="$(</home/mvibot/floorCleaningRobot_ws/config/wifi_port)"
+# wifi_type="$(</home/mvibot/floorCleaningRobot_ws/config/wifi_type)"
+# wifi_ssid="$(</home/mvibot/floorCleaningRobot_ws/src/config/wifi_ssid)"
+# wifi_password="$(</home/mvibot/floorCleaningRobot_ws/config/wifi_password)"
+# wifi_ipv4="$(</home/mvibot/floorCleaningRobot_ws/config/wifi_ipv4)"
+# wifi_ipv4_dns="$(</home/mvibot/floorCleaningRobot_ws/config/wifi_ipv4_dns)"
+# wifi_ipv4_gateway="$(</home/mvibot/floorCleaningRobot_ws/config/wifi_ipv4_gateway)"
+
+# sudo nmcli connection delete mvibot_network
+# sudo nmcli connection add ifname $lan_port con-name mvibot_network type ethernet connection.autoconnect yes
+# if [[ "$lan_type" = "auto" ]]
+# then
+#     sudo nmcli connection up mvibot_network
+# else
+#     sudo nmcli connection modify  mvibot_network ipv4.method manual ipv4.addresses $lan_ipv4/24
+#     sudo nmcli connection modify  mvibot_network ipv4.gateway $lan_ipv4_gateway ipv4.dns $lan_ipv4_dns
+#     sudo nmcli connection up mvibot_network
+# fi
+# #wifi
+# sudo nmcli connection delete mvibot_hotspot 
+# sudo nmcli connection delete mvibot_cardwifi
+# if [[ "$wifi_type" = "hots_pot" ]]
+# then
+#    echo hotspot mode 
+#    sudo nmcli connection delete mvibot_hotspot 
+#    sudo nmcli connection add type wifi ifname $wifi_port con-name mvibot_hotspot  ssid "$name_seri-hostpot"
+#    sudo nmcli connection modify mvibot_hotspot  802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+#    sudo nmcli connection modify mvibot_hotspot wifi-sec.key-mgmt wpa-psk
+#    sudo nmcli connection modify mvibot_hotspot wifi-sec.psk "$name_seri@"
+#    sudo nmcli connection up mvibot_hotspot
+# else
+#    echo wireless mode
+#    sudo nmcli connection add ifname $wifi_port con-name mvibot_cardwifi type wifi ssid "$wifi_ssid" connection.autoconnect yes
+#    if [[ "$wifi_password" = "" ]]
+#    then
+#         echo wifi with security so not need modify security
+#    else
+#         sudo nmcli connection modify mvibot_cardwifi 802-11-wireless-security.key-mgmt WPA-PSK 802-11-wireless-security.psk "$wifi_password"
+#    fi
+#    if [[ "$wifi_type" = "auto" ]]
+#    then
+#    	sudo nmcli connection up mvibot_cardwifi
+#    else
+#         sudo nmcli connection modify mvibot_cardwifi ipv4.method manual ipv4.addresses $wifi_ipv4/24 
+#         sudo nmcli connection modify mvibot_cardwifi ipv4.gateway $wifi_ipv4_gateway ipv4.dns $wifi_ipv4_dns
+#         sudo nmcli connection up mvibot_cardwifi
+#    fi
+# fi
+
+# # start control ros
+# if [[ "$robot_type_connect" = "wifi" ]]
+# then
+#    echo robot_type_connect wifi
+#    #
+#    ip_check="$(ip -4 addr show $wifi_port | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+#    while [[ "$ip_check" = "" ]]
+#    do
+# 	# sudo nmcli connection up mvibot_network
+#    sleep 1
+# 	ip_check="$(ip -4 addr show $wifi_port | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+#    done
+# else
+#    echo robot_type_connect lan
+#    #
+#    ip_check="$(ip -4 addr show $lan_port | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+#    while [[ "$ip_check" = "" ]]
+#    do
+# 	# sudo nmcli connection up mvibot_network
+#    sleep 1
+# 	ip_check="$(ip -4 addr show $lan_port | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+#    done
+# fi
+
+#launch file
+ros2 launch rosbridge_server rosbridge_websocket_launch.xml &
+ros2 launch higher_layer_mvibot tf2_web_republisher_launch.py &
+ros2 launch higher_layer_mvibot mvibot_map_saver_launch.py &
+if [[ "$mode" = "navigation" ]]
+then
+   echo robot run navigation
+   ros2 launch higher_layer_mvibot mvibot_map_server_launch.py &
+else
+   echo robot run slam
+   ros2 launch higher_layer_mvibot mvibot_slam_toolbox_launch.py &
+fi
+ros2 launch higher_layer_mvibot mvibot_server_launch.py &
+while :
+do
+  echo "An Infinite loop"
+  # We can press Ctrl + C to exit the script
+  sleep 1
+done
+exit 0

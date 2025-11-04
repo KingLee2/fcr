@@ -1,0 +1,53 @@
+// generated from rosidl_adapter/resource/action.idl.em
+// with input from opennav_coverage_msgs/action/NavigateCompleteCoverage.action
+// generated code does not contain a copyright notice
+
+#include "builtin_interfaces/msg/Duration.idl"
+#include "geometry_msgs/msg/Polygon.idl"
+#include "geometry_msgs/msg/PoseStamped.idl"
+
+module opennav_coverage_msgs {
+  module action {
+    @verbatim (language="comment", text=
+      "goal definition")
+    struct NavigateCompleteCoverage_Goal {
+      @verbatim (language="comment", text=
+        "Define the field as either a filepath to a GML file or as a vector of polygons" "\n"
+        "Whereas the first polygon is the outer field and subsequent polygons are internal voids." "\n"
+        "When both are specified, the file is used in ComputeCoveragePath BT Node.")
+      string field_filepath;
+
+      sequence<geometry_msgs::msg::Polygon> polygons;
+
+      @verbatim (language="comment", text=
+        "Specify the frame of reference of the polygon field")
+      @default (value="map")
+      string frame_id;
+
+      string behavior_tree;
+    };
+    module NavigateCompleteCoverage_Result_Constants {
+      @verbatim (language="comment", text=
+        "Error codes" "\n"        "Note: The expected priority order of the errors should match the message order")
+      const uint16 NONE = 0;
+    };
+    @verbatim (language="comment", text=
+      "result definition")
+    struct NavigateCompleteCoverage_Result {
+      uint16 error_code;
+    };
+    @verbatim (language="comment", text=
+      "feedback definition")
+    struct NavigateCompleteCoverage_Feedback {
+      geometry_msgs::msg::PoseStamped current_pose;
+
+      builtin_interfaces::msg::Duration navigation_time;
+
+      builtin_interfaces::msg::Duration estimated_time_remaining;
+
+      int16 number_of_recoveries;
+
+      float distance_remaining;
+    };
+  };
+};

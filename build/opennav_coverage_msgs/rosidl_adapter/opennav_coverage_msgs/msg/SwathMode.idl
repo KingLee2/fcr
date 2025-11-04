@@ -1,0 +1,31 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from opennav_coverage_msgs/msg/SwathMode.msg
+// generated code does not contain a copyright notice
+
+
+module opennav_coverage_msgs {
+  module msg {
+    struct SwathMode {
+      @verbatim (language="comment", text=
+        "LENGTH, NUMBER, or COVERAGE")
+      @default (value="UNKNOWN")
+      string objective;
+
+      @verbatim (language="comment", text=
+        "BRUTE_FORCE, SET_ANGLE")
+      @default (value="UNKNOWN")
+      string mode;
+
+      @verbatim (language="comment", text=
+        "Specific mode settings" "\n"
+        "If mode=SET_ANGLE for angle to generate swaths based on")
+      @default (value=0.0)
+      float best_angle;
+
+      @verbatim (language="comment", text=
+        "If mode=BRUTE_FORCE, angular step to search")
+      @default (value=0.017453)
+      float step_angle;
+    };
+  };
+};

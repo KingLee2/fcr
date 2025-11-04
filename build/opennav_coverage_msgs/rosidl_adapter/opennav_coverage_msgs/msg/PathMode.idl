@@ -1,0 +1,25 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from opennav_coverage_msgs/msg/PathMode.msg
+// generated code does not contain a copyright notice
+
+
+module opennav_coverage_msgs {
+  module msg {
+    struct PathMode {
+      @verbatim (language="comment", text=
+        "DUBIN, REEDS_SHEPP")
+      @default (value="UNKNOWN")
+      string mode;
+
+      @verbatim (language="comment", text=
+        "CONTINUOUS, DISCONTINUOUS")
+      @default (value="UNKNOWN")
+      string continuity_mode;
+
+      @verbatim (language="comment", text=
+        "Distance between path points in non-swath turns")
+      @default (value=0.1)
+      float turn_point_distance;
+    };
+  };
+};

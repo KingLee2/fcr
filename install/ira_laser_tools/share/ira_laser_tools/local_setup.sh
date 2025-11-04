@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/ira_laser_tools/ament_cmake_environment_hooks/local_setup.sh

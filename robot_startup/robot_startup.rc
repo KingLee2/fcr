@@ -1,0 +1,34 @@
+#!/bin/bash
+echo start
+echo run ros2 jazzy....
+echo start
+source /opt/ros/jazzy/setup.bash
+source /home/mvibot/floorCleaningRobot_ws/install/setup.bash
+# export ROS_DOMAIN_ID=11
+# export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+# name and mode for robot
+name_seri="$(</home/mvibot/floorCleaningRobot_ws/config/name_seri)"
+mode="$(</home/mvibot/floorCleaningRobot_ws/config/mode)"
+# serial for camera
+serial_camera1="$(</home/mvibot/floorCleaningRobot_ws/config/serial_camera1)"
+serial_camera2="$(</home/mvibot/floorCleaningRobot_ws/config/serial_camera2)"
+
+#launch file
+ros2 launch lower_layer_mvibot mvibot_kernel_launch.py &
+ros2 launch lower_layer_mvibot mvibot_firmware_launch.py &
+if [[ "$mode" = "navigation" ]]
+then
+  echo robot run navigation
+  ros2 launch mission_layer_mvibot mvibot_amcl_launch.py &
+  ros2 launch mission_layer_mvibot mvibot_navigation_launch.py &
+  ros2 launch mission_layer_mvibot mvibot_mission_launch.py &
+else
+   echo robot run slam
+fi
+# ros2 launch mission_layer_mvibot mvibot_mission_launch.py &
+while :
+do
+  echo "An Infinite loop"
+  sleep 1
+done
+exit 0

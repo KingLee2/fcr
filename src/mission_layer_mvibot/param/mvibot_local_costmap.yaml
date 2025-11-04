@@ -1,0 +1,84 @@
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 20.0
+      publish_frequency: 1.0
+      transform_tolerance: 0.3
+      global_frame: $(var mvibot_seri)/odom
+      robot_base_frame: $(var mvibot_seri)/base_link
+      rolling_window: true
+      width: 10
+      height: 10
+      resolution: 0.05
+      robot_radius: 0.5
+      footprint: '[[0.65, 0.435], [0.65, -0.435], [-0.705, -0.435], [-0.705, 0.435]]'
+      footprint_padding: 0.02
+      plugins: ["inflation_layer","obstacle_layer","voxel_layer","static_layer"]
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        enabled: true
+        cost_scaling_factor: 1.0 #Exponential decay factor across inflation radius.
+        inflation_radius: 0.8 #Radius to inflate costmap around lethal obstacles.
+
+      voxel_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: True
+        footprint_clearing_enabled: True
+        publish_voxel_map: false   #Whether to publish 3D voxel grid for debug, computationally expensive.
+        origin_z: 0.0    #Where to start marking voxels (m).
+        z_resolution: 0.05   #Resolution of voxels in height (m).
+        z_voxels: 16      #Number of voxels high to mark, maximum 16.
+        max_obstacle_height: 2.0
+        mark_threshold: 0    #Minimum number of voxels in a column to mark as occupied in 2D occupancy grid
+        unknown_threshold: 15    #Minimum number of empty voxels in a column to mark as unknown in 2D occupancy grid.
+        combination_method: 1   #[0,1,2]
+        observation_sources: scan
+        scan:
+          topic: /$(var mvibot_seri)/camera/scan_m5
+          sensor_frame: $(var mvibot_seri)/base_link
+          observation_persistence: 0.0
+          expected_update_rate: 0.0
+          min_obstacle_height: 0.0
+          max_obstacle_height: 2.0
+          inf_is_valid: false
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 3.0
+          obstacle_min_range: 0.0
+
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        footprint_clearing_enabled: True
+        max_obstacle_height: 2.0
+        observation_sources: scan
+        combination_method: 1 #[0,1,2]
+        scan:
+          topic: /$(var mvibot_seri)/laser/scan_m5
+          sensor_frame: $(var mvibot_seri)/base_link
+          observation_persistence: 0.0   #thoi gian luu tru message trong bo nho dem de them vao costmap
+          expected_update_rate: 0.0     #Toc do mong doi de co du lieu moi tu cam bien
+          data_type: "LaserScan"    #Kieu du lieu dau vao
+          min_obstacle_height: 0.0     #chieu cao toi thieu de them gia tri tra ve vao luoi chiem dung.
+          max_obstacle_height: 2.0
+          inf_is_valid: false    #gia tri tra ve vo han tu lasers scanners co hop le khong.
+          marking: True       #whether source should mark in costmap?
+          clearing: True          #clear raytrace in costmap?
+          obstacle_min_range: 0.0   #Minimum range to mark obstacles in costmap.
+          obstacle_max_range: 3.0   #Maximum range to mark obstacles in costmap.
+          raytrace_max_range: 3.0   #Maximum range to raytrace clear obstacles from costmap.
+          raytrace_min_range: 0.0   #Minimum range to raytrace clear obstacles from costmap.
+
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+        footprint_clearing_enabled: false
+        subscribe_to_updates: false    #Subscribe to static map updates after receiving first.
+        map_subscribe_transient_local: True
+        transform_tolerance: 0.1    # sai so transform
+        map_topic: /$(var mvibot_seri)/map
+
+      always_send_full_costmap: True

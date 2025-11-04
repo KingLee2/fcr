@@ -1,0 +1,25 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from opennav_coverage_msgs/msg/RowSwathMode.msg
+// generated code does not contain a copyright notice
+
+
+module opennav_coverage_msgs {
+  module msg {
+    struct RowSwathMode {
+      @verbatim (language="comment", text=
+        "CENTER, OFFSET, ROWSARESWATHS")
+      @default (value="UNKNOWN")
+      string mode;
+
+      @verbatim (language="comment", text=
+        "The ids to skip")
+      sequence<int32> skip_ids;
+
+      @verbatim (language="comment", text=
+        "Specific mode settings" "\n"
+        "If mode=OFFSET for offset for swath relative to rows")
+      @default (value=0.0)
+      float offset;
+    };
+  };
+};

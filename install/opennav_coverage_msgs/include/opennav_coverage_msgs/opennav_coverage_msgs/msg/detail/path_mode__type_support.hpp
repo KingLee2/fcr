@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage_msgs/rosidl_generator_cpp/opennav_coverage_msgs/msg/detail/path_mode__type_support.hpp

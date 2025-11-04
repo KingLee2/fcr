@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage_msgs/rosidl_cmake/rosidl_cmake_export_typesupport_targets-extras.cmake

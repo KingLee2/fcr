@@ -1,0 +1,428 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Request",
+      "fields": [
+        {
+          "name": "goal_id",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "unique_identifier_msgs/msg/UUID"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "goal",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Goal"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Goal",
+        "fields": [
+          {
+            "name": "generate_headland",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "True"
+          },
+          {
+            "name": "generate_route",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "True"
+          },
+          {
+            "name": "generate_path",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "True"
+          },
+          {
+            "name": "use_gml_file",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "False"
+          },
+          {
+            "name": "gml_field",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "polygons",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/Coordinates"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "frame_id",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "map"
+          },
+          {
+            "name": "headland_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/HeadlandMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "swath_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/SwathMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "row_swath_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/RowSwathMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "route_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/RouteMode"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "path_mode",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/PathMode"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/Coordinate",
+        "fields": [
+          {
+            "name": "axis1",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "axis2",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/Coordinates",
+        "fields": [
+          {
+            "name": "coordinates",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "opennav_coverage_msgs/msg/Coordinate"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/HeadlandMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "width",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "2.0"
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/PathMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "continuity_mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "turn_point_distance",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.1"
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/RouteMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "spiral_n",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "4"
+          },
+          {
+            "name": "custom_order",
+            "type": {
+              "type_id": 149,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/RowSwathMode",
+        "fields": [
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "skip_ids",
+            "type": {
+              "type_id": 150,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.0"
+          }
+        ]
+      },
+      {
+        "type_name": "opennav_coverage_msgs/msg/SwathMode",
+        "fields": [
+          {
+            "name": "objective",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "mode",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "UNKNOWN"
+          },
+          {
+            "name": "best_angle",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.0"
+          },
+          {
+            "name": "step_angle",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": "0.017453"
+          }
+        ]
+      },
+      {
+        "type_name": "unique_identifier_msgs/msg/UUID",
+        "fields": [
+          {
+            "name": "uuid",
+            "type": {
+              "type_id": 51,
+              "capacity": 16,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_SendGoal_Request",
+      "hash_string": "RIHS01_7eaba84e9fcc03ae8694a9f315ef525c6fdd2c5e4773612f2a3485d7d161fed2"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/action/ComputeCoveragePath_Goal",
+      "hash_string": "RIHS01_06563c6578a43cbb9b74cb5f6b861543f265adc95f1c3ca7f8dd8913a7311913"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/Coordinate",
+      "hash_string": "RIHS01_f244ab3caae5034dca7c7f899b4bbeb8c50f758374dc38c703da94ef91a23f6b"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/Coordinates",
+      "hash_string": "RIHS01_fdf0463a9790c8f1502f806939b8b5ade2ae0a9fdb200597cce3103a99aa9fb2"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/HeadlandMode",
+      "hash_string": "RIHS01_115de25c24af0e4254726fda73e935e175c24ec42663919bfd9a0ecbc52895ee"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/PathMode",
+      "hash_string": "RIHS01_f96ae892a75e03be23311c15d15d20e255d4faf1fc47992c788a54d10223e1d3"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/RouteMode",
+      "hash_string": "RIHS01_6ca2f7e3d2a5052a85d29af399648b009deca3df1ebc2796fbd0c802b1f5a50f"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/RowSwathMode",
+      "hash_string": "RIHS01_a6cc67e92d1e497005446e97d9da2643624373d742d2028a7b3f92bd0966a162"
+    },
+    {
+      "type_name": "opennav_coverage_msgs/msg/SwathMode",
+      "hash_string": "RIHS01_aa63915b564db2cf5e58cdbe2313e73bb849f2eaea4e9cb4cee167a731478352"
+    },
+    {
+      "type_name": "unique_identifier_msgs/msg/UUID",
+      "hash_string": "RIHS01_1b8e8aca958cbea28fe6ef60bf6c19b683c97a9ef60bb34752067d0f2f7ab437"
+    }
+  ]
+}

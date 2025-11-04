@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/build/opennav_coverage_msgs/ament_cmake_export_targets/ament_cmake_export_targets-extras.cmake

@@ -1,0 +1,1 @@
+/home/mvibot/floorCleaningRobot_ws/src/opennav_coverage/opennav_coverage/include/opennav_coverage/types.hpp
