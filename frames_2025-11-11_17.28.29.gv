@@ -1,0 +1,28 @@
+digraph G {
+"mvibot/base_footprint" -> "mvibot/base_link"[label=" Broadcaster: default_authority\nAverage rate: 20.215\nBuffer length: 4.65\nMost recent transform: 1762856909.101994\nOldest transform: 1762856904.452012\n"];
+"mvibot/odom" -> "mvibot/base_footprint"[label=" Broadcaster: default_authority\nAverage rate: 20.213\nBuffer length: 4.7\nMost recent transform: 1762856909.101959\nOldest transform: 1762856904.402021\n"];
+"mvibot/base_link" -> "mvibot/base_lidar_1"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"mvibot/base_link" -> "mvibot/base_lidar_2"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"mvibot/base_link" -> "mvibot/base_wheel_left"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"mvibot/base_link" -> "mvibot/base_wheel_right"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"mvibot/base_link" -> "camera1_mvibot"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"mvibot/base_link" -> "camera2_mvibot"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"camera2_mvibot" -> "camera2_depth_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_depth_frame" -> "camera2_depth_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_mvibot" -> "camera2_color_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_color_frame" -> "camera2_color_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_mvibot" -> "camera2_accel_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_accel_frame" -> "camera2_accel_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_mvibot" -> "camera2_gyro_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_gyro_frame" -> "camera2_gyro_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_gyro_frame" -> "camera2_imu_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera2_imu_frame" -> "camera2_imu_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.25\nBuffer length: 4.001\nMost recent transform: 1762856908.680659\nOldest transform: 1762856904.67978\n"];
+"camera1_mvibot" -> "camera1_depth_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.249\nBuffer length: 4.001\nMost recent transform: 1762856908.674616\nOldest transform: 1762856904.673727\n"];
+"camera1_depth_frame" -> "camera1_depth_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.249\nBuffer length: 4.001\nMost recent transform: 1762856908.674616\nOldest transform: 1762856904.673727\n"];
+"camera1_mvibot" -> "camera1_color_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.249\nBuffer length: 4.001\nMost recent transform: 1762856908.674616\nOldest transform: 1762856904.673727\n"];
+"camera1_color_frame" -> "camera1_color_optical_frame"[label=" Broadcaster: default_authority\nAverage rate: 2.249\nBuffer length: 4.001\nMost recent transform: 1762856908.674616\nOldest transform: 1762856904.673727\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1762856909.1486108"[ shape=plaintext ] ;
+}->"mvibot/odom";
+}

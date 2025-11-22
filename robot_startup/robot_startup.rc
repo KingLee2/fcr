@@ -20,8 +20,8 @@ if [[ "$mode" = "navigation" ]]
 then
   echo robot run navigation
   ros2 launch mission_layer_mvibot mvibot_amcl_launch.py &
-  ros2 launch mission_layer_mvibot mvibot_navigation_launch.py &
-  ros2 launch mission_layer_mvibot mvibot_mission_launch.py &
+  # ros2 launch mission_layer_mvibot mvibot_navigation_launch.py &
+  # ros2 launch mission_layer_mvibot mvibot_mission_launch.py &
 else
    echo robot run slam
 fi

@@ -77,18 +77,26 @@ class control_node : public rclcpp::Node{
             // robot_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(mvibot_seri_+"/cmd_vel", qos_profile, robot_vel_callback, sub_options);
             ////
             auto set_led_callback = [this](std_msgs::msg::Float32MultiArray::SharedPtr msg)->void{
-                static const auto& data = msg->data;
+                // static const auto& data = msg->data;
                 // lock();
                 // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_control);
-                red=data[0]/255*100;
-                green=data[1]/255*100;
-                blue=data[2]/255*100;
+                // red=data[0]/255*100;
+                // green=data[1]/255*100;
+                // blue=data[2]/255*100;
+                // //
+                // led_l=data[3];
+                // led_r=data[4];
+                // led_b=data[5];
+                // led_f=data[6];
+                red=msg->data[0]/255*100;
+                green=msg->data[1]/255*100;
+                blue=msg->data[2]/255*100;
                 //
-                led_l=data[3];
-                led_r=data[4];
-                led_b=data[5];
-                led_f=data[6];
+                led_l=msg->data[3];
+                led_r=msg->data[4];
+                led_b=msg->data[5];
+                led_f=msg->data[6];
                 // unlock();
             };
             set_led_sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(mvibot_seri_ + "/set_led", qos_profile, set_led_callback);
@@ -482,7 +490,7 @@ class control_node : public rclcpp::Node{
                     led_b=1;
                 }
             }
-             if(local_battery_status_charge==1){
+            if(local_battery_status_charge==1){
                 set_color_led(0,0,100);
                 led_r=1;
                 led_l=1;

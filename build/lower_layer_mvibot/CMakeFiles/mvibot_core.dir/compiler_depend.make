@@ -524,6 +524,10 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/imu__struct.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/imu__traits.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/imu__type_support.hpp \
+  /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__builder.hpp \
+  /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__struct.hpp \
+  /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__traits.hpp \
+  /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__type_support.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/laser_scan__builder.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/laser_scan__struct.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/laser_scan__traits.hpp \
@@ -534,6 +538,7 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/point_cloud__type_support.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/image.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/imu.hpp \
+  /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/joint_state.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/laser_scan.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/point_cloud.hpp \
   /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/rosidl_generator_cpp__visibility_control.hpp \
@@ -1381,8 +1386,6 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /usr/include/c++/13/bits/ios_base.h:
 
-/usr/include/c++/13/bits/invoke.h:
-
 /usr/include/c++/13/bits/hashtable.h:
 
 /usr/include/c++/13/bits/hash_bytes.h:
@@ -1575,6 +1578,14 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/statistic_data_point__traits.hpp:
 
+/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__type_support.hpp:
+
+/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__traits.hpp:
+
+/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__struct.hpp:
+
+/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__builder.hpp:
+
 /opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/srv/detail/set_parameters_atomically__type_support.hpp:
 
 /opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/srv/detail/set_parameters__type_support.hpp:
@@ -1641,8 +1652,6 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/msg/parameter.hpp:
 
-/opt/ros/jazzy/include/rclcpp/rclcpp/intra_process_buffer_type.hpp:
-
 /opt/ros/jazzy/include/builtin_interfaces/builtin_interfaces/msg/detail/time__traits.hpp:
 
 /opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/srv/detail/get_parameters__builder.hpp:
@@ -1703,8 +1712,6 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/detail/pose__type_support.hpp:
 
-/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__type_support.hpp:
-
 /opt/ros/jazzy/include/rclcpp/rclcpp/node_interfaces/get_node_topics_interface.hpp:
 
 /usr/include/stdint.h:
@@ -1740,6 +1747,14 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 /opt/ros/jazzy/include/rcl/rcl/init_options.h:
 
 /opt/ros/jazzy/include/rcl/rcl/graph.h:
+
+/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
+
+/opt/ros/jazzy/include/tf2_msgs/tf2_msgs/msg/detail/tf_message__builder.hpp:
+
+/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/statistic_data_point__struct.hpp:
+
+/opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/quaternion_stamped.hpp:
 
 /opt/ros/jazzy/include/rclcpp/rclcpp/exceptions.hpp:
 
@@ -1897,8 +1912,6 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/nav_msgs/nav_msgs/msg/detail/odometry__type_support.hpp:
 
-/opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/msg/detail/parameter_value__traits.hpp:
-
 /opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/msg/detail/parameter__builder.hpp:
 
 /opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/msg/detail/parameter_value__type_support.hpp:
@@ -1945,9 +1958,9 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/pose_stamped.hpp:
 
-/opt/ros/jazzy/include/nav_msgs/nav_msgs/msg/detail/occupancy_grid__struct.hpp:
+/opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__traits.hpp:
 
-/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__builder.hpp:
+/opt/ros/jazzy/include/nav_msgs/nav_msgs/msg/detail/occupancy_grid__struct.hpp:
 
 /opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/msg/detail/set_parameters_result__traits.hpp:
 
@@ -2011,11 +2024,19 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/detail/point32__type_support.hpp:
 
+/opt/ros/jazzy/include/rcl_interfaces/rcl_interfaces/msg/detail/parameter_value__traits.hpp:
+
+/opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__struct.hpp:
+
 /home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/include/lower_layer_mvibot/mvibot_core/config.h:
 
 /opt/ros/jazzy/include/rclcpp/rclcpp/experimental/executors/events_executor/events_queue.hpp:
 
 /opt/ros/jazzy/include/rclcpp/rclcpp/parameter.hpp:
+
+/opt/ros/jazzy/include/rclcpp/rclcpp/intra_process_buffer_type.hpp:
+
+/opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__builder.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/socket.h:
 
@@ -2517,14 +2538,6 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/rclcpp/rclcpp/get_message_type_support_handle.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
-
-/opt/ros/jazzy/include/tf2_msgs/tf2_msgs/msg/detail/tf_message__builder.hpp:
-
-/opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/quaternion_stamped.hpp:
-
-/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/statistic_data_point__struct.hpp:
-
 /home/mvibot/floorCleaningRobot_ws/src/lower_layer_mvibot/include/lower_layer_mvibot/common/data_uart.h:
 
 /opt/ros/jazzy/include/geometry_msgs/geometry_msgs/msg/detail/quaternion_stamped__struct.hpp:
@@ -2989,16 +3002,18 @@ CMakeFiles/mvibot_core.dir/src/mvibot_core.cpp.o: /home/mvibot/floorCleaningRobo
 
 /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/imu__traits.hpp:
 
+/usr/include/c++/13/bits/invoke.h:
+
+/opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/joint_state__type_support.hpp:
+
 /opt/ros/jazzy/include/rosidl_runtime_c/rosidl_runtime_c/action_type_support_struct.h:
 
 /opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/detail/point_cloud__type_support.hpp:
+
+/opt/ros/jazzy/include/sensor_msgs/sensor_msgs/msg/joint_state.hpp:
 
 /usr/include/c++/13/typeinfo:
 
 /opt/ros/jazzy/include/service_msgs/service_msgs/msg/detail/service_event_info__struct.h:
 
 /opt/ros/jazzy/include/service_msgs/service_msgs/msg/detail/service_event_info__struct.hpp:
-
-/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__struct.hpp:
-
-/opt/ros/jazzy/include/statistics_msgs/statistics_msgs/msg/detail/metrics_message__traits.hpp:

@@ -265,7 +265,7 @@ void socket_client_node::process_data_uart_write(){
         local_torqueR_set = torqueR_set;
         local_motor_left_state_error = motor_left_state_error;
         local_motor_right_state_error = motor_right_state_error;
-        //local_blue = blue;
+        local_blue = blue;
         local_green = green;
         local_red = red;
         local_led_l = led_l;

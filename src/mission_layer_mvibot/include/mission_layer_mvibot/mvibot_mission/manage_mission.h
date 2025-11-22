@@ -88,6 +88,8 @@ class manage_mission : public rclcpp::Node{
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr brush_function_state_pub_;
         //history
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr history_pub_;
+        //led
+        rclcpp::Publisher<std_msgs::msg::Float32MultiArray>::SharedPtr led_pub_;
         //sub
         //mission
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr get_mission_normal_sub_;
@@ -152,6 +154,8 @@ class manage_mission : public rclcpp::Node{
             stop_robot_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel",1);
             //send history
             history_pub_ = this->create_publisher<std_msgs::msg::String>("history",1);
+            //set led
+            led_pub_ = this->create_publisher<std_msgs::msg::Float32MultiArray>("set_led",1);
             //gpio
             gpio_info_pub_ = this->create_publisher<std_msgs::msg::String>("gpio_info",1);
             gpio_function_state_pub_ = this->create_publisher<std_msgs::msg::String>("gpio_function_status",1);
@@ -182,7 +186,6 @@ class manage_mission : public rclcpp::Node{
             ///init subscriber///
             // sub mission normal
             auto mission_normal_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 static string file_name;
                 file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_normal.json";
                 try{
@@ -206,7 +209,6 @@ class manage_mission : public rclcpp::Node{
             get_mission_normal_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/mission_normal",qos_profile,mission_normal_callback);
             //sub mission charge battery
             auto mission_charge_baterry_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 static string file_name;
                 file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_charge_battery.json";
                 try{
@@ -230,7 +232,6 @@ class manage_mission : public rclcpp::Node{
             get_mission_charge_battery_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/mission_charge_battery",qos_profile,mission_charge_baterry_callback);
             //sub mission error
             auto mission_error_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 static string file_name;
                 file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_error.json";
                 try{
@@ -254,98 +255,15 @@ class manage_mission : public rclcpp::Node{
             get_mission_error_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/mission_error",qos_profile,mission_error_callback);
             // update gpio
             auto output_status_callback = [this](std_msgs::msg::Float32MultiArray msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 output_status = msg;
-                // unlock();
             };
             output_status_sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(mvibot_seri_+"/output_user_status",qos_profile, output_status_callback);
             auto input_status_callback = [this](std_msgs::msg::Float32MultiArray msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 input_status_2 = input_status_1;
                 input_status_1 = input_status;
                 input_status = msg;
-                //unlock();
             };
             input_status_sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(mvibot_seri_+"/input_user_status",qos_profile,input_status_callback);
-            // auto output_user_status_callback = [this](std_msgs::msg::String msg)->void{
-            //     static string_Iv2 data;
-            //     data.detect(msg.data,"","|","");
-            //     //
-            //     static std_msgs::msg::Float32MultiArray output;
-            //     output.data.resize(0);
-            //     output.data.resize(data.data1.size()-1);
-            //     for(int j=1;j<data.data1.size();j++){
-            //         static string_Iv2 data2;
-            //         data2.detect(data.data1[j],"",":","");
-            //         output.data[j-1]=stof(data2.data1[1]);
-            //     }
-            //     //
-            //     static int is_have;
-            //     is_have=0;
-            //     //lock();
-            //     std::lock_guard<std::recursive_mutex> lock(mutex_module);
-            //     for(int i=0;i<my_module.size();i++){
-            //         if(data.data1[0]==my_module[i].name){
-            //             is_have=1;
-            //             my_module[i].output_user=output;
-            //             break;
-            //         }
-            //     }
-            //     //
-            //     if(is_have==0){
-            //         cout<<"Have_new_moudle:"<<data.data1[0]<<endl;
-            //         send_history("normal","Find new module "+data.data1[0]);
-            //         my_module.resize(my_module.size()+1);
-            //         //
-            //         my_module[my_module.size()-1].name=data.data1[0];
-            //         //
-            //         my_module[my_module.size()-1].output_user=output;
-            //     }
-            //     // unlock();
-
-            // };
-            // output_status_string_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/output_user_status_string", qos_profile, output_user_status_callback);
-            // auto input_user_status_callback = [this](std_msgs::msg::String msg)->void{
-            //     static string_Iv2 data;
-            //     data.detect(msg.data,"","|","");
-            //     //
-            //     static std_msgs::msg::Float32MultiArray input;
-            //     input.data.resize(0);
-            //     input.data.resize(data.data1.size()-1);
-            //     for(int j=1;j<data.data1.size();j++){
-            //         static string_Iv2 data2;
-            //         data2.detect(data.data1[j],"",":","");
-            //         input.data[j-1]=stof(data2.data1[1]);
-            //     }
-            //     //
-            //     static int is_have;
-            //     is_have=0;
-            //     // lock();
-            //     std::lock_guard<std::recursive_mutex> lock(mutex_module);
-            //     for(int i=0;i<my_module.size();i++){
-            //         if(data.data1[0]==my_module[i].name){
-            //             is_have=1;
-            //             my_module[i].input_user=input;
-            //             break;
-            //         }
-            //     }
-            //     //
-            //     if(is_have==0){
-            //         cout<<"Have_new_moudle:"<<data.data1[0]<<endl;
-            //         send_history("normal","Find new module "+data.data1[0]);
-            //         my_module.resize(my_module.size()+1);
-            //         //
-            //         my_module[my_module.size()-1].name=data.data1[0];
-            //         //
-            //         my_module[my_module.size()-1].input_user=input;
-            //     }
-            //     for(int i=0;i<my_module.size();i++){
-            //         my_module[i].input_user2=my_module[i].input_user1;
-            //         my_module[i].input_user1=my_module[i].input_user;
-            //     }
-            //     // unlock();
-            // };
-            // input_status_string_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/output_user_status_string", qos_profile, input_user_status_callback);
             //status motor
             auto motor_left_status_callback = [this](std_msgs::msg::String msg)->void{
                 static string_Iv2 data;
@@ -369,7 +287,6 @@ class manage_mission : public rclcpp::Node{
                     if(enable==0) is_ready=0;
                     if(brake==0)  is_ready=0;
                 }
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 ///test///
                 motor_left_ready=1;
                 ///test///
@@ -399,7 +316,6 @@ class manage_mission : public rclcpp::Node{
                         if(enable==0) is_ready=0;
                         if(brake==0)  is_ready=0;
                     }
-                    // std::lock_guard<std::mutex> lock(mutex_common);
                     ///test///
                     motor_right_ready=1;
                     ///test///
@@ -409,7 +325,6 @@ class manage_mission : public rclcpp::Node{
             motor_right_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_right_status", qos_profile, motor_right_status_callback);
             //status battery
             auto battery_status_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                     static string_Iv2 data;
                     data.detect(msg.data,"","|","");
                     for(int i=1;i<data.data1.size();i++){
@@ -421,12 +336,10 @@ class manage_mission : public rclcpp::Node{
                             battery_soc=stof_f(data2.data1[1]);
                         }
                     }
-                // unlock();
             };
             battery_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/battery_status", qos_profile, battery_status_callback);
             //get request robot (stop,continues)
             auto request_robot_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") status = Stop_;
                 else if(msg.data == "continues") {
                     if(status == Stop_) status = Active_;
@@ -436,21 +349,18 @@ class manage_mission : public rclcpp::Node{
             get_request_robot_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/robot_state", qos_profile,request_robot_callback);
             // get request "want to charge"
             auto want_to_charge_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "1") want_to_charge = 1;
                 else want_to_charge = 0;
             };
             get_request_charge_battery_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/want_to_charge", qos_profile, want_to_charge_callback);
             //get request execute mission
             auto mission_executed_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(status == Finish_) active_mission_id = msg.data;
             };
             get_mission_executed_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/executed_mission", qos_profile, mission_executed_callback);
             //get state of function
             //gpio
             auto gpio_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -462,7 +372,6 @@ class manage_mission : public rclcpp::Node{
             gpio_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/gpio_function_state", qos_profile, gpio_function_state_callback);
             //footprint
             auto footprint_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -472,7 +381,6 @@ class manage_mission : public rclcpp::Node{
             footprint_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/footprint_function_state", qos_profile, footprint_function_state_callback);
             //config
             auto config_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -482,7 +390,6 @@ class manage_mission : public rclcpp::Node{
             config_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/config_function_state", qos_profile, config_function_state_callback);
             //var
             auto var_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -494,7 +401,6 @@ class manage_mission : public rclcpp::Node{
             var_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/variable_function_state", qos_profile, var_function_state_callback);
             //sleep
             auto sleep_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -504,7 +410,6 @@ class manage_mission : public rclcpp::Node{
             sleep_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/sleep_function_state", qos_profile, sleep_function_state_callback);
             //navigation
             auto navigation_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -514,7 +419,6 @@ class manage_mission : public rclcpp::Node{
             navigation_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/navigation_function_state", qos_profile, navigation_function_state_callback);
             //marker
             auto marker_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -524,7 +428,6 @@ class manage_mission : public rclcpp::Node{
             marker_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/marker_function_state", qos_profile, marker_function_state_callback);
             //lift
             auto lift_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -534,7 +437,6 @@ class manage_mission : public rclcpp::Node{
             lift_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_function_state", qos_profile, lift_function_state_callback);
             //brush
             auto brush_function_state_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 if(msg.data == "stop") state = Stop_;
                 else if(msg.data == "active") state = Active_;
                 else if(msg.data == "finish") state = Finish_;
@@ -550,13 +452,14 @@ class manage_mission : public rclcpp::Node{
             //init timer//
             auto execute_mission_timer_callback = [this]()->void{
                 RCLCPP_INFO(this->get_logger(),"before execute mission");
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 execute_mission();
                 RCLCPP_INFO(this->get_logger(),"after execute mission");
             };
             execute_mission_timer_ = this->create_wall_timer(50ms, execute_mission_timer_callback);
         }
         void send_history(string status, string info);
+        void pub_led(float red, float green, float blue, float ll, float lr, float lb, float lf);
+        void set_led(string action_mode);
         void pub_stop_robot();
         void pub_active_mission_info(string type, string mission_id, string content_id, string content_sum);
         int load_mission_normal(const string &file_name);
@@ -577,6 +480,28 @@ void manage_mission::send_history(string status, string info){
     history_pub_->publish(history_msg);
 }
 
+void manage_mission::pub_led(float red, float green, float blue, float ll, float lr, float lb, float lf){
+    static float creat_fun=0;
+    static std_msgs::msg::Float32MultiArray msg;
+    if(creat_fun==1)
+    {
+        msg.data.resize(7);
+        msg.data[0]=red/100*255;
+        msg.data[1]=green/100*255;
+        msg.data[2]=blue/100*255;
+        msg.data[3]=ll;
+        msg.data[4]=lr;
+        msg.data[5]=lb;
+        msg.data[6]=lf;
+        led_pub_->publish(msg);
+    } else creat_fun=1;
+}
+void manage_mission::set_led(string action_mode){
+    if(action_mode == "mission_charge") pub_led(0,100,100,2,2,2,1);
+    else if(action_mode == "mission_normal") pub_led(0,100,0,1,1,1,1);
+    else if(action_mode == "mission_error") pub_led(100,0,0,1,1,1,1);
+    else pub_led(100,100,0,1,1,1,1);
+}
 void manage_mission::pub_stop_robot(){
     static geometry_msgs::msg::Twist stop_robot_;
     stop_robot_.linear.x = 0.0;
@@ -603,8 +528,6 @@ int manage_mission::load_mission_normal(const string &file_name){
     json new_missions;
     file >> new_missions;
     mission_normal.resize(0);
-    // missions_.clear();
-    // task_map_.clear();
     if (new_missions.is_array()) {
         missions_ = new_missions.get<vector<json>>();
         mission_normal.resize(missions_.size());
@@ -612,9 +535,6 @@ int manage_mission::load_mission_normal(const string &file_name){
         missions_.push_back(new_missions);
         mission_normal.resize(1);
     }
-    // for(const auto& m : missions_){
-    //     mission_normal[0].mission_id = m["mission_id"];
-    // }
     for(size_t i=0; i<missions_.size(); i++){
         mission_normal[i].mission_id = missions_[i]["mission_id"].get<string>();
         cout<<"Mission Name: "<<mission_normal[i].mission_id<<endl;
@@ -624,11 +544,6 @@ int manage_mission::load_mission_normal(const string &file_name){
                 cout<<key<<"|||"<<mission_normal[i].triggers_map[key]<<endl;
             }
         }
-        // for(const auto& content : missions_[i]["contents"]){
-        //     string content_id = content["id"].get<string>();
-        //     mission_normal[i].contents_map[content_id] = content;
-        //     cout<<content_id<<"|||"<<mission_normal[i].contents_map[content_id]<<endl;
-        // }
         if (missions_[i].contains("contents") && missions_[i]["contents"].is_object()) {
             for (auto& [key, value] : missions_[i]["contents"].items()) {
                 mission_normal[i].contents_map[key] = value;
@@ -648,8 +563,6 @@ int manage_mission::load_mission_charge(const string &file_name){
     file >> new_missions;
     mission_charge_battery.resize(0);
     missions_.resize(0);
-    // missions_.clear();
-    // task_map_.clear();
     if (new_missions.is_array()) {
         missions_ = new_missions.get<vector<json>>();
         mission_charge_battery.resize(missions_.size());
@@ -657,9 +570,6 @@ int manage_mission::load_mission_charge(const string &file_name){
         missions_.push_back(new_missions);
         mission_charge_battery.resize(1);
     }
-    // for(const auto& m : missions_){
-    //     mission_normal[0].mission_id = m["mission_id"];
-    // }
     for(size_t i=0; i<missions_.size(); i++){
         mission_charge_battery[i].mission_id = missions_[i]["mission_id"].get<string>();
         cout<<"Mission Name: "<<mission_charge_battery[i].mission_id<<endl;
@@ -736,7 +646,6 @@ int manage_mission::check_object(const json& object){
 int manage_mission::check_gpio(const std::map<std::string, json>& parameters){
     static std::map<string, string> input_map;
     static std::map<string, string> output_map;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
     input_map.clear();
     output_map.clear();
     for (const auto& [type, pins] : parameters) {
@@ -792,7 +701,6 @@ int manage_mission::handle_content(const json& content, const double& time_out, 
         if(status == Active_){
             RCLCPP_INFO(this->get_logger(),"send infomation function");
             cout<<"INFOMATION CONTENT: "<< content["parameters"]<<endl;
-            // info_msg.data = content["parameters"].get<string>();
             info_msg.data = content["parameters"].dump();
             RCLCPP_INFO(this->get_logger(),"gan thong tin vao message");
             cout<<"information: "<< info_msg.data<<endl;
@@ -878,8 +786,6 @@ int manage_mission::handle_content(const json& content, const double& time_out, 
     }
 }
 int manage_mission::execute_content(mission& mission, vector<string>& queue_content, string& active_content, string& next_to, int& status){
-    // std::lock_guard<std::recursive_mutex> lock(mutex_mission);
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
     json content;
     static double timer = 0.0;
     static string type = "none";
@@ -893,30 +799,30 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
     }
     else if(type == "group"){
         static std::vector<string> do_content;
+        if(next_to == "") {
+            next_to = content["content"]["next"].get<string>();
+            cout<<"Next to: "<<next_to<<endl;
+        }
         if(!queue_content.empty()){
             queue_content.erase(queue_content.begin());
         }
         do_content = content["content"]["body"].get<std::vector<string>>();
         queue_content.insert(queue_content.begin(),do_content.begin(),do_content.end());
         active_content = queue_content[0];
-        if(next_to != ""){
-            if(stoi(next_to)<stoi(content["content"]["next"].get<string>())){
-                next_to = content["content"]["next"].get<string>();
-            }
-        }
-        else next_to = content["content"]["next"].get<string>();
         return Active_;
     }
     else if(type == "if_else"){
         static string cond_id;
-        // static json cond_content;
         static std::vector<string> then_content, else_content;
         int res;
         cond_id = content["content"]["condition"].get<string>();
-        // cond_content = mission.contents_map[cond_id];
         res = execute_content(mission, queue_content, cond_id, next_to, status);
         if(res!=True_ && res!=False_) return Active_;
         else{
+            if(next_to == "") {
+                next_to = content["content"]["next"].get<string>();
+                cout<<"Next to: "<<next_to<<endl;
+            }
             if(!queue_content.empty()){
                 queue_content.erase(queue_content.begin());
             }
@@ -929,76 +835,46 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
                 queue_content.insert(queue_content.begin(),else_content.begin(),else_content.end());
             }
             active_content = queue_content[0];
-            if(next_to != ""){
-                if(stoi(next_to)<stoi(content["content"]["next"].get<string>())){
-                    next_to = content["content"]["next"].get<string>();
-                }
-            }
-            else next_to = content["content"]["next"].get<string>();
             return Active_;
         }
     }
     else if(type == "while_do"){
         static string cond_id;
-        // static json cond_content;
         static std::vector<string> do_content;
         int res;
         cond_id = content["content"]["condition"].get<string>();
-        // cond_content = mission.contents_map[cond_id];
         res = execute_content(mission, queue_content, cond_id, next_to, status);
         if(res!=True_ && res!=False_) return Active_;
         else{
+            if(next_to == "") {
+                next_to = content["content"]["next"].get<string>();
+                cout<<"Next to: "<<next_to<<endl;
+            }
             if(res == True_){
                 do_content = content["content"]["do"].get<std::vector<string>>();
                 queue_content.insert(queue_content.begin(),do_content.begin(),do_content.end());
                 active_content = queue_content[0];
-
-                if(next_to != ""){
-                    if(stoi(next_to)<stoi(content["content"]["next"].get<string>())){
-                        next_to = content["content"]["next"].get<string>();
-                    }
-                }
-                else next_to = content["content"]["next"].get<string>();
                 return Active_;
             }
             else return Finish_;
         }
     }
     else if(type == "try_catch"){
-        /* try_catch single
-        static std::vector<string> try_content;
-        type = "try_catch";
-        if(!queue_content.empty()){
-            queue_content.erase(queue_content.begin());
-        }
-        try_content = content["content"]["try"].get<std::vector<string>>();
-        queue_content.insert(queue_content.begin(),try_content.begin(),try_content.end());
-        active_content = queue_content[0];
-        if(next_to != ""){
-            if(stoi(next_to)<stoi(content["content"]["next"].get<string>())){
-                next_to = content["content"]["next"].get<string>();
-            }
-        }
-        else next_to = content["content"]["next"].get<string>();
-        return Active_;
-        */
        static int step = 0;
        static vector<string> try_catch_content;
        static vector<string> try_catch_queue;
        static string active_try_catch;
        if(step == 0){
+            if(next_to == "") {
+                next_to = content["content"]["next"].get<string>();
+                cout<<"Next to: "<<next_to<<endl;
+            }
             // Tao hang doi thuc thi try-catch
             try_catch_queue.resize(0);
             try_catch_content = content["content"]["try"].get<std::vector<string>>();
             // try_catch_queue.insert(try_catch_queue.begin(),try_catch_content.begin(),try_catch_content.end());
             try_catch_queue.resize(try_catch_content.size());
             try_catch_queue = try_catch_content;
-            if(next_to != ""){
-                if(stoi(next_to)<stoi(content["content"]["next"].get<string>())){
-                    next_to = content["content"]["next"].get<string>();
-                }
-            }
-            else next_to = content["content"]["next"].get<string>();
             step = 1;
             return Active_;
        }
@@ -1150,8 +1026,6 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
     }
 }
 void manage_mission::execute_mission(){
-    // std::lock_guard<std::recursive_mutex> lock(mutex_mission);
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
     //var
     RCLCPP_INFO(this->get_logger(),"start execute mission");
     static mission mission_;
@@ -1163,9 +1037,9 @@ void manage_mission::execute_mission(){
     static int active_content_sum;
     static int res;
     if(motor_left_ready==0 || motor_right_ready==0) {
+        if(status == Active_) status = Stop_;
         RCLCPP_INFO(this->get_logger(),"motor is not ready");
         send_history("error","motor is not ready");
-        return;
     }
     // if(battery_soc1 <= 20 || battery_soc2 <= 20) want_to_charge = 1;
     // else want_to_charge = 0;
@@ -1174,33 +1048,39 @@ void manage_mission::execute_mission(){
         RCLCPP_INFO(this->get_logger(),"continue execute mission, status finish");
         //kiem tra yeu cau thuc thi mission
         if(want_to_charge==1){ //mission charge
+            /*
             status = Active_;
             active_content = "1";
             action_mode_mission = "mission_charge";
             mission_ = mission_charge_battery[0];
-            // timer = 0.0;
             queue_content.resize(0);
             next_to = "";
-            // type = "none";
+            */
+            for(size_t i=0; i < mission_charge_battery.size(); i++){
+                if(active_mission_id == mission_charge_battery[i].mission_id){
+                    status = Active_;
+                    active_mission_id = "";
+                    mission_ = mission_charge_battery[i];
+                    active_content_sum = mission_.contents_map.size();
+                    cout<<"Mission ID: "<<mission_.mission_id<<endl;
+                    cout<<mission_.triggers_map["stop"]<<endl;
+                    cout<<mission_.triggers_map["continues"]<<endl;
+                    //
+                    for (const auto& [key, value] : mission_.contents_map) {
+                        if (value.contains("type") && value["type"] == "start") {
+                            active_content = key;
+                            cout<<"active_content: "<<active_content<<endl;
+                        }
+                    }
+                    //
+                    action_mode_mission = "mission_charge";
+                    queue_content.resize(0);
+                    next_to = "";
+                    break;
+                }
+            }
         }
         else{ 
-            //mission normal
-            // for(size_t i=0; i < mission_normal.size(); i++){
-            //     check_WakeUp_condition(mission_normal[i].triggers_map["wake_up"]);
-            //     if(status == Wake_up_){
-            //         status = Active_;
-            //         active_mission = i;
-            //         active_content = "1";
-            //         action_mode_mission = mission_normal_;
-            //         mission_ = mission_normal[i];
-            //         timer = 0.0;
-            //         queue_content.resize(0);
-            //         next_to = "";
-            //         type = "none";
-            //         break;
-            //     }
-            // }
-            // if(status == Finish_) return;
             for(size_t i=0; i < mission_normal.size(); i++){
                 if(active_mission_id == mission_normal[i].mission_id){
                     status = Active_;
@@ -1214,18 +1094,16 @@ void manage_mission::execute_mission(){
                     for (const auto& [key, value] : mission_.contents_map) {
                         if (value.contains("type") && value["type"] == "start") {
                             active_content = key;
+                            cout<<"active_content: "<<active_content<<endl;
                         }
                     }
                     //
                     action_mode_mission = "mission_normal";
-                    // timer = 0.0;
                     queue_content.resize(0);
                     next_to = "";
-                    // type = "none";
                     break;
                 }
             }
-            // if(status == Finish_) return;
         }
     }
     else {
@@ -1234,7 +1112,6 @@ void manage_mission::execute_mission(){
         check_Stop_condition(mission_.triggers_map["stop"]);
         if (status == Stop_){
             RCLCPP_INFO(this->get_logger(),"check continue condition");
-            // timer = 0.0;
             check_Continues_condition(mission_.triggers_map["continues"]);
             cout<<"before check status = Continue_|status: "<<status<<endl;
             if(status == Continue_) status = Active_;
@@ -1268,17 +1145,18 @@ void manage_mission::execute_mission(){
                     status_mission_error = Error_;
                 }
                 else if(res == Finish_){
-                    queue_content_error.erase(queue_content_error.begin());
                     if(queue_content_error.empty()){
-                        if(next_to_error == ""){
-                            active_content_error = to_string(stoi(active_content_error)+1);
-                        }
-                        else{
+                        active_content_error = next_to_error;
+                        next_to_error = "";
+                    }
+                    else{
+                        queue_content_error.erase(queue_content_error.begin());
+                        if(queue_content_error.empty()){
                             active_content_error = next_to_error;
                             next_to_error ="";
                         }
+                        else active_content_error = queue_content_error[0];
                     }
-                    else active_content_error = queue_content_error[0];
                     if(mission_error.contents_map[active_content_error]["type"].get<string>() == "end"){
                         status_mission_error = Finish_;
                         active_content_error = "";
@@ -1289,18 +1167,15 @@ void manage_mission::execute_mission(){
             }
 
         }
-        else { //
-            // RCLCPP_INFO(this->get_logger(),"continue execute mission, status active");
-            // content_ = mission_.contents_map[active_content];
-            cout<<"before execute content|status: "<<status<<endl;
+        else { 
+            RCLCPP_INFO(this->get_logger(),"before execute content|status: %d", status);
             res = execute_content(mission_, queue_content, active_content, next_to, status);
-            cout<<"result execute content: "<<res<<endl;
-            
+            RCLCPP_INFO(this->get_logger(),"result execute content: %d", res);
+
             if(res == Active_) {
                 status = Active_;
             }
             else if(res == Stop_) {
-                pub_stop_robot();
                 status = Stop_;
             }
             else if(res == Error_){
@@ -1308,18 +1183,18 @@ void manage_mission::execute_mission(){
                 status = Error_;
             } 
             else if(res == Finish_){
-                // type = "none";
-                queue_content.erase(queue_content.begin());
                 if(queue_content.empty()){
-                    if(next_to == ""){
-                        active_content = to_string(stoi(active_content)+1);
-                    }
-                    else{
-                        active_content = next_to;
-                        next_to ="";
-                    }
+                    active_content = next_to;
+                    next_to = "";
                 }
-                else active_content = queue_content[0];
+                else{
+                    queue_content.erase(queue_content.begin());
+                    if(queue_content.empty()){
+                        active_content = next_to;
+                        next_to = "";
+                    }
+                    else active_content = queue_content[0];
+                }
                 if(mission_.contents_map[active_content]["type"].get<string>() == "end"){
                     status = Finish_;
                     action_mode_mission = "N_A";
@@ -1328,7 +1203,12 @@ void manage_mission::execute_mission(){
                 }
                 else status = Active_;
             }
+            RCLCPP_INFO(this->get_logger(),"before pub info mission active");
             pub_active_mission_info(action_mode_mission, mission_.mission_id, active_content, to_string(active_content_sum));
+            RCLCPP_INFO(this->get_logger(),"after pub info mission active");
         }
     }
+    //set led
+    set_led(action_mode_mission);
+    //set sound
 }
