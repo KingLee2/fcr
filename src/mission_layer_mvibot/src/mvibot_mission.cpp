@@ -8,13 +8,12 @@
 #include "../include/mission_layer_mvibot/mvibot_mission/variable_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/gpio_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/mission_define.h"
+#include "../include/mission_layer_mvibot/mvibot_mission/sleep_function.h"
+#include "../include/mission_layer_mvibot/mvibot_mission/brush_function.h"
+#include "../include/mission_layer_mvibot/mvibot_mission/suction_function.h"
+#include "../include/mission_layer_mvibot/mvibot_mission/lift_function.h"
 
 using namespace std;
-// std::shared_ptr<navigation> navigation_;
-// std::shared_ptr<footprint> footprint_;
-// std::shared_ptr<config> config_;
-// std::shared_ptr<marker> marker_;
-// std::shared_ptr<manage_mission> manage_mission_;
 int main(int argc, char **argv){
     string mvibot_seri_;
     try
@@ -42,6 +41,11 @@ int main(int argc, char **argv){
     auto navigation_ = std::make_shared<navigation_function>("navigation_function",mvibot_seri_);
     auto variable_ = std::make_shared<variable_function>("variable_function",mvibot_seri_);
     auto gpio_ = std::make_shared<gpio_function>("gpio_function",mvibot_seri_);
+    auto sleep_ = std::make_shared<sleep_function>("sleep_function",mvibot_seri_);
+    auto brush_ = std::make_shared<brush_function>("brush_function",mvibot_seri_);
+    auto suction_ = std::make_shared<suction_function>("suction_function",mvibot_seri_);
+    auto lift_ = std::make_shared<lift_function>("lift_function",mvibot_seri_);
+    // auto config_ = std::make_shared<config_function>("config_function",mvibot_seri_);
     //run the executors
     // executor.add_node(footprint_);
     // executor.add_node(config_);
@@ -49,6 +53,11 @@ int main(int argc, char **argv){
     executor.add_node(navigation_);
     executor.add_node(variable_);
     executor.add_node(gpio_);
+    executor.add_node(sleep_);
+    executor.add_node(brush_);
+    executor.add_node(suction_);
+    executor.add_node(lift_);
+    // executor.add_node(config_);
     // sleep(2);
     // navigation_->process_data();
     executor.spin();

@@ -4,27 +4,78 @@
 #include "../common/string_Iv2.h"
 #include "../common/stof.h"
 #include "mission_define.h"
+#include <nlohmann/json.hpp>
 
 using namespace std;
-class config : public set_get_param<double>{
+class config_function : public set_get_param<double>{
     public:
-        config(const string &node_name , const string &sub_namespace) : set_get_param<double>(node_name, sub_namespace){
+        config_function(const string &node_name , const string &sub_namespace) : set_get_param<double>(node_name, sub_namespace){
+            rclcpp::QoS qos_profile(rclcpp::KeepLast(10));
+            qos_profile.best_effort();
             mvibot_seri_ = this->get_namespace();
-            // auto timer_action_callback = [this]()->void{
-            //     status = action(1);
-            //     while(status == 0){
-            //         action(1);
-            //     }
-            // };
-            // timer_action_ = this->create_wall_timer(500ms, timer_action_callback);
+            mvibot_seri_f_ = mvibot_seri_;
+            mvibot_seri_f_.erase(0,1);
+
+            //init publisher
+            history_pub_ = this->create_publisher<std_msgs::msg::String>("history",1);
+            config_function_state_pub_ = this->create_publisher<std_msgs::msg::String>("config_function_state",1);
+            //init subscriber
+            //
+            auto config_info_callback = [this](std_msgs::msg::String msg)->void{
+                parameters = json::parse(msg.data);
+                // cout<<parameters<<endl;
+                process_data();
+                request = 1;
+            };
+            config_info_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/config_info", qos_profile, config_info_callback);
+            //
+            auto config_function_status_callback = [this](std_msgs::msg::String msg)->void{
+                cout<<"config|received request,status"<<endl;
+                if(msg.data == "active"){
+                    request = 1;
+                    status = Active_;
+                }
+                else if(msg.data == "stop") {
+                    request = 1;
+                    status = Stop_;
+                }
+                else if(msg.data == "error") {
+                    status = Error_;
+                    request = 0;
+                }
+                else if(msg.data == "cancel") {
+                    request = 0;
+                    status = Cancel_;
+                }
+                else if(msg.data == "finish") {
+                    request = 0;
+                    status = Finish_;
+                }
+            };
+            config_function_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/config_function_status", qos_profile, config_function_status_callback);
+            //init timer
+            //
+            auto action_timer_callback = [this]()->void{
+                cout<<"config|request:"<<request<<"|state:"<<status<<endl;
+                if(request == 1){
+                    int res;
+                    res = action();
+                    pub_function_state_config(res);
+                }
+            };
+            action_timer_ = this->create_wall_timer(50ms, action_timer_callback);
         }
+        void send_history(string status, string info);
+        void pub_function_state_config(int st);
         void process_data();
-        void print();
-        int action(int action);
-        void reset();
+        int action();
     private:
-        string data;
-        int status=0;
+        //declare var
+        string mvibot_seri_, mvibot_seri_f_;
+
+        json parameters;
+        int status = Finish_;
+        int request = 0; //request = 1: yeu cau thuc thi, request = 0: khong co yeu cau thuc thi
         // Kinematic params //
         //linear velocity 
         string min_vel_x = "none";
@@ -45,51 +96,72 @@ class config : public set_get_param<double>{
         string footprint_padding = "none";
         //inflation_radius
         string inflation_radius = "none";
-        string mvibot_seri_;
-        //
-        // rclcpp::TimerBase::SharedPtr timer_action_;
+        //declare pub
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr history_pub_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr config_function_state_pub_;
+        //declare sub
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr config_info_sub_;
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr config_function_status_sub_;
+        //declare timer
+        rclcpp::TimerBase::SharedPtr action_timer_;
 };
-void config::process_data(){
-    // string_Iv2 data_return;
-    // data_return.detect(data,"~","=","~");
-    // for(int i=0;i<data_return.data1.size();i++){
-    //     if(data_return.data1[i]=="max_vel_x") max_vel_x = data_return.data2[i];
-    //     else if(data_return.data1[i]=="min_vel_x") min_vel_x=data_return.data2[i];
-    //     else if(data_return.data1[i]=="max_vel_theta") max_vel_theta=data_return.data2[i];
-    //     else if(data_return.data1[i]=="acc_lim_x") acc_lim_x=data_return.data2[i];
-    //     else if(data_return.data1[i]=="acc_lim_theta") acc_lim_theta=data_return.data2[i];
-    //     else if(data_return.data1[i]=="decel_lim_x") decel_lim_x = data_return.data2[i];
-    //     else if(data_return.data1[i]=="decel_lim_theta") decel_lim_theta = data_return.data2[i];
-    //     else if(data_return.data1[i]=="footprint_padding") footprint_padding=data_return.data2[i];
-    //     else if(data_return.data1[i]=="inflation_radius") inflation_radius=data_return.data2[i];
-    // }
-    max_vel_x = "0.4";
-    min_vel_x = "-0.4";
-    max_vel_theta = "3.0";
-    acc_lim_x = "0.8";
-    acc_lim_theta = "3.0";
-    decel_lim_x = "-0.8";
-    decel_lim_theta = "-3.0";
-    footprint_padding = "0.1";
-    inflation_radius = "1.2";
+void config_function::send_history(string status, string info){
+    static std_msgs::msg::String history_msg;
+    history_msg.data = mvibot_seri_f_+"|" + "status:"+status + "|" + "content:" + info;
+    history_pub_->publish(history_msg);
 }
-void config::print(){
+void config_function::pub_function_state_config(int st){
+    std_msgs::msg::String msg;
+    if(st == Active_) msg.data = "active";
+    else if(st == Finish_) msg.data = "finish";
+    else if(st == Error_) msg.data = "error";
+    else if(st == Cancel_) msg.data = "cancel";
+    else if(st == Stop_) msg.data = "stop";
+    else if(st == True_) msg.data = "true";
+    else if(st == False_) msg.data = "false";
+    config_function_state_pub_->publish(msg);
+}
+void config_function::process_data(){
+    cout<<parameters<<endl;
+    min_vel_x = parameters["min_vel_x"].get<string>();
+    max_vel_x = parameters["max_vel_x"].get<string>();
+    max_vel_theta = parameters["max_vel_theta"].get<string>();
+    acc_lim_x = parameters["acc_lim_x"].get<string>();
+    acc_lim_theta = parameters["acc_lim_theta"].get<string>();
+    decel_lim_x = parameters["decel_lim_x"].get<string>();
+    decel_lim_theta = parameters["decel_lim_theta"].get<string>();
+    footprint_padding = parameters["footprint_padding"].get<string>();
+    inflation_radius = parameters["inflation_radius"].get<string>();
+    // max_vel_x = "0.4";
+    // min_vel_x = "-0.4";
+    // max_vel_theta = "3.0";
+    // acc_lim_x = "0.8";
+    // acc_lim_theta = "3.0";
+    // decel_lim_x = "-0.8";
+    // decel_lim_theta = "-3.0";
+    // footprint_padding = "0.1";
+    // inflation_radius = "1.2";
+}
 
-}
-int config::action(int action){
+int config_function::action(){
     static int value_return;
-    if(action==Active_){
+    cout<<"config|status: "<<status<<endl;
+    if(status==Active_){
         // static string config_set,config_return;
         bool set_state, get_state;
         value_return=Finish_;
+        cout<<"config|set param"<<endl;
         //min_vel_x
         if(min_vel_x != "none"){
             double min_vel_x_set = stod_f(min_vel_x);
             double min_vel_x_get;
             if(stod_f(min_vel_x)<-0.3) min_vel_x_set = -0.3;
+            cout<<"config|before set param min_vel_x"<<endl;
             set_state = set_param(mvibot_seri_+"/controller_server/set_parameters","FollowPath.min_vel_x", min_vel_x_set);
+            cout<<"config|set param min_vel_x: "<<set_state<<endl;
             if(set_state == true){
                 get_state = get_param(mvibot_seri_+"/controller_server/get_parameters","FollowPath.min_vel_x", min_vel_x_get);
+                cout<<"config|get param min_vel_x: "<<get_state<<endl;
                 if(get_state == true) cout<<"min_vel_x: "<<min_vel_x_get<<endl;
             }
             if(min_vel_x_get!=min_vel_x_set) value_return = Active_;
@@ -200,10 +272,6 @@ int config::action(int action){
         }
         return value_return;
     }else{
-        value_return=action;
+        return status;
     }
-    return value_return;
-}
-void config::reset(){
-
 }

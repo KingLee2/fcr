@@ -40,6 +40,7 @@ class manage_mission : public rclcpp::Node{
         vector<mission>mission_charge_battery;
         // mission mission_;
         // int action_mode_mission;
+        string action_mode_mission;
         //
         vector<module> my_module;
         std_msgs::msg::Float32MultiArray input_status, input_status_1, input_status_2;
@@ -86,6 +87,9 @@ class manage_mission : public rclcpp::Node{
         //brush
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr brush_info_pub_;
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr brush_function_state_pub_;
+        //suction
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr suction_info_pub_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr suction_function_state_pub_;
         //history
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr history_pub_;
         //led
@@ -121,6 +125,7 @@ class manage_mission : public rclcpp::Node{
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr var_function_state_sub_;
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr lift_function_state_sub_;
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr brush_function_state_sub_;
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr suction_function_state_sub_;
         //timer
         // rclcpp::TimerBase::SharedPtr get_mission_normal_timer_;
         // rclcpp::TimerBase::SharedPtr get_mission_charge_timer_;
@@ -183,6 +188,9 @@ class manage_mission : public rclcpp::Node{
             //brush
             brush_info_pub_ = this->create_publisher<std_msgs::msg::String>("brush_info",1);
             brush_function_state_pub_ = this->create_publisher<std_msgs::msg::String>("brush_function_status",1);
+            //suction
+            suction_info_pub_ = this->create_publisher<std_msgs::msg::String>("suction_info",1);
+            suction_function_state_pub_ = this->create_publisher<std_msgs::msg::String>("suction_function_status",1);
             ///init subscriber///
             // sub mission normal
             auto mission_normal_callback = [this](std_msgs::msg::String msg)->void{
@@ -340,11 +348,13 @@ class manage_mission : public rclcpp::Node{
             battery_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/battery_status", qos_profile, battery_status_callback);
             //get request robot (stop,continues)
             auto request_robot_callback = [this](std_msgs::msg::String msg)->void{
-                if(msg.data == "stop") status = Stop_;
-                else if(msg.data == "continues") {
-                    if(status == Stop_) status = Active_;
+                if(status != Finish_){
+                    if(msg.data == "stop") status = Stop_;
+                    else if(msg.data == "continues") {
+                        if(status == Stop_) status = Active_;
+                    }
+                    cout<<"status:"<<status<<endl;
                 }
-                cout<<"status:"<<status<<endl;
             };
             get_request_robot_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/robot_state", qos_profile,request_robot_callback);
             // get request "want to charge"
@@ -444,6 +454,15 @@ class manage_mission : public rclcpp::Node{
                 else if(msg.data == "error") state = Error_;
             };
             brush_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/brush_function_state", qos_profile, brush_function_state_callback);
+            //suction
+            auto suction_function_state_callback = [this](std_msgs::msg::String msg)->void{
+                if(msg.data == "stop") state = Stop_;
+                else if(msg.data == "active") state = Active_;
+                else if(msg.data == "finish") state = Finish_;
+                else if(msg.data == "cancel") state = Cancel_;
+                else if(msg.data == "error") state = Error_;
+            };
+            suction_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/suction_function_state", qos_profile, suction_function_state_callback);
             //load file
             load_mission_normal("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_normal.json");
             // load_mission_charge("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_charge_battery.json");
@@ -454,12 +473,16 @@ class manage_mission : public rclcpp::Node{
                 RCLCPP_INFO(this->get_logger(),"before execute mission");
                 execute_mission();
                 RCLCPP_INFO(this->get_logger(),"after execute mission");
+                //set led
+                set_led(action_mode_mission);
+                //set sound
+
             };
             execute_mission_timer_ = this->create_wall_timer(50ms, execute_mission_timer_callback);
         }
         void send_history(string status, string info);
         void pub_led(float red, float green, float blue, float ll, float lr, float lb, float lf);
-        void set_led(string action_mode);
+        void set_led(string mode_action);
         void pub_stop_robot();
         void pub_active_mission_info(string type, string mission_id, string content_id, string content_sum);
         int load_mission_normal(const string &file_name);
@@ -496,10 +519,15 @@ void manage_mission::pub_led(float red, float green, float blue, float ll, float
         led_pub_->publish(msg);
     } else creat_fun=1;
 }
-void manage_mission::set_led(string action_mode){
-    if(action_mode == "mission_charge") pub_led(0,100,100,2,2,2,1);
-    else if(action_mode == "mission_normal") pub_led(0,100,0,1,1,1,1);
-    else if(action_mode == "mission_error") pub_led(100,0,0,1,1,1,1);
+void manage_mission::set_led(string mode_action){
+    // if(status == ) pub_led(0,100,100,2,2,2,1);
+    if(status == Active_){
+        if(mode_action == "mission_normal") pub_led(0,100,0,1,1,1,1);
+        else if(mode_action == "mission_charge") pub_led(0,100,100,2,2,2,2);
+    }
+    else if(status == Error_) pub_led(100,0,0,1,1,1,1);
+    else if(status == Stop_) pub_led(100,100,0,2,2,2,2);
+    else if(status == Finish_) pub_led(100,100,0,1,1,1,1);
     else pub_led(100,100,0,1,1,1,1);
 }
 void manage_mission::pub_stop_robot(){
@@ -514,7 +542,7 @@ void manage_mission::pub_active_mission_info(string type, string mission_id, str
     mission_info["type"] = type;
     mission_info["mission_id"] = mission_id;
     mission_info["content_id"] = content_id;
-    mission_info["content-sum"] = content_sum;
+    mission_info["content_sum"] = content_sum;      
     mission_info_str.data = mission_info.dump();
     active_mission_info_pub_->publish(mission_info_str);
 }
@@ -1024,12 +1052,17 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
         time_out = stof(content["time_out"].get<string>());
         return handle_content(content, time_out, timer, status, brush_info_pub_, brush_function_state_pub_);
     }
+    else if(type == "suction"){
+        static double time_out;
+        time_out = stof(content["time_out"].get<string>());
+        return handle_content(content, time_out, timer, status, suction_info_pub_, suction_function_state_pub_);
+    }
 }
 void manage_mission::execute_mission(){
     //var
     RCLCPP_INFO(this->get_logger(),"start execute mission");
     static mission mission_;
-    static string action_mode_mission;
+    // static string action_mode_mission;
     // static json content_;
     static vector<string> queue_content;
     static string next_to = "";
@@ -1208,7 +1241,4 @@ void manage_mission::execute_mission(){
             RCLCPP_INFO(this->get_logger(),"after pub info mission active");
         }
     }
-    //set led
-    set_led(action_mode_mission);
-    //set sound
 }
