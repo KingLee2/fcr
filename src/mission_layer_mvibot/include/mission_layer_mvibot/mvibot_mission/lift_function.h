@@ -181,7 +181,7 @@ int lift_function::action(){
         else if(object == "lift_suction"){
             if(mode == "lift_up"){
                 pub_lift_suction(1);
-                if(lift_suction_value >= lift_up){
+                if(lift_suction_value <= lift_down){
                     status = Finish_;
                     request = 0;
                     object ="";
@@ -192,7 +192,7 @@ int lift_function::action(){
             }
             else if(mode == "lift_down"){
                 pub_lift_suction(0);
-                if(lift_suction_value <= lift_down){
+                if(lift_suction_value >= lift_up){
                     status = Finish_;
                     request = 0;
                     object ="";

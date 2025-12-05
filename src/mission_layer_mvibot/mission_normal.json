@@ -889,8 +889,8 @@
                 "parameters":{
                     "object": "lift_brush",
                     "mode": "lift_down",
-                    "lift_up": "2.0",
-                    "lift_down": "48.0"
+                    "lift_up": "30.0",
+                    "lift_down": "20.0"
                 },
                 "time_out":"30.0",
                 "content":{}
@@ -953,8 +953,8 @@
                 "parameters":{
                     "object": "lift_brush",
                     "mode": "lift_up",
-                    "lift_up": "2.0",
-                    "lift_down": "48.0"
+                    "lift_up": "30.0",
+                    "lift_down": "20.0"
                 },
                 "time_out":"30.0",
                 "content":{}
@@ -1017,8 +1017,8 @@
                 "parameters":{
                     "object": "lift_suction",
                     "mode": "lift_down",
-                    "lift_up": "2.0",
-                    "lift_down": "48.0"
+                    "lift_up": "50.0",
+                    "lift_down": "15.0"
                 },
                 "time_out":"30.0",
                 "content":{}
@@ -1081,13 +1081,361 @@
                 "parameters":{
                     "object": "lift_suction",
                     "mode": "lift_up",
-                    "lift_up": "2.0",
-                    "lift_down": "48.0"
+                    "lift_up": "50.0",
+                    "lift_down": "15.0"
                 },
                 "time_out":"30.0",
                 "content":{}
             },
             "id_3":{
+                "id": "id_3",
+                "type":"end"
+            }
+        }
+    },
+    {
+        "mission_id":"12",
+        "triggers":[
+            {
+                "stop":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "1":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            },
+            {
+                "continues":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "2":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            }
+        ],
+        "contents":{
+            "id_0":{
+                "id":"id_0",
+                "type":"start",
+                "content":{
+                    "next" : "id_1"
+                }
+            },
+            "id_1":{
+                "id": "id_1",
+                "type":"group",
+                "parameters":{},
+                "time_out":"-1",
+                "content":{
+                    "body" : ["id_2"],
+                    "next" : "id_3"
+                }
+            },
+            "id_2":{
+                "id":"id_2",
+                "type":"config",
+                "parameters":{
+                    "desired_linear_vel": "0.2",
+                    "footprint_padding": "0.1"
+                },
+                "time_out":"10.0",
+                "content":{}
+            },
+            "id_3":{
+                "id": "id_3",
+                "type":"end"
+            }
+        }
+    },
+    {
+        "mission_id":"13",
+        "triggers":[
+            {
+                "stop":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "1":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            },
+            {
+                "continues":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "2":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            }
+        ],
+        "contents":{
+            "id_0":{
+                "id":"id_0",
+                "type":"start",
+                "content":{
+                    "next" : "id_1"
+                }
+            },
+            "id_1":{
+                "id": "id_1",
+                "type":"group",
+                "parameters":{},
+                "time_out":"-1",
+                "content":{
+                    "body" : ["id_2"],
+                    "next" : "id_3"
+                }
+            },
+            "id_2":{
+                "id":"id_2",
+                "type":"marker",
+                "parameters":{
+                    "marker_type": "none_marker_dis",
+                    "off_set_dis": "0.5",
+                    "safe_x1": "0.05",
+                    "safe_x2": "0.05",
+                    "safe_y1": "0.05",
+                    "safe_y2": "0.05"
+                },
+                "time_out":"60.0",
+                "content":{}
+            },
+            "id_3":{
+                "id": "id_3",
+                "type":"end"
+            }
+        }
+    },
+    {
+        "mission_id":"14",
+        "triggers":[
+            {
+                "stop":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "1":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            },
+            {
+                "continues":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "2":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            }
+        ],
+        "contents":{
+            "id_0":{
+                "id":"id_0",
+                "type":"start",
+                "content":{
+                    "next" : "id_1"
+                }
+            },
+            "id_1":{
+                "id": "id_1",
+                "type":"group",
+                "parameters":{},
+                "time_out":"-1",
+                "content":{
+                    "body" : ["id_2"],
+                    "next" : "id_3"
+                }
+            },
+            "id_2":{
+                "id":"id_2",
+                "type":"marker",
+                "parameters":{
+                    "marker_type": "none_marker_angle",
+                    "off_set_angle": "90",
+                    "safe_x1": "0.1",
+                    "safe_x2": "0.1",
+                    "safe_y1": "0.1",
+                    "safe_y2": "0.1"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_3":{
+                "id": "id_3",
+                "type":"end"
+            }
+        }
+    },
+    {
+        "mission_id":"15",
+        "triggers":[
+            {
+                "stop":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "1":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            },
+            {
+                "continues":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "2":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            }
+        ],
+        "contents":{
+            "id_0":{
+                "id":"id_0",
+                "type":"start",
+                "content":{
+                    "next" : "id_1"
+                }
+            },
+            "id_1":{
+                "id": "id_1",
+                "type":"group",
+                "parameters":{},
+                "time_out":"-1",
+                "content":{
+                    "body" : ["id_2","id_3","id_4","id_5","id_6","id_7","id_8","id_9","id_10"],
+                    "next" : "id_11"
+                }
+            },
+            "id_2":{
+                "id":"id_2",
+                "type":"lift",
+                "parameters":{
+                    "object": "lift_brush",
+                    "mode": "lift_down",
+                    "lift_up": "30.0",
+                    "lift_down": "20.0"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_3":{
+                "id":"id_3",
+                "type":"lift",
+                "parameters":{
+                    "object": "lift_suction",
+                    "mode": "lift_down",
+                    "lift_up": "50.0",
+                    "lift_down": "15.0"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_4":{
+                "id":"id_4",
+                "type":"brush",
+                "parameters":{
+                    "brush": "1"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_5":{
+                "id":"id_5",
+                "type":"suction",
+                "parameters":{
+                    "suction": "1"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_6":{
+                "id":"id_6",
+                "type":"navigation",
+                "parameters":{
+                    "mode": "go_to_pose",
+                    "goal_position":[
+                        {
+                            "x": "0.0",
+                            "y": "0.0",
+                            "z": "0.0",
+                            "w": "1.0"
+                        }
+                    ],
+                    "area": []
+                },
+                "time_out":"30",
+                "content":{}
+            },
+            "id_7":{
+                "id":"id_7",
+                "type":"brush",
+                "parameters":{
+                    "brush": "0"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_8":{
+                "id":"id_8",
+                "type":"suction",
+                "parameters":{
+                    "suction": "1"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_9":{
+                "id":"id_9",
+                "type":"lift",
+                "parameters":{
+                    "object": "lift_suction",
+                    "mode": "lift_up",
+                    "lift_up": "50.0",
+                    "lift_down": "15.0"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_10":{
+                "id":"id_10",
+                "type":"lift",
+                "parameters":{
+                    "object": "lift_brush",
+                    "mode": "lift_up",
+                    "lift_up": "30.0",
+                    "lift_down": "20.0"
+                },
+                "time_out":"30.0",
+                "content":{}
+            },
+            "id_11":{
                 "id": "id_3",
                 "type":"end"
             }

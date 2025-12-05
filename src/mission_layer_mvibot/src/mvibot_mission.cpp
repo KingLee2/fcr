@@ -2,16 +2,15 @@
 #include "../include/mission_layer_mvibot/common/library_ros.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/manage_mission.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/navigation_function.h"
-#include "../include/mission_layer_mvibot/mvibot_mission/footprint_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/config_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/marker_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/variable_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/gpio_function.h"
-#include "../include/mission_layer_mvibot/mvibot_mission/mission_define.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/sleep_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/brush_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/suction_function.h"
 #include "../include/mission_layer_mvibot/mvibot_mission/lift_function.h"
+#include "../include/mission_layer_mvibot/mvibot_mission/mission_define.h"
 
 using namespace std;
 int main(int argc, char **argv){
@@ -45,10 +44,10 @@ int main(int argc, char **argv){
     auto brush_ = std::make_shared<brush_function>("brush_function",mvibot_seri_);
     auto suction_ = std::make_shared<suction_function>("suction_function",mvibot_seri_);
     auto lift_ = std::make_shared<lift_function>("lift_function",mvibot_seri_);
-    // auto config_ = std::make_shared<config_function>("config_function",mvibot_seri_);
+    auto config_ = std::make_shared<config_function>("config_function",mvibot_seri_);
+    auto marker_ = std::make_shared<marker_function>("marker_function",mvibot_seri_);
+    
     //run the executors
-    // executor.add_node(footprint_);
-    // executor.add_node(config_);
     executor.add_node(manage_mission_);
     executor.add_node(navigation_);
     executor.add_node(variable_);
@@ -57,11 +56,9 @@ int main(int argc, char **argv){
     executor.add_node(brush_);
     executor.add_node(suction_);
     executor.add_node(lift_);
-    // executor.add_node(config_);
-    // sleep(2);
-    // navigation_->process_data();
+    executor.add_node(config_);
+    executor.add_node(marker_);
     executor.spin();
-    //run thread
 
     //shutdown and exit
     rclcpp::shutdown();
