@@ -122,7 +122,7 @@ class marker_function : public rclcpp::Node{
         //
         int safe = 0;
         float  x1_footprint,y1_footprint,x2_footprint,y2_footprint;
-        float  safe_x1=0.05,safe_x2=0.05,safe_y1=0.1,safe_y2=0.1;
+        float  safe_x1=0.5,safe_x2=0.5,safe_y1=0.2,safe_y2=0.2;
         //declare tranform
         std::unique_ptr<tf2_ros::Buffer> tf_Buffer_;
         std::shared_ptr<tf2_ros::TransformListener> tf_Listener_{nullptr};
@@ -174,10 +174,10 @@ void marker_function::process_data(){
     cout<<parameters<<endl;
 
     marker_type = parameters["marker_type"].get<string>();
-    safe_x1 = stof(parameters["safe_x1"].get<string>());
-    safe_x2 = stof(parameters["safe_x2"].get<string>());
-    safe_y1 = stof(parameters["safe_y1"].get<string>());
-    safe_y2 = stof(parameters["safe_y2"].get<string>());
+    if(parameters["safe_x1"].get<string>()!= "") safe_x1 = stof(parameters["safe_x1"].get<string>());
+    if(parameters["safe_x2"].get<string>()!= "") safe_x2 = stof(parameters["safe_x2"].get<string>());
+    if(parameters["safe_y1"].get<string>()!= "") safe_y1 = stof(parameters["safe_y1"].get<string>());
+    if(parameters["safe_y2"].get<string>()!= "") safe_y2 = stof(parameters["safe_y2"].get<string>());
     if(marker_type == "none_marker_dis"){
         off_set_dis = stof(parameters["off_set_dis"].get<string>());
     }

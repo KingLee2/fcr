@@ -1,0 +1,44 @@
+[
+    {
+        "mission_id":"id_abc",
+        "triggers":[
+            {
+                "stop":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "1":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            },
+            {
+                "continues":{
+                    "type":"gpio",
+                    "parameters":{
+                        "input":{
+                            "2":"pullup"
+                        }
+                    },
+                    "time_out":"0",
+                    "contents":[]
+                }
+            }
+        ],
+        "contents":{
+            "id_0":{
+                "id":"id_0",
+                "type":"start",
+                "content":{
+                    "next" : "id_1"
+                }
+            },
+            "id_1":{
+                "id": "id_1",
+                "type":"end"
+            }
+        }
+    }
+]

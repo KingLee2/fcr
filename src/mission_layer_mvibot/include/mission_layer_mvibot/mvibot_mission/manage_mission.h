@@ -52,12 +52,16 @@ class manage_mission : public rclcpp::Node{
         float battery_soc2=-1;
         float want_to_charge=0;
         int status = Finish_;
+        int status_mission_error = Cancel_;
         string active_mission_id = "";
         int state;
         double ts_execute_callback = 0.05;
         //pub
         //information mission active
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr active_mission_info_pub_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr mission_normal_received_pub_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr mission_charge_battery_received_pub_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr mission_error_received_pub_;
         //robot
         rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr stop_robot_pub_;
         //gpio
@@ -128,9 +132,6 @@ class manage_mission : public rclcpp::Node{
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr brush_function_state_sub_;
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr suction_function_state_sub_;
         //timer
-        // rclcpp::TimerBase::SharedPtr get_mission_normal_timer_;
-        // rclcpp::TimerBase::SharedPtr get_mission_charge_timer_;
-        // rclcpp::TimerBase::SharedPtr get_mission_error_timer_;
         rclcpp::TimerBase::SharedPtr execute_mission_timer_;
         rclcpp::TimerBase::SharedPtr controll_timer_;
     public:
@@ -150,13 +151,14 @@ class manage_mission : public rclcpp::Node{
             status = Finish_;
             state = N_A_;
             want_to_charge = 0;
-            motor_left_ready = 1;
-            motor_right_ready = 1;
-            battery_soc1 = 100;
-            battery_soc2 = 100;
+            motor_left_ready = 0;
+            motor_right_ready = 0;
             // init pub//
             // active mission pub
             active_mission_info_pub_ = this->create_publisher<std_msgs::msg::String>("active_mission_info",1);
+            mission_normal_received_pub_ = this->create_publisher<std_msgs::msg::String>("mission_normal_receive",1);
+            mission_charge_battery_received_pub_ = this->create_publisher<std_msgs::msg::String>("mission_charge_battery_receive",1);
+            mission_error_received_pub_ = this->create_publisher<std_msgs::msg::String>("mission_error_receive",1);
             //stop robot
             stop_robot_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel",1);
             //send history
@@ -196,77 +198,86 @@ class manage_mission : public rclcpp::Node{
             ///init subscriber///
             // sub mission normal
             auto mission_normal_callback = [this](std_msgs::msg::String msg)->void{
-                static string file_name;
-                file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_normal.json";
-                try{
-                    std::ofstream file(file_name);
-                    if (!file.is_open()){
-                        send_history("error", "Failed to open mission file: " + file_name);
-                        return;
+                if(status != Active_){
+                    static string file_name;
+                    file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_normal.json";
+                    try{
+                        std::ofstream file(file_name);
+                        if (!file.is_open()){
+                            send_history("error", "Failed to open mission file: " + file_name);
+                            return;
+                        }
+                        file <<msg.data;
+                        file.close();
+                        if (!load_mission_normal(file_name)) {
+                            send_history("error", "Failed to load mission from: " + file_name);
+                        }
+                        
                     }
-                    file <<msg.data;
-                    file.close();
-                    if (!load_mission_normal(file_name)) {
-                        send_history("error", "Failed to load mission from: " + file_name);
+                    catch (const std::exception& e){
+                        send_history("error", "Error processing mission: " + std::string(e.what()));
                     }
-                    
+                    status = Finish_;
                 }
-                catch (const std::exception& e){
-                    send_history("error", "Error processing mission: " + std::string(e.what()));
-                }
-                // unlock();
             };
             get_mission_normal_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/mission_normal",qos_profile,mission_normal_callback);
             //sub mission charge battery
             auto mission_charge_baterry_callback = [this](std_msgs::msg::String msg)->void{
-                static string file_name;
-                file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_charge_battery.json";
-                try{
-                    std::ofstream file(file_name);
-                    if (!file.is_open()){
-                        send_history("error", "Failed to open mission file: " + file_name);
-                        return;
+                if(status != Active_){
+                    static string file_name;
+                    file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_charge_battery.json";
+                    try{
+                        std::ofstream file(file_name);
+                        if (!file.is_open()){
+                            send_history("error", "Failed to open mission file: " + file_name);
+                            return;
+                        }
+                        file <<msg.data;
+                        file.close();
+                        if (!load_mission_charge(file_name)) {
+                            send_history("error", "Failed to load mission from: " + file_name);
+                        }
+                        
                     }
-                    file <<msg.data;
-                    file.close();
-                    if (!load_mission_charge(file_name)) {
-                        send_history("error", "Failed to load mission from: " + file_name);
+                    catch (const std::exception& e){
+                        send_history("error", "Error processing mission: " + std::string(e.what()));
                     }
-                    
+                    status = Finish_;
                 }
-                catch (const std::exception& e){
-                    send_history("error", "Error processing mission: " + std::string(e.what()));
-                }
-                // unlock();
             };
             get_mission_charge_battery_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/mission_charge_battery",qos_profile,mission_charge_baterry_callback);
             //sub mission error
             auto mission_error_callback = [this](std_msgs::msg::String msg)->void{
-                static string file_name;
-                file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_error.json";
-                try{
-                    std::ofstream file(file_name);
-                    if (!file.is_open()){
-                        send_history("error", "Failed to open mission file: " + file_name);
-                        return;
+                if(status != Active_){
+                    static string file_name;
+                    file_name = "/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_error.json";
+                    try{
+                        std::ofstream file(file_name);
+                        if (!file.is_open()){
+                            send_history("error", "Failed to open mission file: " + file_name);
+                            return;
+                        }
+                        file <<msg.data;
+                        file.close();
+                        if (!load_mission_error(file_name)) {
+                            send_history("error", "Failed to load mission from: " + file_name);
+                        }
+                        
                     }
-                    file <<msg.data;
-                    file.close();
-                    if (!load_mission_error(file_name)) {
-                        send_history("error", "Failed to load mission from: " + file_name);
+                    catch (const std::exception& e){
+                        send_history("error", "Error processing mission: " + std::string(e.what()));
                     }
-                    
+                    status = Finish_;
                 }
-                catch (const std::exception& e){
-                    send_history("error", "Error processing mission: " + std::string(e.what()));
-                }
-                // unlock();
             };
             get_mission_error_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/mission_error",qos_profile,mission_error_callback);
             auto reset_mission_callback = [this](std_msgs::msg::String msg)->void{
-                if(msg.data == "mission_normal") mission_normal.resize(0);
-                else if(msg.data == "mission_charge_battery") mission_charge_battery.resize(0);
-                else if(msg.data == "mission_error") mission_error.reset();
+                if(status != Active_){
+                    if(msg.data == "mission_normal") mission_normal.resize(0);
+                    else if(msg.data == "mission_charge_battery") mission_charge_battery.resize(0);
+                    else if(msg.data == "mission_error") mission_error.reset();
+                    status = Finish_;
+                }
             };
             reset_mission_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/reset_mission", qos_profile, reset_mission_callback);
             // update gpio
@@ -341,17 +352,17 @@ class manage_mission : public rclcpp::Node{
             motor_right_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_right_status", qos_profile, motor_right_status_callback);
             //status battery
             auto battery_status_callback = [this](std_msgs::msg::String msg)->void{
-                    static string_Iv2 data;
-                    data.detect(msg.data,"","|","");
-                    for(int i=1;i<data.data1.size();i++){
-                        static string_Iv2 data2;
-                        data2.detect(data.data1[i],"",":","");
-                        if(data2.data1[0]=="soc"){
-                            battery_soc2 = battery_soc1;
-                            battery_soc1 = battery_soc;
-                            battery_soc=stof_f(data2.data1[1]);
-                        }
+                static string_Iv2 data;
+                data.detect(msg.data,"","|","");
+                for(int i=1;i<data.data1.size();i++){
+                    static string_Iv2 data2;
+                    data2.detect(data.data1[i],"",":","");
+                    if(data2.data1[0]=="soc"){
+                        battery_soc2 = battery_soc1;
+                        battery_soc1 = battery_soc;
+                        battery_soc=stof_f(data2.data1[1]);
                     }
+                }
             };
             battery_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/battery_status", qos_profile, battery_status_callback);
             //get request robot (stop,continues)
@@ -473,9 +484,8 @@ class manage_mission : public rclcpp::Node{
             suction_function_state_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/suction_function_state", qos_profile, suction_function_state_callback);
             //load file
             load_mission_normal("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_normal.json");
-            // load_mission_charge("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_charge_battery.json");
-            // load_mission_error("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_error.json");
-
+            load_mission_charge("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_charge_battery.json");
+            load_mission_error("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_error.json");
             //init timer//
             auto execute_mission_timer_callback = [this]()->void{
                 RCLCPP_INFO(this->get_logger(),"before execute mission");
@@ -513,7 +523,6 @@ void manage_mission::send_history(string status, string info){
     history_msg.data = mvibot_seri_f_+"|" + "status:"+status + "|" + "content:" + info;
     history_pub_->publish(history_msg);
 }
-
 void manage_mission::pub_led(float red, float green, float blue, float ll, float lr, float lb, float lf){
     static float creat_fun=0;
     static std_msgs::msg::Float32MultiArray msg;
@@ -557,8 +566,19 @@ void manage_mission::pub_active_mission_info(string type, string mission_id, str
     mission_info_str.data = mission_info.dump();
     active_mission_info_pub_->publish(mission_info_str);
 }
-
-int manage_mission::load_mission_normal(const string &file_name){                                                                                                           
+int manage_mission::load_mission_normal(const string &file_name){
+    json mission_normal_receive_json;
+    std_msgs::msg::String mission_normal_receive_str;
+    vector<string> mission_id_vec;
+    time_t now_time;
+    tm* now_tm;
+    std::ostringstream oss;
+    auto now = chrono::system_clock::now();
+    // Chuyển đổi thành std::time_t
+    now_time = chrono::system_clock::to_time_t(now);
+    // Chuyển std::time_t thành std::tm
+    now_tm = localtime(&now_time);
+    oss << put_time(now_tm, "%Y-%m-%d %H:%M:%S");
     std::ifstream file(file_name);
     if(!file.is_open()){
         cout<<"file is not opened"<<endl;
@@ -574,8 +594,10 @@ int manage_mission::load_mission_normal(const string &file_name){
         missions_.push_back(new_missions);
         mission_normal.resize(1);
     }
+    mission_id_vec.resize(missions_.size());
     for(size_t i=0; i<missions_.size(); i++){
         mission_normal[i].mission_id = missions_[i]["mission_id"].get<string>();
+        mission_id_vec[i] = mission_normal[i].mission_id;
         cout<<"Mission Name: "<<mission_normal[i].mission_id<<endl;
         for (const auto& trigger : missions_[i]["triggers"]) {
             for (const auto& [key, value] : trigger.items()) {
@@ -590,9 +612,25 @@ int manage_mission::load_mission_normal(const string &file_name){
             }
         }
     }
+    mission_normal_receive_json["mission_id"] = mission_id_vec;
+    mission_normal_receive_json["time"] = oss.str();
+    mission_normal_receive_str.data = mission_normal_receive_json.dump();
+    mission_normal_received_pub_->publish(mission_normal_receive_str);
     return 1;
 }
 int manage_mission::load_mission_charge(const string &file_name){
+    json mission_charge_receive_json;
+    std_msgs::msg::String mission_charge_receive_str;
+    vector<string> mission_id_vec;
+    time_t now_time;
+    tm* now_tm;
+    std::ostringstream oss;
+    auto now = chrono::system_clock::now();
+    // Chuyển đổi thành std::time_t
+    now_time = chrono::system_clock::to_time_t(now);
+    // Chuyển std::time_t thành std::tm
+    now_tm = localtime(&now_time);
+    oss << put_time(now_tm, "%Y-%m-%d %H:%M:%S");
     std::ifstream file(file_name);
     if(!file.is_open()){
         cout<<"file is not opened"<<endl;
@@ -609,8 +647,10 @@ int manage_mission::load_mission_charge(const string &file_name){
         missions_.push_back(new_missions);
         mission_charge_battery.resize(1);
     }
+    mission_id_vec.resize(missions_.size());
     for(size_t i=0; i<missions_.size(); i++){
         mission_charge_battery[i].mission_id = missions_[i]["mission_id"].get<string>();
+        mission_id_vec[i] = mission_charge_battery[i].mission_id;
         cout<<"Mission Name: "<<mission_charge_battery[i].mission_id<<endl;
         for (const auto& trigger : missions_[i]["triggers"]) {
             for (const auto& [key, value] : trigger.items()) {
@@ -618,30 +658,57 @@ int manage_mission::load_mission_charge(const string &file_name){
                 cout<<key<<"|||"<<mission_charge_battery[i].triggers_map[key]<<endl;
             }
         }
-        for(const auto& content : missions_[i]["contents"]){
-            string content_id = content["id"].get<string>();
-            mission_charge_battery[i].contents_map[content_id] = content;
-            cout<<content_id<<"|||"<<mission_charge_battery[i].contents_map[content_id]<<endl;
+        if (missions_[i].contains("contents") && missions_[i]["contents"].is_object()) {
+            for (auto& [key, value] : missions_[i]["contents"].items()) {
+                mission_charge_battery[i].contents_map[key] = value;
+                cout<<key<<"|||"<<mission_charge_battery[i].contents_map[key]<<endl;
+            }
         }
     }
+    mission_charge_receive_json["mission_id"] = mission_id_vec;
+    mission_charge_receive_json["time"] = oss.str();
+    mission_charge_receive_str.data = mission_charge_receive_json.dump();
+    mission_charge_battery_received_pub_->publish(mission_charge_receive_str);
     return 1;
 }
 int manage_mission::load_mission_error(const string &file_name){
+    json mission_error_receive_json;
+    std_msgs::msg::String mission_error_receive_str;
+    time_t now_time;
+    tm* now_tm;
+    std::ostringstream oss;
+    auto now = chrono::system_clock::now();
+    // Chuyển đổi thành std::time_t
+    now_time = chrono::system_clock::to_time_t(now);
+    // Chuyển std::time_t thành std::tm
+    now_tm = localtime(&now_time);
+    oss << put_time(now_tm, "%Y-%m-%d %H:%M:%S");
     std::ifstream file(file_name);
     if(!file.is_open()){
         cout<<"file is not opened"<<endl;
         return 0;
     }
-    json new_mission;
-    file >> new_mission;
+    json new_missions;
+    file >> new_missions;
     mission_error.reset();
-    mission_error.mission_id = new_mission["mission_id"].get<string>();
-    cout<<"Mission ID: "<<mission_error.mission_id<<endl;
-    for(const auto& content : new_mission["contents"]){
-        string content_id = content["id"].get<string>();
-        mission_error.contents_map[content_id] = content;
-        cout<<content_id<<"|||"<<mission_error.contents_map[content_id]<<endl;
+    if (new_missions.is_array()) {
+        missions_ = new_missions.get<vector<json>>();
+    } else {
+        missions_.push_back(new_missions);
     }
+    mission_error.mission_id = missions_[0]["mission_id"].get<string>();
+    cout<<"Mission ID: "<<mission_error.mission_id<<endl;
+    //
+    if (missions_[0].contains("contents") && missions_[0]["contents"].is_object()) {
+        for (auto& [key, value] : missions_[0]["contents"].items()) {
+            mission_error.contents_map[key] = value;
+            cout<<key<<"|||"<<mission_error.contents_map[key]<<endl;
+        }
+    }
+    mission_error_receive_json["mission_id"] = mission_error.mission_id;
+    mission_error_receive_json["time"] = oss.str();
+    mission_error_receive_str.data = mission_error_receive_json.dump();
+    mission_error_received_pub_->publish(mission_error_receive_str);
     return 1;
 }
 void manage_mission::check_WakeUp_condition(json wakeUp_object){
@@ -827,7 +894,7 @@ int manage_mission::handle_content(const json& content, const double& time_out, 
 int manage_mission::execute_content(mission& mission, vector<string>& queue_content, string& active_content, string& next_to, int& status){
     json content;
     static double timer = 0.0;
-    static string type = "none";
+    static string type = "";
     content = mission.contents_map[active_content];
     type = content["type"].get<string>();
     cout<<"Content ID: "<<active_content<<endl;
@@ -855,48 +922,54 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
         static std::vector<string> then_content, else_content;
         int res;
         cond_id = content["content"]["condition"].get<string>();
-        res = execute_content(mission, queue_content, cond_id, next_to, status);
-        if(res!=True_ && res!=False_) return Active_;
-        else{
-            if(next_to == "") {
-                next_to = content["content"]["next"].get<string>();
-                cout<<"Next to: "<<next_to<<endl;
+        if(cond_id != ""){
+            res = execute_content(mission, queue_content, cond_id, next_to, status);
+            if(res!=True_ && res!=False_) return Active_;
+            else{
+                if(next_to == "") {
+                    next_to = content["content"]["next"].get<string>();
+                    cout<<"Next to: "<<next_to<<endl;
+                }
+                if(!queue_content.empty()){
+                    queue_content.erase(queue_content.begin());
+                }
+                if(res == True_){
+                    then_content = content["content"]["then"].get<std::vector<string>>();
+                    queue_content.insert(queue_content.begin(),then_content.begin(),then_content.end());
+                }
+                else if(res == False_){
+                    else_content = content["content"]["else"].get<std::vector<string>>();
+                    queue_content.insert(queue_content.begin(),else_content.begin(),else_content.end());
+                }
+                active_content = queue_content[0];
+                return Active_;
             }
-            if(!queue_content.empty()){
-                queue_content.erase(queue_content.begin());
-            }
-            if(res == True_){
-                then_content = content["content"]["then"].get<std::vector<string>>();
-                queue_content.insert(queue_content.begin(),then_content.begin(),then_content.end());
-            }
-            else if(res == False_){
-                else_content = content["content"]["else"].get<std::vector<string>>();
-                queue_content.insert(queue_content.begin(),else_content.begin(),else_content.end());
-            }
-            active_content = queue_content[0];
-            return Active_;
         }
+        else return Finish_;
     }
     else if(type == "while_do"){
         static string cond_id;
         static std::vector<string> do_content;
         int res;
         cond_id = content["content"]["condition"].get<string>();
-        res = execute_content(mission, queue_content, cond_id, next_to, status);
-        if(res!=True_ && res!=False_) return Active_;
-        else{
-            if(next_to == "") {
-                next_to = content["content"]["next"].get<string>();
-                cout<<"Next to: "<<next_to<<endl;
+        if(cond_id != ""){
+            res = execute_content(mission, queue_content, cond_id, next_to, status);
+            if(res!=True_ && res!=False_) return Active_;
+            else{
+                if(next_to == "") {
+                    next_to = content["content"]["next"].get<string>();
+                    cout<<"Next to: "<<next_to<<endl;
+                }
+                if(res == True_){
+                    do_content = content["content"]["do"].get<std::vector<string>>();
+                    queue_content.insert(queue_content.begin(),do_content.begin(),do_content.end());
+                    active_content = queue_content[0];
+                    return Active_;
+                }
+                else return Finish_;
             }
-            if(res == True_){
-                do_content = content["content"]["do"].get<std::vector<string>>();
-                queue_content.insert(queue_content.begin(),do_content.begin(),do_content.end());
-                active_content = queue_content[0];
-                return Active_;
-            }
-            else return Finish_;
         }
+        else return Finish_;
     }
     else if(type == "try_catch"){
        static int step = 0;
@@ -1007,18 +1080,9 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
         else return Active_;
     }
     else if(type == "gpio"){
-        // static double time_out;
         static double time_out;
         time_out = stof(content["time_out"].get<string>());
         return handle_content(content, time_out, timer, status, gpio_info_pub_, gpio_function_state_pub_);
-    //     if(time_out == 0){
-    //         if(check_gpio(content["parameters"].get<std::map<string, json>>()) == True_) return True_;
-    //         else return False_;
-    //     }
-    //     else if(time_out == -1){}
-    //     else{
-    //         return handle_content(content, time_out, timer, status, gpio_info_pub_, gpio_function_state_pub_);
-    //     }
     }
     else if(type == "footprint"){
         static double time_out;
@@ -1090,63 +1154,54 @@ void manage_mission::execute_mission(){
     RCLCPP_INFO(this->get_logger(),"continue execute mission");
     if(status==Finish_){
         RCLCPP_INFO(this->get_logger(),"continue execute mission, status finish");
-        //kiem tra yeu cau thuc thi mission
-        if(want_to_charge==1){ //mission charge
-            /*
-            status = Active_;
-            active_content = "1";
-            action_mode_mission = "mission_charge";
-            mission_ = mission_charge_battery[0];
-            queue_content.resize(0);
-            next_to = "";
-            */
-            for(size_t i=0; i < mission_charge_battery.size(); i++){
-                if(active_mission_id == mission_charge_battery[i].mission_id){
-                    status = Active_;
-                    active_mission_id = "";
-                    mission_ = mission_charge_battery[i];
-                    active_content_sum = mission_.contents_map.size();
-                    cout<<"Mission ID: "<<mission_.mission_id<<endl;
-                    cout<<mission_.triggers_map["stop"]<<endl;
-                    cout<<mission_.triggers_map["continues"]<<endl;
-                    //
-                    for (const auto& [key, value] : mission_.contents_map) {
-                        if (value.contains("type") && value["type"] == "start") {
-                            active_content = key;
-                            cout<<"active_content: "<<active_content<<endl;
-                        }
+        //kiem tra yeu cau thuc thi mission charge batter
+        for(size_t i=0; i < mission_charge_battery.size(); i++){
+            if(active_mission_id == mission_charge_battery[i].mission_id){
+                status = Active_;
+                active_mission_id = "";
+                mission_ = mission_charge_battery[i];
+                active_content_sum = mission_.contents_map.size();
+                cout<<"Mission ID: "<<mission_.mission_id<<endl;
+                cout<<mission_.triggers_map["stop"]<<endl;
+                cout<<mission_.triggers_map["continues"]<<endl;
+                //
+                for (const auto& [key, value] : mission_.contents_map) {
+                    if (value.contains("type") && value["type"] == "start") {
+                        active_content = key;
+                        cout<<"active_content: "<<active_content<<endl;
+                        break;
                     }
-                    //
-                    action_mode_mission = "mission_charge";
-                    queue_content.resize(0);
-                    next_to = "";
-                    break;
                 }
+                //
+                action_mode_mission = "mission_charge";
+                queue_content.resize(0);
+                next_to = "";
+                break;
             }
         }
-        else{ 
-            for(size_t i=0; i < mission_normal.size(); i++){
-                if(active_mission_id == mission_normal[i].mission_id){
-                    status = Active_;
-                    active_mission_id = "";
-                    mission_ = mission_normal[i];
-                    active_content_sum = mission_.contents_map.size();
-                    cout<<"Mission ID: "<<mission_.mission_id<<endl;
-                    cout<<mission_.triggers_map["stop"]<<endl;
-                    cout<<mission_.triggers_map["continues"]<<endl;
-                    //
-                    for (const auto& [key, value] : mission_.contents_map) {
-                        if (value.contains("type") && value["type"] == "start") {
-                            active_content = key;
-                            cout<<"active_content: "<<active_content<<endl;
-                        }
+        //kiem tra yeu cau thuc thi mission normal
+        for(size_t i=0; i < mission_normal.size(); i++){
+            if(active_mission_id == mission_normal[i].mission_id){
+                status = Active_;
+                active_mission_id = "";
+                mission_ = mission_normal[i];
+                active_content_sum = mission_.contents_map.size();
+                cout<<"Mission ID: "<<mission_.mission_id<<endl;
+                cout<<mission_.triggers_map["stop"]<<endl;
+                cout<<mission_.triggers_map["continues"]<<endl;
+                //
+                for (const auto& [key, value] : mission_.contents_map) {
+                    if (value.contains("type") && value["type"] == "start") {
+                        active_content = key;
+                        cout<<"active_content: "<<active_content<<endl;
+                        break;
                     }
-                    //
-                    action_mode_mission = "mission_normal";
-                    queue_content.resize(0);
-                    next_to = "";
-                    break;
                 }
+                //
+                action_mode_mission = "mission_normal";
+                queue_content.resize(0);
+                next_to = "";
+                break;
             }
         }
     }
@@ -1167,51 +1222,66 @@ void manage_mission::execute_mission(){
             //pub stop robot
             pub_stop_robot();
             //thuc thi mission error
-            static string active_content_error = "1";
+            static string active_content_error;
             static vector<string>queue_content_error;
             static string next_to_error = "";
             static int active_content_sum_error;
-            static int status_mission_error = Active_;
+            // static int status_mission_error = Finish_;
             static int res;
             if(mission_error.contents_map.empty()){
                 status_mission_error = Finish_;
                 RCLCPP_INFO(this->get_logger(),"finish mission error");
             }
-            if(status_mission_error == Active_){
-                RCLCPP_INFO(this->get_logger(),"active mission error");
-                action_mode_mission = "mission_error";
-                active_content_sum_error = mission_error.contents_map.size();
-                res = execute_content(mission_error, queue_content_error, active_content_error, next_to_error, status_mission_error);
-                if(res == Active_){
+            else{
+                if(status_mission_error == Cancel_){
+                    for (const auto& [key, value] : mission_error.contents_map) {
+                        if (value.contains("type") && value["type"] == "start") {
+                            active_content_error = key;
+                            cout<<"active_content: "<<active_content_error<<endl;
+                            break;
+                        }
+                    }
                     status_mission_error = Active_;
                 }
-                else if(res == Error_){
-                    status_mission_error = Error_;
-                }
-                else if(res == Finish_){
-                    if(queue_content_error.empty()){
-                        active_content_error = next_to_error;
-                        next_to_error = "";
+                else if(status_mission_error == Active_){
+                    RCLCPP_INFO(this->get_logger(),"active mission error");
+                    action_mode_mission = "mission_error";
+                    active_content_sum_error = mission_error.contents_map.size();
+                    res = execute_content(mission_error, queue_content_error, active_content_error, next_to_error, status_mission_error);
+                    if(res == Active_){
+                        status_mission_error = Active_;
                     }
-                    else{
-                        queue_content_error.erase(queue_content_error.begin());
+                    else if(res == Error_){
+                        status_mission_error = Error_;
+                    }
+                    else if(res == Finish_){
                         if(queue_content_error.empty()){
                             active_content_error = next_to_error;
-                            next_to_error ="";
+                            next_to_error = "";
                         }
-                        else active_content_error = queue_content_error[0];
+                        else{
+                            queue_content_error.erase(queue_content_error.begin());
+                            if(queue_content_error.empty()){
+                                active_content_error = next_to_error;
+                                next_to_error ="";
+                            }
+                            else active_content_error = queue_content_error[0];
+                        }
+                        if(mission_error.contents_map[active_content_error]["type"].get<string>() == "end"){
+                            status_mission_error = Finish_;
+                            active_content_error = "";
+                        }
+                        else status_mission_error = Active_;
                     }
-                    if(mission_error.contents_map[active_content_error]["type"].get<string>() == "end"){
-                        status_mission_error = Finish_;
-                        active_content_error = "";
-                    }
-                    else status_mission_error = Active_;
+                    pub_active_mission_info(action_mode_mission, mission_error.mission_id, active_content_error, to_string(active_content_sum_error));
                 }
-                pub_active_mission_info(action_mode_mission, mission_error.mission_id, active_content_error, to_string(active_content_sum_error));
             }
 
         }
-        else { 
+        else {
+            //return status mission error
+            status_mission_error = Cancel_;
+            //execute mission main
             RCLCPP_INFO(this->get_logger(),"before execute content|status: %d", status);
             res = execute_content(mission_, queue_content, active_content, next_to, status);
             RCLCPP_INFO(this->get_logger(),"result execute content: %d", res);

@@ -233,125 +233,127 @@ void variable_function::print(int n){
 int variable_function::action(){
     static int value_return;
     if(status == Active_){
-        static int is_have;
-        is_have = 0;
-        for(int i=0;i<my_vars_local.var.size();i++){
-            if(my_vars_local.var[i].name==name_variable){
-                is_have=i+1;
+        if(name_variable != "null"){
+            static int is_have;
+            is_have = 0;
+            for(int i=0;i<my_vars_local.var.size();i++){
+                if(my_vars_local.var[i].name==name_variable){
+                    is_have=i+1;
+                }
             }
-        }
-        if(command_action == "new"){
-            variable_local local_variable; 
-            local_variable.name = name_variable;
-            local_variable.data = stof_f(focus_value);
-            my_vars_local.add_var(local_variable);
-            cout<<"create variable had completed"<<endl;
-            value_return = Finish_;
-        }
-        else if(command_action == "equal"){ //=
-            if(is_have==0){
-                cout<<"Error not have variable"<<endl; 
-                value_return = Error_;
-            }else{
-                my_vars_local.var[is_have-1].data=stof_f(focus_value);
-                cout<<"set variable had completed"<<endl; 
+            if(command_action == "new"){
+                variable_local local_variable; 
+                local_variable.name = name_variable;
+                local_variable.data = stof_f(focus_value);
+                my_vars_local.add_var(local_variable);
+                cout<<"create variable had completed"<<endl;
                 value_return = Finish_;
             }
-        }
-        else if(command_action == "equal_+"){ //+=
-            if(is_have==0){
-                cout<<"Error not have variable"<<endl; 
-                value_return = Error_;
-            }else{
-                my_vars_local.var[is_have-1].data+=stof_f(focus_value);
-                cout<<"Add variable had completed"<<endl;
+            else if(command_action == "equal"){ //=
+                if(is_have==0){
+                    cout<<"Error not have variable"<<endl; 
+                    value_return = Error_;
+                }else{
+                    my_vars_local.var[is_have-1].data=stof_f(focus_value);
+                    cout<<"set variable had completed"<<endl; 
+                    value_return = Finish_;
+                }
+            }
+            else if(command_action == "equal_+"){ //+=
+                if(is_have==0){
+                    cout<<"Error not have variable"<<endl; 
+                    value_return = Error_;
+                }else{
+                    my_vars_local.var[is_have-1].data+=stof_f(focus_value);
+                    cout<<"Add variable had completed"<<endl;
+                    value_return = Finish_;
+                }
+            }
+            else if(command_action == "equal_-"){ //-=
+                if(is_have==0){
+                    cout<<"Error not have variable"<<endl; 
+                    value_return = Error_;
+                }else{
+                    my_vars_local.var[is_have-1].data-=stof_f(focus_value);
+                    cout<<"Sub variable had completed"<<endl;
+                    value_return = Finish_;
+                }
+            }
+            else if(command_action == "equal_as"){ //==
+                if(is_have == 0) {
+                    cout<<"Error not have variable"<<endl;
+                    value_return = Error_;
+                }
+                else{
+                    if(my_vars_local.var[is_have-1].data==stof_f(focus_value)){
+                        cout<<"Equal variable is true"<<endl;
+                        value_return = True_;
+                    }
+                    else{
+                        cout<<"Equal variable is false"<<endl;
+                        value_return = False_;
+                    }
+                }
+            }
+            else if(command_action == "equal_not"){ //!=
+                if(is_have == 0) {
+                    cout<<"Error not have variable"<<endl;
+                    value_return = Error_;
+                }
+                else{
+                    if(my_vars_local.var[is_have-1].data!=stof_f(focus_value)){
+                        cout<<"Equal not variable is true"<<endl;
+                        value_return = True_;
+                    }
+                    else{
+                        cout<<"Equal not variable is false"<<endl;
+                        value_return = False_;
+                    }
+                }
+            }
+            else if(command_action == "smaller_as"){ //<
+                if(is_have == 0) {
+                    cout<<"Error not have variable"<<endl;
+                    value_return = Error_;
+                }
+                else{
+                    if(my_vars_local.var[is_have-1].data < stof_f(focus_value)){
+                        cout<<"smaller_as variable is true"<<endl;
+                        value_return = True_;
+                    }
+                    else{
+                        cout<<"smaller_as variable is false"<<endl;
+                        value_return = False_;
+                    }
+                }
+            }
+            else if(command_action == "bigger_as"){ //>
+                if(is_have == 0) {
+                    cout<<"Error not have variable"<<endl;
+                    value_return = Error_;
+                }
+                else{
+                    if(my_vars_local.var[is_have-1].data > stof_f(focus_value)){
+                        cout<<"bigger_as variable is true"<<endl;
+                        value_return = True_;
+                    }
+                    else{
+                        cout<<"bigger_as variable is false"<<endl;
+                        value_return = False_;
+                    }
+                }
+            }
+            else if(command_action == "reset"){ 
+                my_vars_local.reset_all();
+                cout<<"reset variable had completed"<<endl;
                 value_return = Finish_;
             }
-        }
-        else if(command_action == "equal_-"){ //-=
-            if(is_have==0){
-                cout<<"Error not have variable"<<endl; 
-                value_return = Error_;
-            }else{
-                my_vars_local.var[is_have-1].data-=stof_f(focus_value);
-                cout<<"Sub variable had completed"<<endl;
+            else if(command_action == "delete"){
+                my_vars_local.delete_all();
+                cout<<"delete variable had completed"<<endl;
                 value_return = Finish_;
             }
-        }
-        else if(command_action == "equal_as"){ //==
-            if(is_have == 0) {
-                cout<<"Error not have variable"<<endl;
-                value_return = Error_;
-            }
-            else{
-                if(my_vars_local.var[is_have-1].data==stof_f(focus_value)){
-                    cout<<"Equal variable is true"<<endl;
-                    value_return = True_;
-                }
-                else{
-                    cout<<"Equal variable is false"<<endl;
-                    value_return = False_;
-                }
-            }
-        }
-        else if(command_action == "equal_not"){ //!=
-            if(is_have == 0) {
-                cout<<"Error not have variable"<<endl;
-                value_return = Error_;
-            }
-            else{
-                if(my_vars_local.var[is_have-1].data!=stof_f(focus_value)){
-                    cout<<"Equal not variable is true"<<endl;
-                    value_return = True_;
-                }
-                else{
-                    cout<<"Equal not variable is false"<<endl;
-                    value_return = False_;
-                }
-            }
-        }
-        else if(command_action == "smaller_as"){ //<
-            if(is_have == 0) {
-                cout<<"Error not have variable"<<endl;
-                value_return = Error_;
-            }
-            else{
-                if(my_vars_local.var[is_have-1].data < stof_f(focus_value)){
-                    cout<<"smaller_as variable is true"<<endl;
-                    value_return = True_;
-                }
-                else{
-                    cout<<"smaller_as variable is false"<<endl;
-                    value_return = False_;
-                }
-            }
-        }
-        else if(command_action == "bigger_as"){ //>
-            if(is_have == 0) {
-                cout<<"Error not have variable"<<endl;
-                value_return = Error_;
-            }
-            else{
-                if(my_vars_local.var[is_have-1].data > stof_f(focus_value)){
-                    cout<<"bigger_as variable is true"<<endl;
-                    value_return = True_;
-                }
-                else{
-                    cout<<"bigger_as variable is false"<<endl;
-                    value_return = False_;
-                }
-            }
-        }
-        else if(command_action == "reset"){ 
-            my_vars_local.reset_all();
-            cout<<"reset variable had completed"<<endl;
-            value_return = Finish_;
-        }
-        else if(command_action == "delete"){
-            my_vars_local.delete_all();
-            cout<<"delete variable had completed"<<endl;
-            value_return = Finish_;
-        }
+        }   
         status = Finish_;
         request = 0;
         return value_return;

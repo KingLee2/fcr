@@ -86,11 +86,11 @@ class config_function : public rclcpp::Node{
         int status = Finish_;
         int request = 0; //request = 1: yeu cau thuc thi, request = 0: khong co yeu cau thuc thi
         //footprint_padding
-        string footprint_padding = "none";
+        string footprint_padding = "";
         //inflation_radius
-        string inflation_radius = "none";
+        string inflation_radius = "";
         //velocity
-        string desired_linear_vel = "none";
+        string desired_linear_vel = "";
         //declare service
         //footprint padding
         rclcpp::Client<rcl_interfaces::srv::SetParameters>::SharedPtr set_footprint_padding_local_client_;
@@ -144,7 +144,7 @@ int config_function::action(){
         // static string config_set,config_return;
         value_return=Finish_;
         //desired_linear_vel
-        if(desired_linear_vel != "none"){
+        if(desired_linear_vel != ""){
             double desired_linear_vel_set = stod_f(desired_linear_vel);
             if(stod_f(desired_linear_vel)> 0.5) desired_linear_vel_set = 0.5;
             if(!set_done_vel){
@@ -162,7 +162,7 @@ int config_function::action(){
                 //value_return = Finish_;
             }
         }
-        if(footprint_padding != "none"){
+        if(footprint_padding != ""){
             double footprint_padding_set = stod_f(footprint_padding);
             if(footprint_padding_set < 0.0) footprint_padding_set = 0.0;
             //local costmap
