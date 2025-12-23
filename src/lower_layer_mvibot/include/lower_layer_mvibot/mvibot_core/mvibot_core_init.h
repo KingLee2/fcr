@@ -11,7 +11,7 @@ using namespace std;
     int data_socket_ready = 0;
     float time_out_socket = 0;
     // mode operating for robot
-    string mode;
+    string mode = "navigation";
     string mvibot_seri="mvibot";
     string define_path = "/home/mvibot/floorCleaningRobot_ws/"; //src/lower_layer_mvibot/";
     // param robot 

@@ -14,8 +14,6 @@ class gpio_function : public rclcpp::Node{
     private:
         //declare var
         string mvibot_seri_, mvibot_seri_f_;
-        //mutex
-        // std::mutex mutex_common;
         //
         std_msgs::msg::Float32MultiArray input_status, input_status_1, input_status_2;
         std_msgs::msg::Float32MultiArray output_status;
@@ -52,12 +50,10 @@ class gpio_function : public rclcpp::Node{
             set_output_pub_ = this->create_publisher<std_msgs::msg::String>("output_user_set",1);
             //init subscriber
             auto output_status_callback = [this](std_msgs::msg::Float32MultiArray msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 output_status = msg;
             };
             output_status_sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(mvibot_seri_+"/output_user_status",qos_profile, output_status_callback);
             auto input_status_callback = [this](std_msgs::msg::Float32MultiArray msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 input_status_2 = input_status_1;
                 input_status_1 = input_status;
                 input_status = msg;
@@ -65,7 +61,6 @@ class gpio_function : public rclcpp::Node{
             input_status_sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(mvibot_seri_+"/input_user_status",qos_profile,input_status_callback);
             //
             auto gpio_info_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 parameters = json::parse(msg.data);
                 // cout<<parameters<<endl;
                 process_data();
@@ -74,7 +69,6 @@ class gpio_function : public rclcpp::Node{
             gpio_info_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/gpio_info", qos_profile, gpio_info_callback);
             //
             auto gpio_function_status_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 cout<<"gpio|received request,status"<<endl;
                 if(msg.data == "active"){
                     request = 1;
@@ -101,7 +95,6 @@ class gpio_function : public rclcpp::Node{
             //init timer
             //
             auto action_timer_callback = [this]()->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 cout<<"gpio|request:"<<request<<"|state:"<<status<<endl;
                 if(request == 1){
                     int res;

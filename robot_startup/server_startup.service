@@ -4,11 +4,18 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-Type=simple
+Type=exec
 User=mvibot
-WorkingDirectory=/home/mvibot/floorCleaningRobot_ws
-ExecStart=/bin/bash /home/mvibot/floorCleaningRobot_ws/robot_startup/server_startup.rc
+Environment="ROS_DOMAIN_ID=11"
+Environment="RMW_IMPLEMENTATION=rmw_fastrtps_cpp"
+WorkingDirectory=/home/mvibot/
+ExecStart=/bin/bash -c " \
+    source /opt/ros/jazzy/setup.bash && \
+    source /home/mvibot/floorCleaningRobot_ws/install/setup.bash && \
+    ros2 launch higher_layer_mvibot bringup_server_launch.py \
+"
 Restart=on-failure
+RestartSec=3
 StandardOutput=journal
 StandardError=journal
 

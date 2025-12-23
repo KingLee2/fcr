@@ -80,8 +80,6 @@ class variable_function : public rclcpp::Node{
     private:
         //declare var
         string mvibot_seri_, mvibot_seri_f_;
-        //mutex
-        // std::mutex mutex_common;
         //
         multiple_variable_local   my_vars_local;
         json parameters;
@@ -115,7 +113,6 @@ class variable_function : public rclcpp::Node{
             //init subscriber
             //
             auto variable_info_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 parameters = json::parse(msg.data);
                 // cout<<parameters<<endl;
                 process_data();
@@ -125,7 +122,6 @@ class variable_function : public rclcpp::Node{
             variable_info_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/variable_info", qos_profile, variable_info_callback);
             //
             auto variable_function_status_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 cout<<"variable|received request,status"<<endl;
                 if(msg.data == "active"){
                     request = 1;
@@ -152,15 +148,8 @@ class variable_function : public rclcpp::Node{
             //init timer
             //
             auto action_timer_callback = [this]()->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 cout<<"variable|request:"<<request<<"|state:"<<status<<endl;
                 if(request == 1){
-                    // static int res = Finish_, res_f = Finish_;
-                    // res = action();
-                    // if(res!= res_f) {
-                    //     pub_function_state_variable(res);
-                    //     res_f = res;
-                    // }
                     int res;
                     res = action();
                     pub_function_state_variable(res);
@@ -168,12 +157,6 @@ class variable_function : public rclcpp::Node{
                 pub_variable();
             };
             action_timer_ = this->create_wall_timer(50ms, action_timer_callback);
-            //
-            // auto variable_timer_callback = [this]()->void{
-            //     // std::lock_guard<std::mutex> lock(mutex_common);
-            //     pub_variable();
-            // };
-            // variable_timer_ = this->create_wall_timer(1000ms, variable_timer_callback);
         }
         void pub_function_state_variable(int st);
         void pub_variable();
@@ -202,7 +185,6 @@ void variable_function::pub_function_state_variable(int st){
 void variable_function::pub_variable(){
     static float creat_fun=0;
     static std_msgs::msg::String msg;
-    // std::lock_guard<std::mutex> lock(mutex_common);
     if(creat_fun==1)
     {
         msg.data="";
@@ -233,7 +215,7 @@ void variable_function::print(int n){
 int variable_function::action(){
     static int value_return;
     if(status == Active_){
-        if(name_variable != "null"){
+        if(name_variable != ""){
             static int is_have;
             is_have = 0;
             for(int i=0;i<my_vars_local.var.size();i++){

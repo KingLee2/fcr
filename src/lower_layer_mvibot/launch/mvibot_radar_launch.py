@@ -20,7 +20,7 @@ def generate_launch_description():
                 ],
                 parameters=[{
                         'serial_port': '/dev/rplidar1',
-                        'serial_baudrate': 115200, #256000,
+                        'serial_baudrate': 256000, #115200, #256000,
                         'frame_id': [LaunchConfiguration('mvibot_seri'),TextSubstitution(text='/base_lidar_1')],
                         'inverted': False,
                         'angle_compensate': True,

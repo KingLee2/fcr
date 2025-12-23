@@ -60,11 +60,12 @@ class control_node : public rclcpp::Node{
                 {
                     std::lock_guard<std::mutex> lock(mutex_tool);
                     local_mvibot_sensor_ready = mvibot_sensor_ready;
+                    local_battery_status_charge = battery_status_charge;
                 }
                 std::lock_guard<std::mutex> lock(mutex_control);
                 time_out_cmd_vel=0;
                 // RCLCPP_INFO(rclcpp::get_logger("Motor"), "before receive veloc");
-                if(local_mvibot_sensor_ready==1){
+                if(local_mvibot_sensor_ready==1 && local_battery_status_charge!=1){
                     // RCLCPP_INFO(rclcpp::get_logger("Motor"), "after receive veloc");
                     v_set1=msg->linear.x;
                     w_set1=msg->angular.z;

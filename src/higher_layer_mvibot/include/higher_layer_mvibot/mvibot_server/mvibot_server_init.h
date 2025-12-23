@@ -19,7 +19,7 @@ using namespace sql;
     Connection *con;
     sql::Statement *stmt;
     sql::ResultSet  *res;
-    string user="mvibot",password="Mvibot@v1",host="tcp://127.0.0.1:3306",db="fcr_database";
+    string user="maruei",password="marueiRnd",host="tcp://127.0.0.1:3306",db="moshi_db";
     void free_res(){
         if(res!=nullptr){
             delete res;

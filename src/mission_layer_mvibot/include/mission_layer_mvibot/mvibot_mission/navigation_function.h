@@ -33,10 +33,8 @@ class navigation_function : public rclcpp::Node{
             mvibot_seri_f_ = mvibot_seri_;
             mvibot_seri_f_.erase(0,1);
             //transform
-            // tf_Buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
             tf_Buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             tf_Listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_Buffer_);
-            // tf_Broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(shared_from_this());
             tf_Broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
             //robot stop
             stop_robot_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel",1);
@@ -54,27 +52,24 @@ class navigation_function : public rclcpp::Node{
             covered_pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("covered_poses",1);
             robot_position_pub_ = this->create_publisher<std_msgs::msg::String>("robot_position",1);
             //create subscriber
-            //localization_pose_sub_=this->create_subscription<geometry_msgs::msg::PoseStamped>("/localization_robot",1,std::bind(&BasicNavigator::localization_robot_callback,this, std::placeholders::_1));
             auto robot_position_callback = [this](geometry_msgs::msg::PoseWithCovarianceStamped msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 robot_position_ = msg;
             };
             robot_position_sub_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(mvibot_seri_ + "/amcl_pose",qos_profile,robot_position_callback);
             //get data of function
             auto navigation_info_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 parameters = json::parse(msg.data);
                 cout<<msg.data<<endl;
                 process_data();
                 request = 1;
+                step = 0;
             };
             navigation_info_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/navigation_info", qos_profile, navigation_info_callback);
             //get state of function
             auto navigation_function_status_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
-                static int st = 0;
+		        static int st = 0;
                 if(msg.data == "active"){
-                    st = 1;
+		            st = 1;
                     request = 1;
                     status = Active_;
                 }
@@ -96,8 +91,6 @@ class navigation_function : public rclcpp::Node{
                     cancel_navToPose();
                     cancel_navThroughPoses();
                     cancel_navCompleteCoverage();
-                    cancel_getPathToPose();
-                    cancel_followPath();
                     status = Error_;
                     request = 0;
                 }
@@ -113,49 +106,36 @@ class navigation_function : public rclcpp::Node{
             navigation_function_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/navigation_function_status", qos_profile, navigation_function_status_callback);
             //get path to goal
             auto get_path_to_goal_callback = [this](nav_msgs::msg::Path msg)->void{
-                //lock();
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 path_ = nav_msgs::msg::Path();
                 path_ =msg;
-                // pub_user_path_->publish(msg);
                 pub_user_path(msg);
-                //unlock();
             };
             get_path_to_goal_sub_ = this->create_subscription<nav_msgs::msg::Path>(mvibot_seri_+"/plan", rclcpp::SystemDefaultsQoS(), get_path_to_goal_callback);
             auto get_path_coverage_callback = [this](nav_msgs::msg::Path msg)->void{
-                //lock();
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 path_ = nav_msgs::msg::Path();
                 path_ = msg;
-                // pub_user_path_->publish(msg);
-                pub_user_path(msg);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                //unlock();
+                pub_user_path(msg);
             };
             get_path_coverage_sub_ = this->create_subscription<nav_msgs::msg::Path>(mvibot_seri_+"/coverage_server/coverage_plan", rclcpp::SystemDefaultsQoS(), get_path_coverage_callback);
             //create service
             clear_costmap_global_srv_ = this->create_client<nav2_msgs::srv::ClearEntireCostmap>("global_costmap/clear_entirely_global_costmap");
             clear_costmap_local_srv_ = this->create_client<nav2_msgs::srv::ClearEntireCostmap>("local_costmap/clear_entirely_local_costmap");
+            //
+            set_initial_robot("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/robot_position.txt");
             //timer
             auto send_robot_position_callback = [this]()->void{
                 double *pos_robot;
                 string data;
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 pos_robot = get_position_tf("map",mvibot_seri_f_+"/base_footprint");
+                save_robot_position("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/robot_position.txt", pos_robot[0], pos_robot[1], pos_robot[2], pos_robot[3]);
                 data = mvibot_seri_f_+"|x:"+to_string(pos_robot[0])+"|y:"+to_string(pos_robot[1])+"|thz:"+to_string(pos_robot[2])+"|thw:"+to_string(pos_robot[3]);
                 cout<<data<<endl;
                 pub_robot_position(data);
             };
             send_robot_position_timer_ = this->create_wall_timer(1000ms, send_robot_position_callback);
             auto execute_navigation_timer_callback = [this]()->void{
-                // std::lock_guard<std::mutex> lock(mutex_common);
                 cout<<"navigation|request:"<<request<<"|state:"<<status<<endl;
                 if(request == 1){
-                    // static int res = Finish_, res_f = Finish_;
-                    // res = action();
-                    // if(res!= res_f) {
-                    //     pub_function_state_navigation(res);
-                    //     res_f = res;
-                    // }
                     int res;
                     res = action();
                     pub_function_state_navigation(res);
@@ -166,9 +146,11 @@ class navigation_function : public rclcpp::Node{
         void send_history(string status, string info);
         void pub_stop_robot();
         void pub_amcl(float x, float y, float z, float w);
+        void set_initial_robot(const string& file_path);
         geometry_msgs::msg::PoseStamped get_robot_position();
         double *get_position_tf(string name1, string name2);
         void pub_robot_position(string data);
+        void save_robot_position(const std::string& file_path, double x, double y, double thz, double thw);
         void pub_user_path(const nav_msgs::msg::Path &path);
         void pub_function_state_navigation(int st);
         void navCompleteCoverage(const vector<geometry_msgs::msg::Polygon> &polygons, const std::string &behavior_tree="");
@@ -187,23 +169,8 @@ class navigation_function : public rclcpp::Node{
         void clearAllCostmap();
         void process_data();
         int action ();
-        float getyaw(double data1, double data2){
-            geometry_msgs::msg::Quaternion quat_msg;
-            double roll, pitch, yaw;
-            tf2::Quaternion quat_tf;
-            quat_msg.x=0;
-            quat_msg.y=0;
-            quat_msg.z=data1;
-            quat_msg.w=data2;
-            tf2::fromMsg(quat_msg, quat_tf);
-            tf2::Matrix3x3(quat_tf).getRPY(roll, pitch, yaw);
-            return yaw;
-        }  
-
+        float getyaw(double data1, double data2); 
     private:
-        ////mutex////
-        // std::recursive_mutex mutex_status;
-        // std::mutex mutex_common;
         //declare tranform var
         std::unique_ptr<tf2_ros::Buffer> tf_Buffer_;
         std::shared_ptr<tf2_ros::TransformListener> tf_Listener_{nullptr};
@@ -254,13 +221,25 @@ class navigation_function : public rclcpp::Node{
         int request = 0; //request = 1: yeu cau thuc thi, request = 0: khong co yeu cau thuc thi
         result states, state_planner, state_controller ;
 };
+float navigation_function::getyaw(double data1, double data2){
+    geometry_msgs::msg::Quaternion quat_msg;
+    double roll, pitch, yaw;
+    tf2::Quaternion quat_tf;
+    quat_msg.x=0;
+    quat_msg.y=0;
+    quat_msg.z=data1;
+    quat_msg.w=data2;
+    tf2::fromMsg(quat_msg, quat_tf);
+    tf2::Matrix3x3(quat_tf).getRPY(roll, pitch, yaw);
+    return yaw;
+} 
 double *navigation_function::get_position_tf(string source_frame, string target_frame){
     static double data[4];
     //get position
     static double x,y,z,thz,thw;
     static geometry_msgs::msg::TransformStamped transformStamped;
     try{
-        transformStamped = tf_Buffer_->lookupTransform(target_frame,source_frame,tf2::TimePointZero);
+        transformStamped = tf_Buffer_->lookupTransform(source_frame,target_frame,tf2::TimePointZero);
         x=transformStamped.transform.translation.x;
         y=transformStamped.transform.translation.y;
         z=transformStamped.transform.translation.z;
@@ -279,6 +258,18 @@ void navigation_function::pub_robot_position(string data){
     std_msgs::msg::String msg;
     msg.data = data;
     robot_position_pub_->publish(msg);
+}
+void navigation_function::save_robot_position(const std::string& file_path, double x, double y, double thz, double thw){
+    std::ofstream file(file_path);
+    if (!file.is_open()) {
+        std::cerr << "Cannot open file: " << file_path << std::endl;
+        return;
+    }
+    file << "x: "   << x   << std::endl;
+    file << "y: "   << y   << std::endl;
+    file << "thz: " << thz << std::endl;
+    file << "thw: " << thw << std::endl;
+    file.close();
 }
 void navigation_function::send_history(string status, string info){
     static std_msgs::msg::String history_msg;
@@ -302,6 +293,27 @@ void navigation_function::pub_amcl(float x, float y, float z, float w){
     amcl_.pose.covariance[7]=0.25;
     amcl_.pose.covariance[35]=0.06853892326654787;
     pub_amcl_->publish(amcl_);
+}
+void navigation_function::set_initial_robot(const string& file_path){
+    while(pub_amcl_->get_subscription_count()==0){
+        RCLCPP_INFO(this->get_logger(),"AMCL is not ready");
+        sleep(0.5);
+    }
+    RCLCPP_INFO(this->get_logger(),"AMCL is ready");
+    std::ifstream file(file_path);
+    if (!file.is_open()) {
+        return;
+    }
+    string key;
+    double value,x,y,thz,thw;
+    while (file >> key >> value) {
+        if (key == "x:") x = value;
+        else if (key == "y:") y = value;
+        else if (key == "thz:") thz = value;
+        else if (key == "thw:") thw = value;
+    }
+    file.close();
+    pub_amcl(x,y,thz,thw);
 }
 void navigation_function::pub_function_state_navigation(int st){
     std_msgs::msg::String msg;
@@ -338,7 +350,6 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
     //send goal and receive result//
     rclcpp_action::Client<opennav_coverage_msgs::action::NavigateCompleteCoverage>::SendGoalOptions options;
     options.goal_response_callback=[this](std::shared_ptr<rclcpp_action::ClientGoalHandle<opennav_coverage_msgs::action::NavigateCompleteCoverage>> goal_handle){
-        // std::lock_guard<std::mutex> lock(mutex_common);
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"),"Goal was rejected by server!");
             send_history("error","NavigateCompleteCorverage was rejected by server!");
@@ -352,7 +363,6 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
     };
     options.feedback_callback = [this](std::shared_ptr<rclcpp_action::ClientGoalHandle<opennav_coverage_msgs::action::NavigateCompleteCoverage>>,
                         const std::shared_ptr<const opennav_coverage_msgs::action::NavigateCompleteCoverage::Feedback> feedback) {
-        // std::lock_guard<std::mutex> lock(mutex_common);
         RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"), "Received feedback: Current Position (x = %.2f, y = %.2f, z = %.2f, w = %.2f)",
                     feedback->current_pose.pose.position.x,
                     feedback->current_pose.pose.position.y,
@@ -361,7 +371,6 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
         states = ACTIVE;
     };
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<opennav_coverage_msgs::action::NavigateCompleteCoverage>::WrappedResult & result) {
-        // std::lock_guard<std::mutex> lock(mutex_common);
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage succeeded!");
             send_history("normal","NavigateCompleteCorverage succeeded!");
@@ -383,15 +392,13 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
             else if(result.code == rclcpp_action::ResultCode::UNKNOWN){
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage failed with status: UNKNOWN");
                 info+= "UNKNOWN";
-                states = CANCEL;
+                // states = ERROR;
+		states = CANCEL;
             }
             send_history("error",info);
         }
     };
-    // RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"),"send goal");
     auto send_goal_future = nav_complete_coverage_client_->async_send_goal(goal_msg,options);
-    //wait finish
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), send_goal_future);
 }
 void navigation_function::update_polygon(){
     BoostPolygon boost_poly_original, boost_poly_covered;
@@ -480,7 +487,6 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
     //send goal and receive result//
     rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SendGoalOptions options;
     options.goal_response_callback=[this](std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>> goal_handle){
-        // std::lock_guard<std::mutex> lock(mutex_common);
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateToPose"),"Goal was rejected by server!");
             send_history("error","Goal was rejected by server!");
@@ -489,13 +495,11 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
         else{
             RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"),"Goal was accepted by server, waiting for result");
             send_history("normal","Goal was accepted by server, waiting for result");
-            // pub_user_path();
             states = ACCEPT;
         }
     };
     options.feedback_callback = [this](std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>>,
                         const std::shared_ptr<const nav2_msgs::action::NavigateToPose::Feedback> feedback) {
-        // std::lock_guard<std::mutex> lock(mutex_common);
         RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"), "Received feedback: Current Position (x = %.2f, y = %.2f, z = %.2f, w = %.2f)",
                     feedback->current_pose.pose.position.x,
                     feedback->current_pose.pose.position.y,
@@ -504,7 +508,6 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
         states = ACTIVE;
     };
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult & result) {
-        // std::lock_guard<std::mutex> lock(mutex_common);
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"), "NavigateToPose succeeded!");
             send_history("normal","NavigateToPose succeeded!");
@@ -532,8 +535,6 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
         }
     };
     auto send_goal_future = nav_to_pose_client_->async_send_goal(goal_msg,options);
-    //wait finish
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), send_goal_future);
 }
 void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::PoseStamped> &poses, const std::string &behavior_tree){
     RCLCPP_INFO(rclcpp::get_logger("NaviagteThroughPoses"),"wait for 'NaviagteThroughPoses' action server");
@@ -545,12 +546,11 @@ void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::P
     auto goal_msg = nav2_msgs::action::NavigateThroughPoses::Goal();
     goal_msg.poses=poses;
     goal_msg.behavior_tree=behavior_tree;
-    //naviagting with number of goals
+    //navigating with number of goals
     RCLCPP_INFO(rclcpp::get_logger("NavigateThroughPoses"),"Navigating with %zu goals ...",goal_msg.poses.size());
     //send goal and receive result//
     rclcpp_action::Client<nav2_msgs::action::NavigateThroughPoses>::SendGoalOptions options;
     options.goal_response_callback=[this](std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateThroughPoses>> goal_handle){
-        // std::lock_guard<std::mutex> lock(mutex_common);
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateThroughPoses"),"Goals was rejected by server!");
             send_history("error","Goals was rejected by server!");
@@ -559,13 +559,11 @@ void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::P
         else{
             RCLCPP_INFO(rclcpp::get_logger("NavigateThroughPoses"),"Goals was accepted by server, waiting for result");
             send_history("normal","Goals was accepted by server, waiting for result");
-            // pub_user_path();
             states = ACCEPT;
         }
     };
     options.feedback_callback = [this](std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateThroughPoses>>,
                         const std::shared_ptr<const nav2_msgs::action::NavigateThroughPoses::Feedback> feedback) {
-        // std::lock_guard<std::mutex> lock(mutex_common);
         RCLCPP_INFO(rclcpp::get_logger("NavigateThroughPoses"), "Received feedback: Current Position (x = %.2f, y = %.2f, z = %.2f, w = %.2f)",
                     feedback->current_pose.pose.position.x,
                     feedback->current_pose.pose.position.y,
@@ -575,7 +573,6 @@ void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::P
         states = ACTIVE;
     };
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateThroughPoses>::WrappedResult & result) {
-        // std::lock_guard<std::mutex> lock(mutex_common);
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateThroughPoses"), "NavigateThroughPoses succeeded!");
             send_history("normal","NavigateThroughPoses succeeded!");
@@ -603,10 +600,7 @@ void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::P
         }
     };
     auto send_goal_future=nav_through_poses_client_->async_send_goal(goal_msg, options);
-    //wait result
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), send_goal_future);
 }
-
 void navigation_function::getPathToPose(geometry_msgs::msg::PoseStamped start, geometry_msgs::msg::PoseStamped goal, std::string planner_id, bool use_start){
     state_planner = UNKNOW;
     RCLCPP_INFO(rclcpp::get_logger("ComputePathToPose"),"send a 'computePathToPose' action request");
@@ -640,7 +634,6 @@ void navigation_function::getPathToPose(geometry_msgs::msg::PoseStamped start, g
             RCLCPP_INFO(rclcpp::get_logger("ComputePathToPose"),"ComputePathToPose succeeded");
             send_history("normal","ComputePathToPose succeeded");
             path_ = result.result->path;
-            // pub_use_path();
             state_planner = SUCCESS;
         }
         else{
@@ -666,9 +659,6 @@ void navigation_function::getPathToPose(geometry_msgs::msg::PoseStamped start, g
         }     
     };
     auto send_goal_future = compute_path_to_pose_client_->async_send_goal(goal_msg, options);
-    // //wait finish
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), send_goal_future);
-    // // cancel_getPathToPose();
 }
 void navigation_function::followPath(const nav_msgs::msg::Path &path, const std::string &controller_id, const std::string &goal_checker_id){
     state_controller = UNKNOW;
@@ -710,33 +700,26 @@ void navigation_function::followPath(const nav_msgs::msg::Path &path, const std:
         }
     };
     auto send_goal_future = follow_path_client_->async_send_goal(goal_msg,options);
-    // waiting for sending goal completely
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), send_goal_future);
 }
 void navigation_function::cancel_navCompleteCoverage(){
     RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"), "Canceling naviagte complete coverage");
     auto cancel_goal = nav_complete_coverage_client_->async_cancel_all_goals();
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), cancel_goal);
 }
 void navigation_function::cancel_navToPose(){
     RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"), "Canceling naviagte to pose");
     auto cancel_goal = nav_to_pose_client_->async_cancel_all_goals();
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), cancel_goal);
 }
 void navigation_function::cancel_navThroughPoses(){
     RCLCPP_INFO(rclcpp::get_logger("NavigateThroughPoses"), "Canceling navigate through pose");
     auto cancel_goal = nav_through_poses_client_->async_cancel_all_goals();
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), cancel_goal);
 }
 void navigation_function::cancel_getPathToPose(){
     RCLCPP_INFO(rclcpp::get_logger("ComputePathToPose"), "Canceling get path to pose");
     auto cancel_goal = compute_path_to_pose_client_->async_cancel_all_goals();
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), cancel_goal);
 }
 void navigation_function::cancel_followPath(){
     RCLCPP_INFO(rclcpp::get_logger("FollowPath"), "Canceling follow path");
     auto cancel_goal = follow_path_client_->async_cancel_all_goals();
-    // rclcpp::spin_until_future_complete(this->get_node_base_interface(), cancel_goal);
 }
 void navigation_function::clearLocalCostmap(){
     RCLCPP_INFO(rclcpp::get_logger("Navigation"), "Clear Local costmap");
@@ -782,11 +765,7 @@ void navigation_function::pub_user_path(const nav_msgs::msg::Path &path){
     RCLCPP_INFO(this->get_logger(),"publish path to goal");
 }
 void navigation_function::process_data(){
-    //////////
     mode = parameters["mode"].get<string>();
-    //test
-    // mode = "go_to_pose";
-    // status = Active_;
     if(mode == "go_to_pose"){
         goal_position_.header.frame_id = "map";
         goal_position_.header.stamp = this->get_clock()->now();
@@ -797,16 +776,6 @@ void navigation_function::process_data(){
         goal_position_.pose.orientation.y = 0.0;
         goal_position_.pose.orientation.z = std::stod(parameters["goal_position"][0].value("z","0.0"));
         goal_position_.pose.orientation.w = std::stod(parameters["goal_position"][0].value("w","1.0"));
-        ///test
-        // goal_position_.header.frame_id = "map";
-        // goal_position_.header.stamp = this->get_clock()->now();
-        // goal_position_.pose.position.x = 0.0;
-        // goal_position_.pose.position.y = 2.0;
-        // goal_position_.pose.position.z = 0.0;
-        // goal_position_.pose.orientation.x = 0.0;
-        // goal_position_.pose.orientation.y = 0.0;
-        // goal_position_.pose.orientation.z = 0.0;
-        // goal_position_.pose.orientation.w = 1.0;
     }
     else if(mode == "line_follow"){
         goal_position_.header.frame_id = "map";
@@ -824,7 +793,6 @@ void navigation_function::process_data(){
         for (const auto& goal_json : parameters["goal_position"]){
             geometry_msgs::msg::PoseStamped pose;
             pose.header.frame_id = "map";
-            // pose.header.stamp = rclcpp::Clock().now();  // hoặc rclcpp::Time(0)
             pose.header.stamp = this->get_clock()->now();
             pose.pose.position.x = std::stod(goal_json.value("x", "0.0"));
             pose.pose.position.y = std::stod(goal_json.value("y", "0.0"));
@@ -837,6 +805,8 @@ void navigation_function::process_data(){
         }
     }
     else if(mode == "navigate_coverage"){
+        /*//only polygon
+        polygons.resize(0);
         polygons.resize(1);
         for(const auto& area_json : parameters["area"]){
             geometry_msgs::msg::Point32 pt;
@@ -846,19 +816,36 @@ void navigation_function::process_data(){
             polygons[0].points.push_back(pt);
         }
         polygons[0].points.push_back(polygons[0].points[0]);
-        // test
-        // polygons.resize(1);
-        // polygons[0].points.resize(5);
-        // polygons[0].points[0].x = -4.0;
-        // polygons[0].points[0].y = 36;
-        // polygons[0].points[1].x = -4.0;
-        // polygons[0].points[1].y = -7.0;
-        // polygons[0].points[2].x = 15.0;
-        // polygons[0].points[2].y = -7.0;
-        // polygons[0].points[3].x = 15.0;
-        // polygons[0].points[3].y = 36.0;
-        // polygons[0].points[4].x = -4.0;
-        // polygons[0].points[4].y = 36.0;
+        //only polygon */
+        //many polygons
+        polygons.clear();
+        // area: array of polygons
+        if (parameters.contains("area") && parameters["area"].is_array()) {
+            polygons.resize(parameters["area"].size());
+            size_t poly_idx = 0;
+            for (const auto& polygon_json : parameters["area"]) {
+                // polygon_json: array of points
+                if (!polygon_json.is_array()) {
+                    continue;
+                }
+                for (const auto& point_json : polygon_json) {
+                    geometry_msgs::msg::Point32 pt;
+                    pt.x = std::stod(point_json.value("x", "0.0"));
+                    pt.y = std::stod(point_json.value("y", "0.0"));
+                    pt.z = 0.0;
+
+                    polygons[poly_idx].points.push_back(pt);
+                }
+                // Close polygon (push first point again)
+                if (!polygons[poly_idx].points.empty()) {
+                    polygons[poly_idx].points.push_back(
+                        polygons[poly_idx].points.front()
+                    );
+                }
+                poly_idx++;
+            }
+        }
+        //many polygons
     }
 }
 int navigation_function::action(){
@@ -910,7 +897,7 @@ int navigation_function::action(){
                     step = 0;
                     request = 0;
                     status = Finish_;
-                    pub_user_path(path_); 
+		            pub_user_path(path_);
                     return Finish_;
                 }
                 else if(states == REJECT){
@@ -931,7 +918,7 @@ int navigation_function::action(){
                         step = 0;
                         request = 0;
                         status = Finish_;
-                        pub_user_path(path_); 
+			            pub_user_path(path_);
                         return Finish_;
                     }
                     else{
@@ -990,7 +977,7 @@ int navigation_function::action(){
                     step = 0;
                     request = 0;
                     status = Finish_;
-                    pub_user_path(path_); 
+		            pub_user_path(path_);
                     return Finish_;
                 }
                 else if(state_controller == REJECT){
@@ -1013,7 +1000,7 @@ int navigation_function::action(){
                         step = 0;
                         request = 0;
                         status = Finish_;
-                        pub_user_path(path_); 
+			            pub_user_path(path_);
                         return Finish_;
                     }
                     else{
@@ -1058,7 +1045,6 @@ int navigation_function::action(){
                     step = 0;
                     request = 0;
                     status = Finish_;
-                    pub_user_path(path_); 
                     return Finish_;
                 }
                 else if(states == REJECT){
@@ -1077,16 +1063,15 @@ int navigation_function::action(){
                         cancel_navThroughPoses();
                         many_goal_position_.resize(0);
                         path_ = nav_msgs::msg::Path();
+                        pub_user_path(path_);
                         step = 0;
                         request = 0;
                         status = Finish_;
-                        pub_user_path(path_); 
                         return Finish_;
                     }
                     else{
                         //update many_goal_position
                         many_goal_position_.erase(many_goal_position_.begin(), many_goal_position_.end() - number_of_poses_remaining);
-                        // clearAllCostmap();
                         step = 0;
                         return Active_;
                     }
@@ -1120,9 +1105,12 @@ int navigation_function::action(){
                 else if(states == ERROR){
                     //update polygon
                     cancel_navCompleteCoverage();
-                    update_polygon();
+                    //update_polygon();
                     step = 0;
-                    return Active_;
+		            //request = 0;
+		            //status = Error_;
+                    //return Error_;
+		            return Active_;
                 }
                 else if(states == SUCCESS){
                     cancel_navCompleteCoverage();
@@ -1132,7 +1120,7 @@ int navigation_function::action(){
                     step = 0;
                     request = 0;
                     status = Finish_;
-                    pub_user_path(path_); 
+		            pub_user_path(path_);
                     return Finish_;
                 }
                 else return Active_;

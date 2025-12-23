@@ -433,6 +433,7 @@ void tool_node::robot_load_config(){
     if(config!="-1") robot_config_string+="wifi_ipv4_dns:"+config+"|";  
     //  operating config
     config=load_file("mode");
+    if(config!="-1") mode = config;
     if(config!="-1") robot_config_string+="mode:"+config+"|";  
     //
     // config=load_file("ip_robot");
