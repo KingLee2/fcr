@@ -1,8 +1,9 @@
 #include "mvibot_core_init.h"
 #include"../common/stof.h"
 #include"../common/exec.h"
-using namespace std;
 
+using namespace std;
+using json = nlohmann::json;
 //class lift, brush, suction, temperature, sensor, battery, config
 class tool_node : public rclcpp::Node{
     private:
@@ -20,20 +21,15 @@ class tool_node : public rclcpp::Node{
         float time_live_radar2=0;
         // camera1 status
         int camera1_live=0;
-        int camera1_config=0;
         float time_live_camera1=0;
         // camera2 status
         int camera2_live=0;
-        int camera2_config=0;
         float time_live_camera2=0;
         // uart
         // int uart_live=0;
         // battery status
         int battery_status=0;
         float time_live_batterry=0;
-        // battery small status
-        int battery_small_status=0;
-        float time_live_batterry_small=0;
         // ready sensor when radar 1 2 camera 1 2 is ready
         int dym_set_camera1=0,dym_set_camera2=0;
         int reset_radar1,reset_radar2,reset_camera1,reset_camera2;
@@ -88,19 +84,27 @@ class tool_node : public rclcpp::Node{
         rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr laser_scan2_sub_;
         rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr camera1_scan_sub_;
         rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr camera2_scan_sub_;
-        ///
 	    //charge
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr charge_control_sub_;
+        ////config sub
+        //operation
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr operation_sub_;
+        //serial camera
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr serial_camera_sub_;
+        //wifi
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr wifi_connect_sub_;
+        //ethernet
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr ethernet_connect_sub_;
 	    //declare timer//
         rclcpp::TimerBase::SharedPtr timer_;
         //
         rclcpp::Time check_time_pub;
     public:
         tool_node(const string &node_name, const string &sub_namespace) : Node(node_name, sub_namespace){
-            auto reentrant_cbg = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
-            auto mutuallyExclusive_cbg = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-            rclcpp::SubscriptionOptions sub_options;
-            sub_options.callback_group = mutuallyExclusive_cbg;
+            // auto reentrant_cbg = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
+            // auto mutuallyExclusive_cbg = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+            // rclcpp::SubscriptionOptions sub_options;
+            // sub_options.callback_group = mutuallyExclusive_cbg;
             rclcpp::QoS qos_profile(rclcpp::KeepLast(10));
             qos_profile.best_effort();
             mvibot_seri_ = this->get_namespace();
@@ -140,125 +144,201 @@ class tool_node : public rclcpp::Node{
             battery_status_pub_ = this->create_publisher<std_msgs::msg::String>("battery_status",1);
             battery_cell_status_pub_ = this->create_publisher<std_msgs::msg::String>("battery_cell_status",1);
             //init sub //
+            //config sub
+            //operation
+            auto operation_callback = [this](std_msgs::msg::String msg)->void{
+                std::lock_guard<std::mutex> lock(mutex_tool);
+                static string file_name;
+                file_name = "/home/mvibot/floorCleaningRobot_ws/config/mode";
+                try{
+                    std::ofstream file(file_name);
+                    if (!file.is_open()){
+                        return;
+                    }
+                    file <<msg.data;
+                    file.close();    
+                }
+                catch (const std::exception& e){
+                    send_history("error", "Error config operation: " + std::string(e.what()));
+                }
+            };
+            operation_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri + "/operation",qos_profile, operation_callback);
+            //camera
+            auto camera_config_callback = [this](std_msgs::msg::String msg)->void{
+                std::lock_guard<std::mutex> lock(mutex_tool);
+                string file_camera1, file_camera2;
+                json camera_config;
+                string camera1_config;
+                string camera2_config;
+                file_camera1 = "/home/mvibot/floorCleaningRobot_ws/config/serial_camera1";
+                file_camera2 = "/home/mvibot/floorCleaningRobot_ws/config/serial_camera2";
+                camera_config = msg.data;
+                camera1_config = camera_config["serial_camera1"].get<string>();
+                camera2_config = camera_config["serial_camera2"].get<string>();
+                try{
+                    //
+                    std::ofstream file1(file_camera1);
+                    if (!file1.is_open()){
+                        return;
+                    }
+                    file1 <<camera1_config;
+                    file1.close();
+                    //
+                    std::ofstream file2(file_camera2);
+                    if (!file2.is_open()){
+                        return;
+                    }
+                    file2 <<camera2_config;
+                    file2.close();
+                }
+                catch (const std::exception& e){
+                    send_history("error", "Error config camera: " + std::string(e.what()));
+                }
+            };
+            serial_camera_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri+"/camera_config",qos_profile,camera_config_callback);
+            //wifi config
+            auto wifi_config_callback = [this](std_msgs::msg::String msg)->void{
+                std::lock_guard<std::mutex> lock(mutex_tool);
+                string file_wifi_type, file_wifi_ssid, file_wifi_password;
+                json wifi_config;
+                string wifi_mode_config, ssid_config, pw_config;
+                file_wifi_type = "/home/mvibot/floorCleaningRobot_ws/config/wifi_type";
+                file_wifi_ssid = "/home/mvibot/floorCleaningRobot_ws/config/wifi_ssid";
+                file_wifi_password = "/home/mvibot/floorCleaningRobot_ws/config/wifi_password";
+                wifi_config = msg.data;
+                wifi_mode_config = wifi_config["mode"].get<string>();
+                ssid_config = wifi_config["ssid"].get<string>();
+                pw_config = wifi_config["password"].get<string>();
+                try{
+                    //
+                    std::ofstream file1(file_wifi_type);
+                    if (!file1.is_open()){
+                        return;
+                    }
+                    file1 <<wifi_mode_config;
+                    file1.close();
+                    //
+                    std::ofstream file2(file_wifi_ssid);
+                    if (!file2.is_open()){
+                        return;
+                    }
+                    file2 <<ssid_config;
+                    file2.close();
+                    //
+                    std::ofstream file3(file_wifi_password);
+                    if (!file3.is_open()){
+                        return;
+                    }
+                    file3 <<pw_config;
+                    file3.close();
+                }
+                catch (const std::exception& e){
+                    send_history("error", "Error config wifi: " + std::string(e.what()));
+                }
+            };
+            wifi_connect_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri+"/wifi_config", qos_profile, wifi_config_callback);
+            //ethernet
+            auto ethernet_config_callback= [this](std_msgs::msg::String msg)->void{
+                std::lock_guard<std::mutex> lock(mutex_tool);
+                static string file_name;
+                file_name = "/home/mvibot/floorCleaningRobot_ws/config/lan_type";
+                try{
+                    std::ofstream file(file_name);
+                    if (!file.is_open()){
+                        return;
+                    }
+                    file <<msg.data;
+                    file.close();
+                }
+                catch (const std::exception& e){
+                    send_history("error", "Error config ethernet: " + std::string(e.what()));
+                }
+            };
+            ethernet_connect_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri+"/ethernet_config",qos_profile,ethernet_config_callback);
             //sensor
             auto laser_scan1_callback = [this](sensor_msgs::msg::LaserScan::SharedPtr msg)->void{
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
+
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 radar1_live_status = 1;
-                // RCLCPP_INFO(this->get_logger(),"RECEIVE DATA RADAR1");
-                // unlock();
             };
             laser_scan1_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/laser/scan1",qos_profile,laser_scan1_callback);
-            // laser_scan1_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/laser/scan1",qos_profile,laser_scan1_callback, sub_options);
             auto laser_scan2_callback = [this](sensor_msgs::msg::LaserScan::SharedPtr msg)->void{
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 radar2_live_status = 1;
-                // RCLCPP_INFO(this->get_logger(),"RECEIVE DATA RADAR2");
-                // unlock();
             };
             laser_scan2_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/laser/scan1",qos_profile,laser_scan2_callback);
-            // laser_scan2_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/laser/scan1",qos_profile,laser_scan2_callback, sub_options);
             auto camera1_scan_callback = [this](sensor_msgs::msg::LaserScan::SharedPtr msg)->void{
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 camera1_live_status = 1;
-                // RCLCPP_INFO(this->get_logger(),"RECEIVE DATA CAMERA1");
-                // unlock();
             };
             camera1_scan_sub_ =  this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/camera1/scan",qos_profile,camera1_scan_callback);
-            // camera1_scan_sub_ =  this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/camera1/scan",qos_profile,camera1_scan_callback, sub_options);
             auto camera2_scan_callback = [this](sensor_msgs::msg::LaserScan::SharedPtr msg)->void{
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 camera2_live_status = 1;
-                // RCLCPP_INFO(this->get_logger(),"RECEIVE DATA CAMERA2");
-                // unlock();
             };
             camera2_scan_sub_ =  this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/camera2/scan",qos_profile,camera2_scan_callback);
-            // camera2_scan_sub_ =  this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/camera2/scan",qos_profile,camera2_scan_callback, sub_options);
             //brush
             auto brush_status_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") brush_send_uart_status = 1;
                 else if(msg.data == "0") brush_send_uart_status = 0;
             };
             brush_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/brush_state", qos_profile, brush_status_callback);
-            // brush_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/brush_state", qos_profile, brush_status_callback, sub_options);
             //suction
             auto suction_status_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") suction_send_uart_status = 1;
                 else if(msg.data == "0") suction_send_uart_status = 0;
             };
             suction_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/suction_state", qos_profile, suction_status_callback);
-            // suction_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/suction_state", qos_profile, suction_status_callback, sub_options);
             //valve
             auto valve_status_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") valve_send_uart_status = 1;
                 else if(msg.data == "0") valve_send_uart_status = 0;
             };
             valve_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/valve_state", qos_profile, valve_status_callback);
-            // valve_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/valve_state", qos_profile, valve_status_callback, sub_options);
             //lift brush
             auto lift_brush_power_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") lift_brush_power_send_uart = 1;
                 else if(msg.data == "0") lift_brush_power_send_uart = 0;
             };
             lift_brush_power_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_brush_power", qos_profile, lift_brush_power_callback);
-            // lift_brush_power_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_brush_power", qos_profile, lift_brush_power_callback, sub_options);
             auto lift_brush_control_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") lift_brush_control_send_uart = 1;
                 else if(msg.data == "0") lift_brush_control_send_uart = 0;
             };
             lift_brush_control_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_brush_control", qos_profile, lift_brush_control_callback);
-            // lift_brush_control_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_brush_control", qos_profile, lift_brush_control_callback, sub_options);
             auto lift_suction_power_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") lift_suction_power_send_uart = 1;
                 else if(msg.data == "0") lift_suction_power_send_uart = 0;
             };
             lift_suction_power_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_suction_power", qos_profile, lift_suction_power_callback);
-            // lift_suction_power_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_suction_power", qos_profile, lift_suction_power_callback, sub_options);
             auto lift_suction_control_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") lift_suction_control_send_uart = 1;
                 else if(msg.data == "0") lift_suction_control_send_uart = 0;
             };
             lift_suction_control_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_suction_control", qos_profile, lift_suction_control_callback);
-            // lift_suction_control_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/lift_suction_control", qos_profile, lift_suction_control_callback, sub_options);
             ///
 	        //charge
             auto charge_control_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 //nhan du lieu gan vao bien gui uart
                 if(msg.data == "1") charge_control_status = 1;
                 else if(msg.data == "0") charge_control_status = 0;
             };
             charge_control_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/charge_control", qos_profile, charge_control_callback);
-            // charge_control_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/charge_control", qos_profile, charge_control_callback, sub_options);
 	        //init timer//
             auto timer_callback = [this]()->void{
                 {
@@ -298,7 +378,6 @@ class tool_node : public rclcpp::Node{
                 //
             };
             timer_ = this->create_wall_timer(1000ms, timer_callback);
-            // timer_ = this->create_wall_timer(1000ms, timer_callback, reentrant_cbg);
         }
         void send_history(string status, string info);
         //
@@ -477,7 +556,6 @@ void tool_node::pub_information_robot(){
     static vector<string> param;
     static std_msgs::msg::String msg;
     if(creat_fun==1){
-            // robot_pub_->publish(msg);
             robot_status_pub_->publish(msg);
     }else{
         creat_fun=1;
@@ -528,13 +606,10 @@ void tool_node::pub_sensor_status(){
         sensor_status_msg.data=sensor_status_msg.data+"camera1:"+to_string((int)camera1_live)+"|";
         sensor_status_msg.data=sensor_status_msg.data+"camera2:"+to_string((int)camera2_live)+"|";
         sensor_status_msg.data=sensor_status_msg.data+"battery:"+to_string((int)battery_status);
-        // sensor_status_msg.data=sensor_status_msg.data+"battery_small:"+to_string((int)battery_small_status);
         sensor_status_pub_->publish(sensor_status_msg);
-        // RCLCPP_INFO(this->get_logger(),"SEND SENSOR STATUS");
     }else create_fun=1;
 }
 void tool_node::check_sensor(){
-    // std::lock_guard<std::mutex> lock(mutex_sensor);
     // radar1 
     if(radar1_live_status==1){
         if(time_live_radar1<0) time_live_radar1=0;
@@ -730,12 +805,10 @@ void tool_node::check_sensor(){
     if(time_live_batterry>=3.0){
         if(battery_status!=1) send_history("normal","Battery is available");
         battery_status=1;
-        // RCLCPP_INFO(this->get_logger(),"Battery is available");
     }
     if(time_live_batterry<=-2.0){
         if(battery_status!=0) send_history("error","Battery no signal");
         battery_status=0;
-        // RCLCPP_INFO(this->get_logger(),"Battery no signal");
     }
     //pub sensor status
     pub_sensor_status();
@@ -743,20 +816,16 @@ void tool_node::check_sensor(){
 //
 void tool_node::pub_temperature(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
-            static std_msgs::msg::String msg;
-            msg.data=mvibot_seri+"|";
-            msg.data=msg.data+"temperature_outside"+":"+to_string(temperature_outside)+"|";
-            msg.data=msg.data+"temperature_electric_box"+":"+to_string(temperature_electric_box);
-            temperature_pub_->publish(msg);
+        static std_msgs::msg::String msg;
+        msg.data=mvibot_seri+"|";
+        msg.data=msg.data+"temperature_outside"+":"+to_string(temperature_outside)+"|";
+        msg.data=msg.data+"temperature_electric_box"+":"+to_string(temperature_electric_box);
+        temperature_pub_->publish(msg);
     }else creat_fun=1;
 }
 void tool_node::pub_water_level(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -767,8 +836,6 @@ void tool_node::pub_water_level(){
 }
 void tool_node::pub_status_brush(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -779,8 +846,6 @@ void tool_node::pub_status_brush(){
 }
 void tool_node::pub_status_suction(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -791,8 +856,6 @@ void tool_node::pub_status_suction(){
 }
 void tool_node::pub_status_valve(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -803,8 +866,6 @@ void tool_node::pub_status_valve(){
 }
 void tool_node::pub_status_lift_brush(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -815,8 +876,6 @@ void tool_node::pub_status_lift_brush(){
 }
 void tool_node::pub_status_lift_suction(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -827,8 +886,6 @@ void tool_node::pub_status_lift_suction(){
 }
 void tool_node::pub_data_lift_brush(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::Float32 msg;
             // gan du lieu nhan tu uart
@@ -838,8 +895,6 @@ void tool_node::pub_data_lift_brush(){
 }
 void tool_node::pub_data_lift_suction(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::Float32 msg;
             // gan du lieu nhan tu uart
@@ -849,8 +904,6 @@ void tool_node::pub_data_lift_suction(){
 }
 void tool_node::pub_mode_lift_brush(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -861,8 +914,6 @@ void tool_node::pub_mode_lift_brush(){
 }
 void tool_node::pub_mode_lift_suction(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -874,8 +925,6 @@ void tool_node::pub_mode_lift_suction(){
 //
 void tool_node::pub_status_charge(){
     static float creat_fun=0;
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_tool);
     if(creat_fun==1){
             static std_msgs::msg::String msg;
             msg.data=mvibot_seri+"|";
@@ -917,4 +966,3 @@ void tool_node::pub_battery_cell_status(){
         battery_cell_status_pub_->publish(battery_cell_msg);
     }else creat_fun=1;
 }
-

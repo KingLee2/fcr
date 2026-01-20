@@ -13,7 +13,6 @@ class brush_function : public rclcpp::Node{
     private:
         //declare var
         string mvibot_seri_, mvibot_seri_f_;
-
         json parameters;
         int status = Finish_;
         int request = 0; //request = 1: yeu cau thuc thi, request = 0: khong co yeu cau thuc thi
@@ -45,7 +44,6 @@ class brush_function : public rclcpp::Node{
             //
             auto brush_info_callback = [this](std_msgs::msg::String msg)->void{
                 parameters = json::parse(msg.data);
-                // cout<<parameters<<endl;
                 process_data();
                 request = 1;
             };
@@ -86,7 +84,6 @@ class brush_function : public rclcpp::Node{
                 char ch_last = msg.data.back();
                 if( ch_last=='0') brush_state = 0;
                 else if(ch_last == '1') brush_state = 1;
-                cout << "brush_state: "<<brush_state<<endl;
             };
             brush_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/brush_status", qos_profile, brush_callback);
             //init timer
@@ -131,7 +128,6 @@ void brush_function::pub_state_brush(int st){
 }
 void brush_function::process_data(){
     brush = stoi(parameters["brush"].get<string>());
-    cout<<"brush: "<<brush<<endl;
 }
 int brush_function::action(){
     if(status == Active_){

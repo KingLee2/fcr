@@ -59,7 +59,6 @@ class navigation_function : public rclcpp::Node{
             //get data of function
             auto navigation_info_callback = [this](std_msgs::msg::String msg)->void{
                 parameters = json::parse(msg.data);
-                cout<<msg.data<<endl;
                 process_data();
                 request = 1;
                 step = 0;
@@ -99,6 +98,8 @@ class navigation_function : public rclcpp::Node{
                     status = Cancel_;
                 }
                 else if(msg.data == "finish") {
+                    path_ = nav_msgs::msg::Path();
+                    pub_user_path(path_);
                     request = 0;
                     status = Finish_;
                 }
@@ -129,7 +130,7 @@ class navigation_function : public rclcpp::Node{
                 pos_robot = get_position_tf("map",mvibot_seri_f_+"/base_footprint");
                 save_robot_position("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/robot_position.txt", pos_robot[0], pos_robot[1], pos_robot[2], pos_robot[3]);
                 data = mvibot_seri_f_+"|x:"+to_string(pos_robot[0])+"|y:"+to_string(pos_robot[1])+"|thz:"+to_string(pos_robot[2])+"|thw:"+to_string(pos_robot[3]);
-                cout<<data<<endl;
+                // cout<<data<<endl;
                 pub_robot_position(data);
             };
             send_robot_position_timer_ = this->create_wall_timer(1000ms, send_robot_position_callback);
@@ -352,12 +353,12 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
     options.goal_response_callback=[this](std::shared_ptr<rclcpp_action::ClientGoalHandle<opennav_coverage_msgs::action::NavigateCompleteCoverage>> goal_handle){
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"),"Goal was rejected by server!");
-            send_history("error","NavigateCompleteCorverage was rejected by server!");
+            // send_history("error","NavigateCompleteCorverage was rejected by server!");
             states = REJECT;
         }
         else{
             RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"),"Goal was accepted by server, waiting for result");
-            send_history("normal","NavigateCompleteCorverage was accepted by server, waiting for result");
+            // send_history("normal","NavigateCompleteCorverage was accepted by server, waiting for result");
             states = ACCEPT;
         }
     };
@@ -373,7 +374,7 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<opennav_coverage_msgs::action::NavigateCompleteCoverage>::WrappedResult & result) {
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage succeeded!");
-            send_history("normal","NavigateCompleteCorverage succeeded!");
+            // send_history("normal","NavigateCompleteCorverage succeeded!");
             states = SUCCESS;
         } else {
             string info;
@@ -393,9 +394,9 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage failed with status: UNKNOWN");
                 info+= "UNKNOWN";
                 // states = ERROR;
-		states = CANCEL;
+		        states = CANCEL;
             }
-            send_history("error",info);
+            // send_history("error",info);
         }
     };
     auto send_goal_future = nav_complete_coverage_client_->async_send_goal(goal_msg,options);
@@ -489,12 +490,12 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
     options.goal_response_callback=[this](std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>> goal_handle){
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateToPose"),"Goal was rejected by server!");
-            send_history("error","Goal was rejected by server!");
+            // send_history("error","Goal was rejected by server!");
             states = REJECT;
         }
         else{
             RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"),"Goal was accepted by server, waiting for result");
-            send_history("normal","Goal was accepted by server, waiting for result");
+            // send_history("normal","Goal was accepted by server, waiting for result");
             states = ACCEPT;
         }
     };
@@ -510,7 +511,7 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult & result) {
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"), "NavigateToPose succeeded!");
-            send_history("normal","NavigateToPose succeeded!");
+            // send_history("normal","NavigateToPose succeeded!");
             states = SUCCESS;
         } else {
             string info;
@@ -531,7 +532,7 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
                 info+= "UNKNOWN";
                 states = ERROR;
             }
-            send_history("error",info);
+            // send_history("error",info);
         }
     };
     auto send_goal_future = nav_to_pose_client_->async_send_goal(goal_msg,options);
@@ -553,12 +554,12 @@ void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::P
     options.goal_response_callback=[this](std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateThroughPoses>> goal_handle){
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateThroughPoses"),"Goals was rejected by server!");
-            send_history("error","Goals was rejected by server!");
+            // send_history("error","Goals was rejected by server!");
             states = REJECT;
         }
         else{
             RCLCPP_INFO(rclcpp::get_logger("NavigateThroughPoses"),"Goals was accepted by server, waiting for result");
-            send_history("normal","Goals was accepted by server, waiting for result");
+            // send_history("normal","Goals was accepted by server, waiting for result");
             states = ACCEPT;
         }
     };
@@ -575,7 +576,7 @@ void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::P
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateThroughPoses>::WrappedResult & result) {
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateThroughPoses"), "NavigateThroughPoses succeeded!");
-            send_history("normal","NavigateThroughPoses succeeded!");
+            // send_history("normal","NavigateThroughPoses succeeded!");
             states = SUCCESS;
         } else {
             string info;
@@ -596,7 +597,7 @@ void navigation_function::goThroughPoses(const std::vector<geometry_msgs::msg::P
                 info+= "UNKNOWN";
                 states = ERROR;
             }
-            send_history("error",info);
+            // send_history("error",info);
         }
     };
     auto send_goal_future=nav_through_poses_client_->async_send_goal(goal_msg, options);
@@ -632,7 +633,7 @@ void navigation_function::getPathToPose(geometry_msgs::msg::PoseStamped start, g
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<nav2_msgs::action::ComputePathToPose>::WrappedResult &result){
         if(result.code == rclcpp_action::ResultCode::SUCCEEDED){
             RCLCPP_INFO(rclcpp::get_logger("ComputePathToPose"),"ComputePathToPose succeeded");
-            send_history("normal","ComputePathToPose succeeded");
+            // send_history("normal","ComputePathToPose succeeded");
             path_ = result.result->path;
             state_planner = SUCCESS;
         }
@@ -655,7 +656,7 @@ void navigation_function::getPathToPose(geometry_msgs::msg::PoseStamped start, g
                 info+= "UNKNOWN";
                 state_planner = ERROR;
             }
-            send_history("error",info);
+            // send_history("error",info);
         }     
     };
     auto send_goal_future = compute_path_to_pose_client_->async_send_goal(goal_msg, options);

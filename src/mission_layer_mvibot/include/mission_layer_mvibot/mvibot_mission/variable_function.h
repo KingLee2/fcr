@@ -116,7 +116,7 @@ class variable_function : public rclcpp::Node{
                 parameters = json::parse(msg.data);
                 // cout<<parameters<<endl;
                 process_data();
-                print(1);
+                // print(1);
                 request = 1;
             };
             variable_info_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/variable_info", qos_profile, variable_info_callback);
@@ -196,7 +196,7 @@ void variable_function::pub_variable(){
     } else creat_fun=1;
 }
 void variable_function::process_data(){
-    cout<<parameters<<endl;
+    // cout<<parameters<<endl;
     command_action = parameters["command_action"].get<string>();
     name_variable = parameters["name_variable"].get<string>();
     focus_value = parameters["focus_value"].get<string>();

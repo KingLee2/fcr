@@ -80,7 +80,6 @@ class suction_function : public rclcpp::Node{
                 char ch_last = msg.data.back();
                 if( ch_last=='0') suction_state = 0;
                 else if(ch_last == '1') suction_state = 1;
-                cout << "suction_state: "<<suction_state<<endl;
             };
             suction_status_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/suction_status", qos_profile, suction_callback);
             //init timer
@@ -125,7 +124,6 @@ void suction_function::pub_state_suction(int st){
 }
 void suction_function::process_data(){
     suction = stoi(parameters["suction"].get<string>());
-    cout<<"suction: "<<suction<<endl;
 }
 int suction_function::action(){
     if(status == Active_){

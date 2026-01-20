@@ -5,10 +5,6 @@ using namespace std;
 class control_node : public rclcpp::Node{
     public:
         control_node(const string &node_name, const string &sub_namespace) : Node(node_name, sub_namespace){
-            auto reentrant_cbg = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
-            auto mutuallyExclusive_cbg = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-            rclcpp::SubscriptionOptions sub_options;
-            sub_options.callback_group = mutuallyExclusive_cbg;
             rclcpp::QoS qos_profile(rclcpp::KeepLast(10));
             qos_profile.best_effort();
             mvibot_seri_ = this->get_namespace();
@@ -24,39 +20,25 @@ class control_node : public rclcpp::Node{
             ////
             auto motor_enable_callback = [this](std_msgs::msg::String::SharedPtr msg){
                 static const std::string& message= msg->data;
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_control);
                 if(message=="0") motor_enable=0;
                 if(message=="1") motor_enable=1;
-                // unlock();
             };
             motor_enable_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_enable", qos_profile, motor_enable_callback);
-            // motor_enable_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_enable", qos_profile, motor_enable_callback, sub_options);
             auto motor_break_callback = [this](std_msgs::msg::String::SharedPtr msg){
                 static const std::string& message= msg->data;
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_control);
                 if(message=="0") motor_break=0;
                 if(message=="1") motor_break=1;
-                // unlock();
             };
             motor_break_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_break", qos_profile, motor_break_callback);
-            // motor_break_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_break", qos_profile, motor_break_callback, sub_options);
             auto motor_reset_callback = [this](std_msgs::msg::String::SharedPtr msg){
                 static const std::string& message= msg->data;
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_control);
                 if(message=="1") motor_reset=1;
-                // unlock();
             };
             motor_reset_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_reset", qos_profile, motor_reset_callback);
-            // motor_reset_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/motor_reset", qos_profile, motor_reset_callback, sub_options);
             auto robot_vel_callback = [this](geometry_msgs::msg::Twist::SharedPtr msg)->void{
-                // lock();
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 {
                     std::lock_guard<std::mutex> lock(mutex_tool);
                     local_mvibot_sensor_ready = mvibot_sensor_ready;
@@ -64,38 +46,31 @@ class control_node : public rclcpp::Node{
                 }
                 std::lock_guard<std::mutex> lock(mutex_control);
                 time_out_cmd_vel=0;
-                // RCLCPP_INFO(rclcpp::get_logger("Motor"), "before receive veloc");
                 if(local_mvibot_sensor_ready==1 && local_battery_status_charge!=1){
-                    // RCLCPP_INFO(rclcpp::get_logger("Motor"), "after receive veloc");
                     v_set1=msg->linear.x;
                     w_set1=msg->angular.z;
                     if(fabs(v_set1)>=v_max) v_set1=fabs(v_set1)/v_set1*v_max;
                     if(fabs(w_set1)>=w_max) w_set1=fabs(w_set1)/w_set1*w_max;
                 }
-                // unlock();
             };
             robot_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(mvibot_seri_+"/cmd_vel", qos_profile, robot_vel_callback);
-            // robot_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(mvibot_seri_+"/cmd_vel", qos_profile, robot_vel_callback, sub_options);
             ////
             auto set_led_callback = [this](std_msgs::msg::Float32MultiArray::SharedPtr msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_control);
-                red=msg->data[0]/255*100;
-                green=msg->data[1]/255*100;
-                blue=msg->data[2]/255*100;
+                red_=msg->data[0]/255*100;
+                green_=msg->data[1]/255*100;
+                blue_=msg->data[2]/255*100;
                 //
-                led_l=msg->data[3];
-                led_r=msg->data[4];
-                led_b=msg->data[5];
-                led_f=msg->data[6];
+                led_l_=msg->data[3];
+                led_r_=msg->data[4];
+                led_b_=msg->data[5];
+                led_f_=msg->data[6];
             };
             set_led_sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(mvibot_seri_ + "/set_led", qos_profile, set_led_callback);
-            // set_led_sub_ = this->create_subscription<std_msgs::msg::Float32MultiArray>(mvibot_seri_ + "/set_led", qos_profile, set_led_callback, sub_options);
             ////
             auto output_user_set_callback = [this](std_msgs::msg::String msg)->void{
                 static string_Iv2 data1;
                 static string_Iv2 data2;
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_control);
                 data1.detect(msg.data,"","|","");
                 for(int i=1; i< data1.data1.size(); i++){
@@ -108,7 +83,6 @@ class control_node : public rclcpp::Node{
                 }
             };
             output_user_set_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/output_user_set",qos_profile, output_user_set_callback);
-            // output_user_set_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/output_user_set",qos_profile, output_user_set_callback, sub_options);
             //create pub
             //pub history
             history_pub_ = this->create_publisher<std_msgs::msg::String>("history",1);
@@ -123,17 +97,14 @@ class control_node : public rclcpp::Node{
             //
             auto motor_status_timer_callback = [this]()->void{
                 static float creat_fun=0;
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-                std::lock_guard<std::mutex> lock(mutex_motor);
+                std::lock_guard<std::mutex> lock(mutex_control);
                 if(creat_fun==1){ 
                     motor_right_status();
                     motor_left_status();
                 }else creat_fun=1;
             };
             motor_status_timer_ = this->create_wall_timer(1000ms,motor_status_timer_callback);
-            // motor_right_status_timer_ = this->create_wall_timer(1000ms,motor_status_timer_callback, mutuallyExclusive_cbg);
             auto control_timer_callback = [this]()->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 {
                     std::lock_guard<std::mutex> lock(mutex_socket);
                     local_data_socket_ready = data_socket_ready;
@@ -156,7 +127,6 @@ class control_node : public rclcpp::Node{
                     local_battery_status_charge = battery_status_charge;
                 }
                 std::lock_guard<std::mutex> lock(mutex_control);
-                // RCLCPP_INFO(rclcpp::get_logger("Motor"), "control motor");
                 if(local_data_socket_ready==1){
                     //
                     rclcpp::Time now = this->get_clock()->now();
@@ -166,13 +136,9 @@ class control_node : public rclcpp::Node{
                     }
                     check_time_control = now;
                     //motor
-                    // RCLCPP_INFO(rclcpp::get_logger("Motor"), "v_set1: %f, w_set1: %f", v_set1, w_set1);
                     speed_robot_control();
-                    // RCLCPP_INFO(rclcpp::get_logger("Motor"), "v_set3: %f, w_set3: %f", v_set3, w_set3);
                     pid_motor();
-                    // RCLCPP_INFO(rclcpp::get_logger("Motor"), "vr_out: %f, vl_out: %f", vr_out, vl_out);
                     torque_control();
-                    // control_motor = 0;
                     //led
                     led_control();
                     //gpio
@@ -183,7 +149,6 @@ class control_node : public rclcpp::Node{
                 }
             };
             control_timer_= this->create_wall_timer(50ms,control_timer_callback);
-            // control_motor_timer_= this->create_wall_timer(50ms,control_motor_timer_callback, reentrant_cbg);
         }
         void send_history(string status, string info){
             static std_msgs::msg::String history_msg;
@@ -211,11 +176,9 @@ class control_node : public rclcpp::Node{
                 if(live_f==-1 || (live!=live_f)){
                     if(live==0) {
                         send_history("warning","Motor right turn off");
-                        // RCLCPP_INFO(this->get_logger(),"Motor right turn off");
                     }
                     else {
                         send_history("warning","Motor right turn on");
-                        // RCLCPP_INFO(this->get_logger(),"Motor right turn on");
                     }
                     live_f=live;
                 }else{
@@ -224,33 +187,27 @@ class control_node : public rclcpp::Node{
                             error_f=error;
                             if(error!=0) {
                                 send_history("error","Motor right error id:"+to_string(error));
-                                // RCLCPP_INFO(this->get_logger(),"Motor right error");
                             }
                             else {
                                 send_history("normal","Motor right no error");
-                                // RCLCPP_INFO(this->get_logger(),"Motor right no error");
                             }
                         }
                         if(enable_f!=enable){
                             enable_f=enable;
                             if(enable!=0) {
                                 send_history("normal","Motor right change to mode automation control");
-                                // RCLCPP_INFO(this->get_logger(),"Motor right change to mode automation control");
                             }
                             else {
                                 send_history("normal","Motor right change to mode manual handle");
-                                // RCLCPP_INFO(this->get_logger(),"Motor right change to mode manual handle");
                             }
                         }
                         if(brake_f!=brake){
                             brake_f=brake;
                             if(brake!=0) {
                                 send_history("normal","Motor right disable brake");
-                                // RCLCPP_INFO(this->get_logger(),"Motor right disable brake");
                             }
                             else {
                                 send_history("normal","Motor right enable brake");
-                                // RCLCPP_INFO(this->get_logger(),"Motor right enable brake");
                             }
                         }
                     }
@@ -277,11 +234,9 @@ class control_node : public rclcpp::Node{
                 if(live_f==-1 || (live!=live_f)){
                     if(live==0) {
                         send_history("warning","Motor left turn off");
-                        // RCLCPP_INFO(this->get_logger(),"Motor left turn off");
                     }
                     else {
                         send_history("warning","Motor left turn on");
-                        // RCLCPP_INFO(this->get_logger(),"Motor left turn on");
                     }
                     live_f=live;
                 }else{
@@ -290,33 +245,27 @@ class control_node : public rclcpp::Node{
                             error_f=error;
                             if(error!=0) {
                                 send_history("error","Motor left error id:"+to_string(error));
-                                // RCLCPP_INFO(this->get_logger(),"Motor left error");
                             }
                             else {
                                 send_history("normal","Motor left no error");
-                                // RCLCPP_INFO(this->get_logger(),"Motor right no error");
                             }
                         }
                         if(enable_f!=enable){
                             enable_f=enable;
                             if(enable!=0) {
                                 send_history("normal","Motor left change to mode automation control");
-                                // RCLCPP_INFO(this->get_logger(),"Motor left change to mode automation control");
                             }
                             else {
                                 send_history("normal","Motor left change to mode manual handle");
-                                // RCLCPP_INFO(this->get_logger(),"Motor right change to mode manual handle");
                             }
                         }
                         if(brake_f!=brake){
                             brake_f=brake;
                             if(brake!=0) {
                                 send_history("normal","Motor left disable brake");
-                                // RCLCPP_INFO(this->get_logger(),"Motor left disable brake");
                             }
                             else {
                                 send_history("normal","Motor left enable brake");
-                                // RCLCPP_INFO(this->get_logger(),"Motor left enable brake");
                             }
                         }
                     }
@@ -445,10 +394,16 @@ class control_node : public rclcpp::Node{
             green=cgreen;
         }
         void led_control(){
-            set_color_led(100,100,0); //add
-            led_r=1; //add
-            led_l=1; //add
-            led_b=1; //add
+            // set_color_led(100,100,0); //add
+            // led_r=1; //add
+            // led_l=1; //add
+            // led_b=1; //add
+            red = red_;
+            green = green_;
+            blue = blue_;
+            led_r = led_r_;
+            led_l = led_l_;
+            led_b = led_b_;
             if(local_mode=="slam"){
                 set_color_led(100,0,25); //100 0 25
                 led_r=3;
@@ -492,7 +447,6 @@ class control_node : public rclcpp::Node{
                 led_l=2;
                 led_b=2;
             }
-            
         }
         void pub_output_user_status(){
             static float creat_fun=0;
@@ -552,6 +506,7 @@ class control_node : public rclcpp::Node{
         int motor_stop=0;
         int robot_emg;
         float v_set1,v_set2,v_set3,w_set1,w_set2,w_set3;
+        float red_, green_, blue_, led_l_, led_r_, led_b_, led_f_;
         //
         int local_mvibot_sensor_ready;
         int local_data_socket_ready;

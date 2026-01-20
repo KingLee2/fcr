@@ -29,14 +29,12 @@ class marker_function : public rclcpp::Node{
             //init subscriber
             //
             auto scan_callback = [this](sensor_msgs::msg::LaserScan msg) ->void {
-                cout<<"marker|get data laser scan"<<endl;
                 scan_safe=msg;
             };
             laser_scan_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(mvibot_seri_+"/laser/scan",qos_profile,scan_callback);
             //
             auto marker_info_callback = [this](std_msgs::msg::String msg)->void{
                 parameters = json::parse(msg.data);
-                // cout<<parameters<<endl;
                 process_data();
                 request = 1;
                 step = 0;
@@ -172,8 +170,7 @@ void marker_function::pub_function_state_marker(int st){
     marker_function_state_pub_->publish(msg);
 }
 void marker_function::process_data(){
-    cout<<parameters<<endl;
-
+    // cout<<parameters<<endl;
     marker_type = parameters["marker_type"].get<string>();
     if(parameters["safe_x1"].get<string>()!= "") safe_x1 = stof(parameters["safe_x1"].get<string>());
     if(parameters["safe_x2"].get<string>()!= "") safe_x2 = stof(parameters["safe_x2"].get<string>());
@@ -289,8 +286,8 @@ void marker_function::send_tranform(double x, double y, double z, double w, stri
 int marker_function::compare_pose(double x1, double y1, double z1, double w1, double x2, double y2, double z2, double w2, double thresold_position, double thresold_angle){
     geometry_msgs::msg::Pose pose_1,pose_2;
     //
-    std::cout<<x1<<"|"<<y1<<"|"<<z1<<"|"<<w1<<endl;
-    std::cout<<x2<<"|"<<y2<<"|"<<z2<<"|"<<w2<<endl;       
+    // std::cout<<x1<<"|"<<y1<<"|"<<z1<<"|"<<w1<<endl;
+    // std::cout<<x2<<"|"<<y2<<"|"<<z2<<"|"<<w2<<endl;       
     if(sqrt(pow(x2-x1,2)+pow(y2-y1,2))<=thresold_position){
         if(sqrt(pow(z2-z1,2)+pow(w2-w1,2))<=thresold_angle){
             return 1;
@@ -357,7 +354,6 @@ int marker_function::get_footprint(){
     //
     static bool wait_callback = false;
     static string footprint_string = "";
-    cout<<"marker|check done send footprint"<<endl;
     if(wait_callback) return 0;
     if(footprint_string.empty()){
         cout<<"marker|before send footprint"<<endl;
@@ -379,7 +375,7 @@ int marker_function::get_footprint(){
         wait_callback = true;
         return 0;
     }
-    cout<< "marker|footprint: "<<footprint_string<<endl;
+    // cout<< "marker|footprint: "<<footprint_string<<endl;
     //
     string footprint_string_1;
     footprint_string_1 = "";
@@ -500,9 +496,9 @@ int marker_function::move_to_goal(){
         }
     }
     if(safe!=0){  //| r <= 0
-        cout<<"marker|not safe: pub velocity 0"<<endl;
+        // cout<<"marker|not safe: pub velocity 0"<<endl;
         pub_cmd_vel(0,0);
-        cout<<"marker|not safe: done pub velocity 0"<<endl;
+        // cout<<"marker|not safe: done pub velocity 0"<<endl;
     }else pub_cmd_vel(v,w);
     return value_return;
 }
@@ -514,16 +510,16 @@ int marker_function::action(){
         cout<<"marker|step: "<<step<<endl;
         if(step == 0){
             res=caculate_transforms_ofset();
-            cout<<"marker|set goal|res: "<<res<<endl;
+            // cout<<"marker|set goal|res: "<<res<<endl;
             if(res == 1) step = 1;
             return Active_;
         }
         else if(step >= 1){
             send_tranform(x_set,y_set,z_set,w_set,mvibot_seri_f_+"/odom",mvibot_seri_f_+"/base_marker");
-            cout<<"marker|send tranform "<<endl;
+            // cout<<"marker|send tranform "<<endl;
             if(step == 1){
                 res=check_send_transforms_tf_frame();
-                cout<<"marker|check send tranform|res: "<<res<<endl;
+                // cout<<"marker|check send tranform|res: "<<res<<endl;
                 if(res==1) step=2;
                 return Active_;
             }
@@ -532,25 +528,25 @@ int marker_function::action(){
                 status_transfrom_pose=tranfrom_pose_marker(1,"base_marker", "base_footprint");
                 cout<<"marker|get tranform base_footprint to base_marker|res: "<<status_transfrom_pose<<endl;
                 if(step==2){
-                    std::cout<<"marker|Check first pose is match with position robot!"<<endl;
+                    // std::cout<<"marker|Check first pose is match with position robot!"<<endl;
                     if(status_transfrom_pose==1){
                         if(check_first_tranfrom_pose_marker()){
-                            std::cout<<"marker|Fisrt pose is match with postion robot"<<endl;
+                            // std::cout<<"marker|Fisrt pose is match with postion robot"<<endl;
                             step=3;
                         }
                     }
                     return Active_;
                 }
                 else if(step == 3){
-                    std::cout<<"marker|Get footprint robot!"<<endl;
+                    // std::cout<<"marker|Get footprint robot!"<<endl;
                     if(get_footprint() == 1) {
-                        std::cout<<"marker|Finish get footprint robot!"<<endl;                  
+                        // std::cout<<"marker|Finish get footprint robot!"<<endl;
                         step=4;
                     }
                     return Active_;
                 }
                 else if(step == 4){
-                    std::cout<<"marker|Action move!"<<endl;
+                    // std::cout<<"marker|Action move!"<<endl;
                     if(status_transfrom_pose){
                         // safe
                         if(safe==0) {
@@ -562,7 +558,7 @@ int marker_function::action(){
                         }
                         //
                         res = move_to_goal();
-                        cout<<"marker|move to goal with res: "<<res<<endl;
+                        // cout<<"marker|move to goal with res: "<<res<<endl;
                         if(res==1){
                             step=0;
                             status = Finish_;

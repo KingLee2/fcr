@@ -4,7 +4,6 @@
 #include "../common/stof.h"
 #include "../common/stoi.h"
 #include "mission_define.h"
-// #include "mvibot_mission_init.h"
 #include <nlohmann/json.hpp>
 
 using namespace std;
@@ -62,7 +61,6 @@ class gpio_function : public rclcpp::Node{
             //
             auto gpio_info_callback = [this](std_msgs::msg::String msg)->void{
                 parameters = json::parse(msg.data);
-                // cout<<parameters<<endl;
                 process_data();
                 request = 1;
             };
@@ -130,7 +128,6 @@ void gpio_function::pub_function_state_gpio(int st){
 void gpio_function::process_data(){
     std::map<std::string, json> output_parameters;
     std::map<std::string, json> input_parameters;
-    cout<<parameters<<endl;
     not_set_out = parameters["not_set_out"].get<string>();
     output_parameters = parameters["output"].get<std::map<string,json>>();
     input_parameters = parameters["input"].get<std::map<string,json>>();
@@ -138,11 +135,9 @@ void gpio_function::process_data(){
     output_map.clear();
     for (const auto& [pin, state] : output_parameters) {
         output_map[pin]=state;
-        cout<<"output "<<pin<<": "<<state<<endl;
     }
     for (const auto& [pin, state] : input_parameters) {
         input_map[pin]=state;
-        cout<<"input "<<pin<<": "<<state<<endl;
     }
 }
 int gpio_function::action(){
@@ -151,7 +146,7 @@ int gpio_function::action(){
         //input
         for(pair<string, string> it : input_map){
             if(it.second == "on"){
-                cout<<"Input On: "<<input_status.data[stoi(it.first)]<<endl;
+                // cout<<"Input On: "<<input_status.data[stoi(it.first)]<<endl;
                 if(input_status.data[stoi(it.first)] != 1){
                     request = 0;
                     status = Finish_;
@@ -159,7 +154,7 @@ int gpio_function::action(){
                 }
             }
             else if(it.second == "off"){
-                cout<<"Input Off: "<<input_status.data[stoi(it.first)]<<endl;
+                // cout<<"Input Off: "<<input_status.data[stoi(it.first)]<<endl;
                 if(input_status.data[stoi(it.first)] != 0){
                     request = 0;
                     status = Finish_;
@@ -167,7 +162,7 @@ int gpio_function::action(){
                 }
             }
             else if(it.second == "pullup"){
-                cout<<"Input pullup: "<<input_status_2.data[stoi(it.first)]<<"|"<<input_status_1.data[stoi(it.first)]<<endl;
+                // cout<<"Input pullup: "<<input_status_2.data[stoi(it.first)]<<"|"<<input_status_1.data[stoi(it.first)]<<endl;
                 if(!(input_status_2.data[stoi(it.first)] == 0 && input_status_1.data[stoi(it.first)] == 1)){
                     request = 0;
                     status = Finish_;
@@ -175,7 +170,7 @@ int gpio_function::action(){
                 }
             }
             else if(it.second == "pulldown"){
-                cout<<"Input pulldown: "<<input_status_2.data[stoi(it.first)]<<"|"<<input_status_1.data[stoi(it.first)]<<endl;
+                // cout<<"Input pulldown: "<<input_status_2.data[stoi(it.first)]<<"|"<<input_status_1.data[stoi(it.first)]<<endl;
                 if(!(input_status_2.data[stoi(it.first)] == 1 && input_status_1.data[stoi(it.first)] == 0)){
                     request = 0;
                     status = Finish_;
@@ -185,10 +180,10 @@ int gpio_function::action(){
         }
         //output
         if(not_set_out == "1"){
-            cout<<"Not set out"<<endl;
+            // cout<<"Not set out"<<endl;
             for(pair<string, string> it : output_map){
                 if(it.second == "on"){
-                    cout<<"Output On: "<<output_status.data[stoi(it.first)]<<endl;
+                    // cout<<"Output On: "<<output_status.data[stoi(it.first)]<<endl;
                     if(output_status.data[stoi(it.first)] != 1){
                         request = 0;
                         status = Finish_;
@@ -196,7 +191,7 @@ int gpio_function::action(){
                     }
                 }
                 else if(it.second == "off"){
-                    cout<<"Output Off: "<<output_status.data[stoi(it.first)]<<endl;
+                    // cout<<"Output Off: "<<output_status.data[stoi(it.first)]<<endl;
                     if(output_status.data[stoi(it.first)] != 0){
                         request = 0;
                         status = Finish_;
@@ -206,17 +201,17 @@ int gpio_function::action(){
             }
         }
         else{
-            cout<<"set out"<<endl;
+            // cout<<"set out"<<endl;
             std_msgs::msg::String msg;
             msg.data=mvibot_seri_f_;
             for(pair<string, string> it : output_map){
                 if(it.second == "on"){
-                    cout<<"Output On: "<<output_status.data[stoi(it.first)]<<endl;
+                    // cout<<"Output On: "<<output_status.data[stoi(it.first)]<<endl;
                     output_status.data[stoi(it.first)] = 1;
                     msg.data=msg.data+"|"+it.first+":1";
                 }
                 else if(it.second == "off"){
-                    cout<<"Output Off: "<<output_status.data[stoi(it.first)]<<endl;
+                    // cout<<"Output Off: "<<output_status.data[stoi(it.first)]<<endl;
                     output_status.data[stoi(it.first)] = 0;
                     msg.data=msg.data+"|"+it.first+":0";
                 }

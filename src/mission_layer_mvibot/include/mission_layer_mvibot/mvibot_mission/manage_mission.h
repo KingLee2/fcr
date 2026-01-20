@@ -10,10 +10,12 @@ using json = nlohmann::json;
 class mission{
     public:
         string mission_id;
+        string mission_name;
         std::map<string,json>contents_map;
         std::map<string,json>triggers_map;
         void reset(){
             mission_id="";
+            mission_name="";
             contents_map.clear();
             triggers_map.clear();
         }
@@ -53,6 +55,7 @@ class manage_mission : public rclcpp::Node{
         int step_handle_content = 0;
         int step_try_catch = 0;
         double ts_execute_callback = 0.05;
+        string his ="";
         //pub
         //information mission active
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr active_mission_info_pub_;
@@ -146,6 +149,7 @@ class manage_mission : public rclcpp::Node{
             input_status_2=input_status_1;
             active_mission_id = "";
             status = Finish_;
+            status_mission_error = Cancel_;
             state = N_A_;
             want_to_charge = 0;
             motor_left_ready = 0;
@@ -276,9 +280,18 @@ class manage_mission : public rclcpp::Node{
             get_mission_error_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/mission_error",qos_profile,mission_error_callback);
             auto reset_mission_callback = [this](std_msgs::msg::String msg)->void{
                 if(status != Active_){
-                    if(msg.data == "mission_normal") mission_normal.resize(0);
-                    else if(msg.data == "mission_charge_battery") mission_charge_battery.resize(0);
-                    else if(msg.data == "mission_error") mission_error.reset();
+                    if(msg.data == "mission_normal") {
+                        mission_normal.resize(0);
+                        mission_normal_receive.data = "";
+                    }
+                    else if(msg.data == "mission_charge_battery") { 
+                        mission_charge_battery.resize(0);
+                        mission_charge_receive.data = "";
+                    }
+                    else if(msg.data == "mission_error") {
+                        mission_error.reset();
+                        mission_error_receive.data = "";
+                    }
                     reset_function();
                     step_handle_content = 0;
                     step_try_catch = 0;
@@ -377,7 +390,6 @@ class manage_mission : public rclcpp::Node{
                     else if(msg.data == "continues") {
                         if(status == Stop_) status = Active_;
                     }
-                    cout<<"status:"<<status<<endl;
                 }
             };
             get_request_robot_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/robot_state", qos_profile,request_robot_callback);
@@ -493,9 +505,7 @@ class manage_mission : public rclcpp::Node{
             load_mission_error("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/mission_error.json");
             //init timer//
             auto execute_mission_timer_callback = [this]()->void{
-                RCLCPP_INFO(this->get_logger(),"before execute mission");
                 execute_mission();
-                RCLCPP_INFO(this->get_logger(),"after execute mission");
             };
             execute_mission_timer_ = this->create_wall_timer(50ms, execute_mission_timer_callback);
             auto controll_timer_callback = [this]()->void{
@@ -620,8 +630,9 @@ int manage_mission::load_mission_normal(const string &file_name){
     mission_id_vec.resize(missions_.size());
     for(size_t i=0; i<missions_.size(); i++){
         mission_normal[i].mission_id = missions_[i]["mission_id"].get<string>();
+        mission_normal[i].mission_name = missions_[i]["mission_name"].get<string>();
         mission_id_vec[i] = mission_normal[i].mission_id;
-        cout<<"Mission Name: "<<mission_normal[i].mission_id<<endl;
+        // cout<<"Mission Name: "<<mission_normal[i].mission_id<<endl;
         // for (const auto& trigger : missions_[i]["triggers"]) {
         //     for (const auto& [key, value] : trigger.items()) {
         //         mission_normal[i].triggers_map[key] = value;
@@ -631,7 +642,6 @@ int manage_mission::load_mission_normal(const string &file_name){
         if (missions_[i].contains("contents") && missions_[i]["contents"].is_object()) {
             for (auto& [key, value] : missions_[i]["contents"].items()) {
                 mission_normal[i].contents_map[key] = value;
-                cout<<key<<"|||"<<mission_normal[i].contents_map[key]<<endl;
             }
         }
     }
@@ -672,8 +682,9 @@ int manage_mission::load_mission_charge(const string &file_name){
     mission_id_vec.resize(missions_.size());
     for(size_t i=0; i<missions_.size(); i++){
         mission_charge_battery[i].mission_id = missions_[i]["mission_id"].get<string>();
+        mission_charge_battery[i].mission_name = missions_[i]["mission_name"].get<string>();
         mission_id_vec[i] = mission_charge_battery[i].mission_id;
-        cout<<"Mission Name: "<<mission_charge_battery[i].mission_id<<endl;
+        // cout<<"Mission Name: "<<mission_charge_battery[i].mission_id<<endl;
         // for (const auto& trigger : missions_[i]["triggers"]) {
         //     for (const auto& [key, value] : trigger.items()) {
         //         mission_charge_battery[i].triggers_map[key] = value;
@@ -683,7 +694,6 @@ int manage_mission::load_mission_charge(const string &file_name){
         if (missions_[i].contains("contents") && missions_[i]["contents"].is_object()) {
             for (auto& [key, value] : missions_[i]["contents"].items()) {
                 mission_charge_battery[i].contents_map[key] = value;
-                cout<<key<<"|||"<<mission_charge_battery[i].contents_map[key]<<endl;
             }
         }
     }
@@ -721,13 +731,13 @@ int manage_mission::load_mission_error(const string &file_name){
     }
     mission_id_vec.resize(missions_.size());
     mission_error.mission_id = missions_[0]["mission_id"].get<string>();
+    mission_error.mission_name = missions_[0]["mission_name"].get<string>();
     mission_id_vec[0]=mission_error.mission_id;
-    cout<<"Mission ID: "<<mission_error.mission_id<<endl;
+    // cout<<"Mission ID: "<<mission_error.mission_id<<endl;
     //
     if (missions_[0].contains("contents") && missions_[0]["contents"].is_object()) {
         for (auto& [key, value] : missions_[0]["contents"].items()) {
             mission_error.contents_map[key] = value;
-            cout<<key<<"|||"<<mission_error.contents_map[key]<<endl;
         }
     }
     mission_error_receive_json["mission_id"] = mission_id_vec;
@@ -829,11 +839,8 @@ int manage_mission::handle_content(const json& content, const double& time_out, 
     cout<<"handle content|step:"<<step_handle_content<<"|status:"<<status<<endl;
     if(step_handle_content == 0){
         if(status == Active_){
-            RCLCPP_INFO(this->get_logger(),"send infomation function");
-            cout<<"INFOMATION CONTENT: "<< content["parameters"]<<endl;
+            // cout<<"INFOMATION CONTENT: "<< content["parameters"]<<endl;
             info_msg.data = content["parameters"].dump();
-            RCLCPP_INFO(this->get_logger(),"gan thong tin vao message");
-            cout<<"information: "<< info_msg.data<<endl;
             info_pub->publish(info_msg);
             state_msg.data = "active";
             state_pub->publish(state_msg);
@@ -851,35 +858,35 @@ int manage_mission::handle_content(const json& content, const double& time_out, 
             state_pub->publish(state_msg);
             timer = 0.0;
             step_handle_content = 0;
+            his = "";
+            his = "Type: " + content["type"].get<string>() + " |Name: " + content["name"].get<string>();
+            send_history("error",his);
             return Error_;
         }
         else{
-            RCLCPP_INFO(this->get_logger(),"timer nho hon timeout");
             if(state == Finish_){
-                RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state finish");
+                RCLCPP_INFO(this->get_logger(),"state finish");
                 timer = 0.0;
                 step_handle_content = 0;
                 state = N_A_;
                 return Finish_;
             }
             else if(state == Active_){
-                RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state active");
                 if(status == Stop_){
-                    RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state active, status stop");
+                    RCLCPP_INFO(this->get_logger(),"state active, status stop");
                     state_msg.data = "stop";
                     state_pub->publish(state_msg);
                     return Stop_;
                 }
                 else{
-                    RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state active, status active");
+                    RCLCPP_INFO(this->get_logger(),"state active, status active");
                     timer += ts_execute_callback;
                     return Active_;
                 }
             }
             else if(state == Stop_){
-                RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state stop");
                 if(status == Active_){
-                    RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state stop, status active");
+                    RCLCPP_INFO(this->get_logger(),"state stop, status active");
                     state_msg.data = "active";
                     state_pub->publish(state_msg);
                     return Active_;
@@ -887,28 +894,31 @@ int manage_mission::handle_content(const json& content, const double& time_out, 
                 return Stop_;
             }
             else if(state == True_){
-                RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state true");
+                RCLCPP_INFO(this->get_logger(),"state true");
                 timer = 0.0;
                 step_handle_content = 0;
                 state = N_A_;
                 return True_;
             }
             else if(state == False_){
-                RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state false");
+                RCLCPP_INFO(this->get_logger(),"state false");
                 timer = 0.0;
                 step_handle_content = 0;
                 state = N_A_;
                 return False_;
             }
             else if(state == Error_){
-                RCLCPP_INFO(this->get_logger(),"timer nho hon timeout, state error");
+                RCLCPP_INFO(this->get_logger(),"state error");
                 timer = 0.0;
                 step_handle_content = 0;
                 state = N_A_;
+                his = "";
+                his = "Type: " + content["type"].get<string>() + " |Name: " + content["name"].get<string>();
+                send_history("error",his);
                 return Error_;
             }
             else {
-                RCLCPP_INFO(this->get_logger(),"timer nho hon timeout,state N/A");
+                RCLCPP_INFO(this->get_logger(),"state N/A");
                 timer += ts_execute_callback;
                 return Active_;
             }
@@ -1007,7 +1017,7 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
             // Tao hang doi thuc thi try-catch
             try_catch_queue.resize(0);
             try_catch_content = content["content"]["try"].get<std::vector<string>>();
-            // try_catch_queue.insert(try_catch_queue.begin(),try_catch_content.begin(),try_catch_content.end());
+            if(try_catch_content.empty()) return Finish_;
             try_catch_queue.resize(try_catch_content.size());
             try_catch_queue = try_catch_content;
             step_try_catch = 1;
@@ -1057,7 +1067,6 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
         static vector<string>and_contents_list;
         static int i=0;
         int res;
-        // static json and_content;
         and_contents_list = content["content"]["body"].get<std::vector<string>>();
         res = execute_content(mission, queue_content, and_contents_list[i], next_to, status);
         if(res != True_ && res != False_){
@@ -1081,7 +1090,6 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
         static vector<string>or_contents_list;
         static int i=0;
         int res;
-        // static json or_content;
         or_contents_list = content["content"]["body"].get<std::vector<string>>();
         res = execute_content(mission, queue_content, or_contents_list[i], next_to, status);
         if(res != True_ && res != False_){
@@ -1095,7 +1103,6 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
             }
             else i++;
         }
-        cout<<"Gia tri i trong or: "<<i<<"|Gia tri size or: "<<or_contents_list.size()<<endl;
         if(i == or_contents_list.size()){
             i=0;
             return False_;
@@ -1119,10 +1126,7 @@ int manage_mission::execute_content(mission& mission, vector<string>& queue_cont
     }
     else if(type == "navigation"){
         static double time_out;
-        RCLCPP_INFO(this->get_logger(),"get timeout");
         time_out = stof(content["time_out"].get<string>());
-        cout<<"time out: "<<time_out<<endl;
-        RCLCPP_INFO(this->get_logger(),"got timeout");
         return handle_content(content, time_out, timer, status, navigation_info_pub_, navigation_function_state_pub_);
     }
     else if(type == "marker"){
@@ -1160,7 +1164,6 @@ void manage_mission::execute_mission(){
     //var
     RCLCPP_INFO(this->get_logger(),"start execute mission");
     static mission mission_;
-    // static json content_;
     static vector<string> queue_content;
     static string next_to = "";
     static string active_content = "";
@@ -1173,7 +1176,6 @@ void manage_mission::execute_mission(){
     }
     // if(battery_soc1 <= 20 || battery_soc2 <= 20) want_to_charge = 1;
     // else want_to_charge = 0;
-    RCLCPP_INFO(this->get_logger(),"continue execute mission");
     if(status==Finish_){
         RCLCPP_INFO(this->get_logger(),"continue execute mission, status finish");
         active_content = "";
@@ -1184,12 +1186,15 @@ void manage_mission::execute_mission(){
                 active_mission_id = "";
                 mission_ = mission_charge_battery[i];
                 active_content_sum = mission_.contents_map.size();
-                cout<<"Mission ID: "<<mission_.mission_id<<endl;
+                // cout<<"Mission ID: "<<mission_.mission_id<<endl;
                 //
                 for (const auto& [key, value] : mission_.contents_map) {
                     if (value.contains("type") && value["type"] == "start") {
                         active_content = key;
-                        cout<<"active_content: "<<active_content<<endl;
+                        his = "";
+                        his = "Running battery charge mission: ";
+                        his += mission_.mission_name;
+                        send_history("normal",his);
                         break;
                     }
                 }
@@ -1207,12 +1212,15 @@ void manage_mission::execute_mission(){
                 active_mission_id = "";
                 mission_ = mission_normal[i];
                 active_content_sum = mission_.contents_map.size();
-                cout<<"Mission ID: "<<mission_.mission_id<<endl;
+                // cout<<"Mission ID: "<<mission_.mission_id<<endl;
                 //
                 for (const auto& [key, value] : mission_.contents_map) {
                     if (value.contains("type") && value["type"] == "start") {
                         active_content = key;
-                        cout<<"active_content: "<<active_content<<endl;
+                       his = "";
+                        his = "Running normal mission: ";
+                        his += mission_.mission_name;
+                        send_history("normal",his);
                         break;
                     }
                 }
@@ -1245,7 +1253,6 @@ void manage_mission::execute_mission(){
             static vector<string>queue_content_error;
             static string next_to_error = "";
             static int active_content_sum_error;
-            // static int status_mission_error = Finish_;
             static int res;
             if(mission_error.contents_map.empty()){
                 status_mission_error = Finish_;
@@ -1256,7 +1263,6 @@ void manage_mission::execute_mission(){
                     for (const auto& [key, value] : mission_error.contents_map) {
                         if (value.contains("type") && value["type"] == "start") {
                             active_content_error = key;
-                            cout<<"active_content: "<<active_content_error<<endl;
                             break;
                         }
                     }
@@ -1264,7 +1270,7 @@ void manage_mission::execute_mission(){
                 }
                 else if(status_mission_error == Active_){
                     RCLCPP_INFO(this->get_logger(),"active mission error");
-                    action_mode_mission = "mission_error";
+                    // action_mode_mission = "mission_error";
                     active_content_sum_error = mission_error.contents_map.size();
                     res = execute_content(mission_error, queue_content_error, active_content_error, next_to_error, status_mission_error);
                     if(res == Active_){
@@ -1292,7 +1298,7 @@ void manage_mission::execute_mission(){
                         }
                         else status_mission_error = Active_;
                     }
-                    pub_active_mission_info(action_mode_mission, mission_error.mission_id, active_content_error, to_string(active_content_sum_error));
+                    pub_active_mission_info("mission_error", mission_error.mission_id, active_content_error, to_string(active_content_sum_error));
                 }
             }
 
@@ -1333,12 +1339,14 @@ void manage_mission::execute_mission(){
                     action_mode_mission = "N_A";
                     active_content = "";
                     mission_.reset();
+                    his = "";
+                    his = "Finish mission: ";
+                    his += mission_.mission_name;
+                    send_history("normal",his);
                 }
                 else status = Active_;
             }
-            RCLCPP_INFO(this->get_logger(),"before pub info mission active");
             pub_active_mission_info(action_mode_mission, mission_.mission_id, active_content, to_string(active_content_sum));
-            RCLCPP_INFO(this->get_logger(),"after pub info mission active");
         }
     }
 }

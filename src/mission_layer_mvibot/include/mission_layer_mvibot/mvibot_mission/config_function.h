@@ -32,7 +32,6 @@ class config_function : public rclcpp::Node{
             //
             auto config_info_callback = [this](std_msgs::msg::String msg)->void{
                 parameters = json::parse(msg.data);
-                // cout<<parameters<<endl;
                 process_data();
                 request = 1;
             };
@@ -126,7 +125,6 @@ void config_function::pub_function_state_config(int st){
     config_function_state_pub_->publish(msg);
 }
 void config_function::process_data(){
-    cout<<parameters<<endl;
     desired_linear_vel = parameters["desired_linear_vel"].get<string>();
     footprint_padding = parameters["footprint_padding"].get<string>();
 }
@@ -141,7 +139,6 @@ int config_function::action(){
     static bool set_done_global = false;
     cout<<"config|status: "<<status<<endl;
     if(status==Active_){
-        // static string config_set,config_return;
         value_return=Finish_;
         //desired_linear_vel
         if(desired_linear_vel != ""){
@@ -159,7 +156,6 @@ int config_function::action(){
             else {
                 set_result_vel = false;
                 set_done_vel = false;
-                //value_return = Finish_;
             }
         }
         if(footprint_padding != ""){
@@ -178,7 +174,6 @@ int config_function::action(){
             else {
                 set_result_local = false;
                 set_done_local = false;
-                //value_return = Finish_;
             }
             //global costmap
             if(!set_done_global){
@@ -193,7 +188,6 @@ int config_function::action(){
             else {
                 set_result_global = false;
                 set_done_global = false;
-                //value_return = Finish_;
             }
         }
         if(value_return == Finish_){

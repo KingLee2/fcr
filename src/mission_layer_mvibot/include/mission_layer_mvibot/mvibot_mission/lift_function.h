@@ -57,7 +57,6 @@ class lift_function : public rclcpp::Node{
             //
             auto lift_info_callback = [this](std_msgs::msg::String msg)->void{
                 parameters = json::parse(msg.data);
-                // cout<<parameters<<endl;
                 process_data();
                 request = 1;
             };
@@ -150,7 +149,7 @@ void lift_function::process_data(){
     mode = parameters["mode"].get<string>();
     lift_up = stof(parameters["lift_up"].get<string>());
     lift_down = stof(parameters["lift_down"].get<string>());
-    cout<<"object: "<<object<< "|mode: "<<mode<<"|lift_up: "<<lift_up<<"|lift_down: "<<lift_down<<endl;
+    // cout<<"object: "<<object<< "|mode: "<<mode<<"|lift_up: "<<lift_up<<"|lift_down: "<<lift_down<<endl;
 }
 int lift_function::action(){
     if(status == Active_){

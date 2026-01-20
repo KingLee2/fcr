@@ -2,18 +2,12 @@
 #include "../mvibot_core/mvibot_core_init.h"
 using namespace std;
 
-// int robot_backup=0;
-// // extern void send_history(string type,string data);
 class socket_client_node : public rclcpp::Node{
     public:
         socket_client_node(const string &node_name, const string &sub_namespace) : Node(node_name, sub_namespace){
             while(modify_socket()==-1){
                 sleep(1);
             }
-            auto reentrant_cbg = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
-            auto mutuallyExclusive_cbg = this->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
-            rclcpp::SubscriptionOptions sub_options;
-            sub_options.callback_group = mutuallyExclusive_cbg;
             rclcpp::QoS qos_profile(rclcpp::KeepLast(10));
             qos_profile.best_effort();
             mvibot_seri_ = this->get_namespace();
@@ -30,7 +24,7 @@ class socket_client_node : public rclcpp::Node{
             //init sub//
             //shutdown robot
             auto robot_shutdown_callback = [this](std_msgs::msg::String msg)->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
+
                 std::lock_guard<std::mutex> lock(mutex_tool);
                 if(msg.data =="1"){
                     robot_shutdown = 1;
@@ -42,10 +36,8 @@ class socket_client_node : public rclcpp::Node{
                 }
             };
             robot_shutdown_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/robot_shutdown",qos_profile,robot_shutdown_callback);
-            // robot_shutdown_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri_+"/robot_shutdown",qos_profile,robot_shutdown_callback, sub_options);
             //init timer
             auto socket_data_timer_callback = [this]()->void{
-                // std::lock_guard<std::recursive_mutex> lock(mutex_common);
                 std::lock_guard<std::mutex> lock(mutex_socket);
                 rclcpp::Time now = this->get_clock()->now();
                 if (check_time_socket.nanoseconds() > 0) {
@@ -54,14 +46,10 @@ class socket_client_node : public rclcpp::Node{
                 }
                 check_time_socket = now;
                 read_data_socket();
-                // RCLCPP_INFO(this->get_logger(),"read data socket");
                 process_data_socket();
-                // RCLCPP_INFO(this->get_logger(),"process data socket");
                 send_data_socket(data_tran);
-                // RCLCPP_INFO(this->get_logger(),"send data socket");
             };
             socket_data_timer_ = this->create_wall_timer(50ms,socket_data_timer_callback);
-            // socket_data_timer_ = this->create_wall_timer(50ms,socket_data_timer_callback, reentrant_cbg);
         }
         void send_history(string status, string info){
             static std_msgs::msg::String history_msg;
@@ -77,8 +65,6 @@ class socket_client_node : public rclcpp::Node{
         void send_data_socket(std::vector<uint8_t> data_tranf);
         void view_data(string name, std::vector<uint8_t> data);
     private:
-        // //mutex var
-        // std::recursive_mutex mutex_common;
         //declare var
         string mvibot_seri_;
         //declare pub history
@@ -125,7 +111,6 @@ void socket_client_node::view_data(string name, std::vector<uint8_t> data){
     cout<<endl;
 }
 void socket_client_node::process_data_uart_read(){
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
     if(data_receive.size()==num_byte_stm_pc){
         {
             std::lock_guard<std::mutex> lock(mutex_control);
@@ -183,8 +168,6 @@ void socket_client_node::process_data_uart_read(){
             suction_receive_uart_status = (int)data_receive[suction_state_re];
             //valve
             valve_receive_uart_status = (int)data_receive[valve_state_re];
-            //lift
-            // lift_temperature_microcontroller =(float)data_receive[temperature_microcontroller];
             //lift brush
             lift_brush_control_receive_uart = (int)data_receive[cylinder_brush_control_re];
             lift_brush_power_receive_uart = (int)data_receive[cylinder_brush_power_re];
@@ -218,7 +201,6 @@ void socket_client_node::process_data_uart_read(){
                 battery_live_status=1;
                 //
                 battery_soc=(float)(data_receive[battery_soc_re]);
-                //battery_soc=((battery_soc-20)/80)*100;
                 if(battery_soc<0) battery_soc=0;
                 //
                 battery_vol=(float)(data_receive[battery_vol_H_re]*100+data_receive[battery_vol_L_re])/100;
@@ -253,7 +235,6 @@ void socket_client_node::process_data_uart_read(){
     }
 }
 void socket_client_node::process_data_uart_write(){
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
     {
         std::lock_guard<std::mutex> lock(mutex_control);
         local_motor_break = motor_break;
@@ -353,17 +334,13 @@ void socket_client_node::process_data_uart_write(){
     // battery charge
     data_tran[battery_big_charge]=(uint8_t)local_battery1_charge;
     data_tran[charge_control_pc_to_stm]=(uint8_t)local_charge_control_status;
-
-    // data_tran[battery_small_charge]=(uint8_t)battery2_charge;
     // robot_shutdown
     data_tran[robot_shutdow]=(uint8_t)local_robot_shutdown;
 }
 void socket_client_node::time_now(string name){
-    // lock();
         static struct timespec realtime;
         clock_gettime(CLOCK_REALTIME, &realtime);
         // cout<<name+"|Time:"<<std::fixed << std::setprecision(5)<<((long double)realtime.tv_sec+(long double)realtime.tv_nsec*1e-9)<<endl;
-    // unlock();
 }
 int socket_client_node::modify_socket(){
     static int value_return;
@@ -399,9 +376,6 @@ void socket_client_node::read_data_socket(){
     memset(data_receive_socket_local,0, sizeof(data_receive_socket_local));
     num_byte=read( sock , data_receive_socket_local, 999);
     // cout<<num_byte<<endl;
-    // lock();
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_socket);
     data_socket_ready = 0;
     if(num_byte>0){
         data_receive.resize(num_byte);
@@ -428,12 +402,8 @@ void socket_client_node::read_data_socket(){
         // if(data_socket_ready==1) view_data("data from socket: ",data_receive);
         time_now(to_string(num_byte));
     }
-    // unlock();
 }
 void socket_client_node::send_data_socket(std::vector<uint8_t> data_tranf){
-    // lock();
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_socket);
     //uint8_t data_tran_socket[data_tranf.size()];
     static uint8_t data_tran_socket[num_byte_pc_stm];
     memset(data_tran_socket,0,sizeof(data_tran_socket));
@@ -442,11 +412,8 @@ void socket_client_node::send_data_socket(std::vector<uint8_t> data_tranf){
     }
     // view_data("send data to socket :",data_tranf);
     send(sock , data_tran_socket , data_tranf.size() , 0 );
-    // unlock();
 }
 void socket_client_node::process_data_socket(){
-    // std::lock_guard<std::recursive_mutex> lock(mutex_common);
-    // std::lock_guard<std::mutex> lock(mutex_socket);
     if(data_socket_ready==1){
         static int uart_check;
         uart_check=0;
@@ -459,7 +426,6 @@ void socket_client_node::process_data_socket(){
             }
         }
         if(uart_check==1){
-            // process to read socket <- data_recevice
             // process data pc <- stm
             uart_live=1;
             process_data_uart_read();

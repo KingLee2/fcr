@@ -44,7 +44,6 @@ class sleep_function : public rclcpp::Node{
             //
             auto sleep_info_callback = [this](std_msgs::msg::String msg)->void{
                 parameters = json::parse(msg.data);
-                // cout<<parameters<<endl;
                 process_data();
                 request = 1;
             };
@@ -108,7 +107,6 @@ void sleep_function::pub_function_state_sleep(int st){
     sleep_function_state_pub_->publish(msg);
 }
 void sleep_function::process_data(){
-    cout<<parameters<<endl;
     time_sleep = stof(parameters["time_sleep"].get<string>());
 }
 int sleep_function::action(){

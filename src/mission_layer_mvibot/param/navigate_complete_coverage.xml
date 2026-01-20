@@ -1,38 +1,42 @@
 <root BTCPP_format="4" main_tree_to_execute="MainTree">
+
   <BehaviorTree ID="MainTree">
 
-    <!--Sequence name="NavigateWithoutReplanning"-->
     <PipelineSequence name="CoveragePipeline">
-      <!-- Compute coverage path -->
-      <ComputeCoveragePath 
-          nav_path="{path}" 
-          polygons="{field_polygon}" 
-          polygons_frame_id="{polygon_frame_id}" 
-          error_code_id="{compute_coverage_error_code}"/>
+        <RateController hz="1.0">
+            <RecoveryNode number_of_retries="1" name="ComputeCoverage">
 
-      <!-- Retry FollowPath 6 times -->
-      <RecoveryNode number_of_retries="10" name="RetryFollowPath">
+                <ComputeCoveragePath
+                    nav_path="{path}"
+                    polygons="{field_polygon}"
+                    polygons_frame_id="{polygon_frame_id}"
+                    error_code_id="{compute_coverage_error_code}"/>
 
-        <!-- Main -->
-        <!-- <Sequence name="FollowPathSequence"> -->
-          <FollowPath 
-              path="{path}" 
-              controller_id="FollowPath" 
-              error_code_id="{follow_path_error_code}"/>
-        <!-- </Sequence> -->
+                <Sequence>
+                    <Wait wait_duration="2.0"/>
+                </Sequence>
 
-        <!-- Recovery -->
-        <Sequence name="WaitBeforeRetry">
-	        <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
-          <Wait wait_duration="5.0"/>
-          <BackUp backup_dist="0.20" backup_speed="0.1" error_code_id="{backup_code_id}"/>
-          <Spin spin_dist="-0.26" error_code_id="{spin_error_code}"/>
-        </Sequence>
+            </RecoveryNode>
+        </RateController>
 
-      </RecoveryNode>
+        <RecoveryNode number_of_retries="10" name="FollowCoveragePath">
 
-    <!-- </Sequence> -->
+            <FollowPath
+                path="{path}"
+                controller_id="FollowPath"
+                error_code_id="{follow_path_error_code}"/>
+
+            <Sequence>
+                <ClearEntireCostmap
+                    name="ClearLocalCostmap-FollowPath"
+                    service_name="local_costmap/clear_entirely_local_costmap"/>
+                <Wait wait_duration="5.0"/>
+            </Sequence>
+
+        </RecoveryNode>
+
     </PipelineSequence>
 
   </BehaviorTree>
+
 </root>

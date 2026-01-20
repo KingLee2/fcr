@@ -135,14 +135,6 @@ using namespace std;
     int charge_control_status = 0;                     
     int charge_receive_uart_status = 0;
     //mutex var
-    // std::recursive_mutex mutex_common;
-    std::mutex mutex_common;
-    std::mutex mutex_motor;
-    std::mutex mutex_battery;
-    std::mutex mutex_gpio;
-    std::mutex mutex_sensor;
-    std::mutex mutex_led;
-    //
     std::mutex mutex_socket;
     std::mutex mutex_odom;
     std::mutex mutex_tool;
