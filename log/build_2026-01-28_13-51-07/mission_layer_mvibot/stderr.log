@@ -1,0 +1,8 @@
+/usr/bin/ld: warning: libtinyxml2.so.10, needed by /opt/ros/jazzy/lib/libnav2_costmap_2d_core.so, may conflict with libtinyxml2.so.9
+/usr/bin/ld: CMakeFiles/mvibot_mission.dir/src/mvibot_mission.cpp.o: in function `navigation_function::isPointSafe(double, double, double)':
+mvibot_mission.cpp:(.text+0x1dbd6): undefined reference to `nav2_costmap_2d::FootprintCollisionChecker<nav2_costmap_2d::Costmap2D>::FootprintCollisionChecker(nav2_costmap_2d::Costmap2D)'
+/usr/bin/ld: mvibot_mission.cpp:(.text+0x1dc29): undefined reference to `nav2_costmap_2d::FootprintCollisionChecker<nav2_costmap_2d::Costmap2D>::footprintCostAtPose(double, double, double, std::vector<geometry_msgs::msg::Point_<std::allocator<void> >, std::allocator<geometry_msgs::msg::Point_<std::allocator<void> > > > const&)'
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [CMakeFiles/mvibot_mission.dir/build.make:303: mvibot_mission] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/mvibot_mission.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

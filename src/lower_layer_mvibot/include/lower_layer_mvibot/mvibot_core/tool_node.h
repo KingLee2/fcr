@@ -147,7 +147,7 @@ class tool_node : public rclcpp::Node{
             //config sub
             //operation
             auto operation_callback = [this](std_msgs::msg::String msg)->void{
-                std::lock_guard<std::mutex> lock(mutex_tool);
+                // std::lock_guard<std::mutex> lock(mutex_tool);
                 static string file_name;
                 file_name = "/home/mvibot/floorCleaningRobot_ws/config/mode";
                 try{
@@ -159,13 +159,13 @@ class tool_node : public rclcpp::Node{
                     file.close();    
                 }
                 catch (const std::exception& e){
-                    send_history("error", "Error config operation: " + std::string(e.what()));
+                    send_history("error", "Error config operation, " + std::string(e.what()));
                 }
             };
             operation_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri + "/operation",qos_profile, operation_callback);
             //camera
             auto camera_config_callback = [this](std_msgs::msg::String msg)->void{
-                std::lock_guard<std::mutex> lock(mutex_tool);
+                // std::lock_guard<std::mutex> lock(mutex_tool);
                 string file_camera1, file_camera2;
                 json camera_config;
                 string camera1_config;
@@ -192,13 +192,13 @@ class tool_node : public rclcpp::Node{
                     file2.close();
                 }
                 catch (const std::exception& e){
-                    send_history("error", "Error config camera: " + std::string(e.what()));
+                    send_history("error", "Error config camera, " + std::string(e.what()));
                 }
             };
             serial_camera_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri+"/camera_config",qos_profile,camera_config_callback);
             //wifi config
             auto wifi_config_callback = [this](std_msgs::msg::String msg)->void{
-                std::lock_guard<std::mutex> lock(mutex_tool);
+                // std::lock_guard<std::mutex> lock(mutex_tool);
                 string file_wifi_type, file_wifi_ssid, file_wifi_password;
                 json wifi_config;
                 string wifi_mode_config, ssid_config, pw_config;
@@ -233,13 +233,13 @@ class tool_node : public rclcpp::Node{
                     file3.close();
                 }
                 catch (const std::exception& e){
-                    send_history("error", "Error config wifi: " + std::string(e.what()));
+                    send_history("error", "Error config wifi, " + std::string(e.what()));
                 }
             };
             wifi_connect_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri+"/wifi_config", qos_profile, wifi_config_callback);
             //ethernet
             auto ethernet_config_callback= [this](std_msgs::msg::String msg)->void{
-                std::lock_guard<std::mutex> lock(mutex_tool);
+                // std::lock_guard<std::mutex> lock(mutex_tool);
                 static string file_name;
                 file_name = "/home/mvibot/floorCleaningRobot_ws/config/lan_type";
                 try{
@@ -251,7 +251,7 @@ class tool_node : public rclcpp::Node{
                     file.close();
                 }
                 catch (const std::exception& e){
-                    send_history("error", "Error config ethernet: " + std::string(e.what()));
+                    send_history("error", "Error config ethernet, " + std::string(e.what()));
                 }
             };
             ethernet_connect_sub_ = this->create_subscription<std_msgs::msg::String>(mvibot_seri+"/ethernet_config",qos_profile,ethernet_config_callback);
@@ -778,7 +778,7 @@ void tool_node::check_sensor(){
     // first time ready -> start launch mvibot software
     if(start_software_launch==0 && mvibot_sensor_ready==1){
         //
-        send_history("normal","Sensor startup success. Start up mode: "+mode);
+        send_history("normal","Sensor startup success. Start up mode "+mode);
         RCLCPP_INFO(rclcpp::get_logger("sensor"),"Sensor startup success. Start up mode: %s",mode);
         //// TAM THOI CHUA KICH HOAT
         // static string command;
@@ -801,7 +801,7 @@ void tool_node::check_sensor(){
             if(time_live_batterry<=-5.0) time_live_batterry=-5.0;
         }
     }
-    battery_live_status=0;
+    // battery_live_status=0;
     if(time_live_batterry>=3.0){
         if(battery_status!=1) send_history("normal","Battery is available");
         battery_status=1;

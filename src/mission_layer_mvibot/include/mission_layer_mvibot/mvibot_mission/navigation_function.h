@@ -1,6 +1,7 @@
 #include "../common/library_basic.h"
 #include "../common/library_ros.h"
 #include "../common/string_Iv2.h"
+#include "../common/set_get_param.h"
 #include "mission_define.h"
 #include <nlohmann/json.hpp>
 #include <boost/geometry.hpp>
@@ -109,18 +110,39 @@ class navigation_function : public rclcpp::Node{
             auto get_path_to_goal_callback = [this](nav_msgs::msg::Path msg)->void{
                 path_ = nav_msgs::msg::Path();
                 path_ =msg;
-                pub_user_path(msg);
+                pub_user_path(path_);
             };
             get_path_to_goal_sub_ = this->create_subscription<nav_msgs::msg::Path>(mvibot_seri_+"/plan", rclcpp::SystemDefaultsQoS(), get_path_to_goal_callback);
             auto get_path_coverage_callback = [this](nav_msgs::msg::Path msg)->void{
-                path_ = nav_msgs::msg::Path();
-                path_ = msg;
-                pub_user_path(msg);
+                coverage_path_ = nav_msgs::msg::Path();
+                coverage_path_ = msg;
+                pub_user_path(coverage_path_);
             };
             get_path_coverage_sub_ = this->create_subscription<nav_msgs::msg::Path>(mvibot_seri_+"/coverage_server/coverage_plan", rclcpp::SystemDefaultsQoS(), get_path_coverage_callback);
+            //get costmap
+            auto get_costmap_callback = [this](nav_msgs::msg::OccupancyGrid::SharedPtr msg)->void{
+                // Tạo Costmap2D từ OccupancyGrid
+                costmap_ = std::make_unique<nav2_costmap_2d::Costmap2D>(msg->info.width, msg->info.height, msg->info.resolution, msg->info.origin.position.x, msg->info.origin.position.y, 0.0);
+                // Copy data (OccupancyGrid → Costmap2D)
+                unsigned char* data = costmap_->getCharMap();
+                for (size_t i = 0; i < msg->data.size(); ++i) {
+                    if (msg->data[i] == -1) {
+                        data[i] = 255;
+                    } else if (msg->data[i] == 100) {
+                        data[i] = 254;
+                    } else {
+                        // Scale inflation (0-99 → 1-252)
+                        data[i] = static_cast<unsigned char>(msg->data[i] * 252.0 / 99.0);
+                    }
+                }
+            };
+            get_costmap_sub_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(mvibot_seri_+"/global_costmap/costmap",qos_profile, get_costmap_callback);
             //create service
             clear_costmap_global_srv_ = this->create_client<nav2_msgs::srv::ClearEntireCostmap>("global_costmap/clear_entirely_global_costmap");
             clear_costmap_local_srv_ = this->create_client<nav2_msgs::srv::ClearEntireCostmap>("local_costmap/clear_entirely_local_costmap");
+            set_obstacle_layer_global_client_ = this->create_client<rcl_interfaces::srv::SetParameters>("global_costmap/global_costmap/set_parameters");
+            get_obstacle_layer_global_client_ = this->create_client<rcl_interfaces::srv::GetParameters>("global_costmap/global_costmap/get_parameters");
+            get_footprint_local_client_ = this->create_client<rcl_interfaces::srv::GetParameters>("local_costmap/local_costmap/get_parameters");
             //
             set_initial_robot("/home/mvibot/floorCleaningRobot_ws/src/mission_layer_mvibot/robot_position.txt");
             //timer
@@ -160,6 +182,10 @@ class navigation_function : public rclcpp::Node{
         void getPathToPose(geometry_msgs::msg::PoseStamped start, geometry_msgs::msg::PoseStamped goal, std::string planner_id="", bool use_start = false);
         void followPath(const nav_msgs::msg::Path &path, const std::string &controller_id="", const std::string &goal_checker_id="");
         void update_polygon();
+        int get_footprint();
+        bool isPointInPolygon(double px, double py, double rx, double ry, double theta);
+        bool isPointSafe(double x, double y, double radius);
+        bool getSafetyPose();
         void cancel_navCompleteCoverage();
         void cancel_navToPose();
         void cancel_navThroughPoses();
@@ -190,6 +216,7 @@ class navigation_function : public rclcpp::Node{
         rclcpp::Subscription<std_msgs::msg::String>::SharedPtr navigation_info_sub_;
         rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr get_path_to_goal_sub_;
         rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr get_path_coverage_sub_;
+        rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr get_costmap_sub_;
         //// Publish ////
         rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr stop_robot_pub_;
         rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr pub_amcl_;
@@ -200,19 +227,29 @@ class navigation_function : public rclcpp::Node{
         rclcpp::Publisher<std_msgs::msg::String>::SharedPtr robot_position_pub_;
 
         //// Services ////
-        // rclcpp::Client<nav2_msgs::srv::LoadMap>::SharedPtr change_maps_srv_;
+        //clear costmap
         rclcpp::Client<nav2_msgs::srv::ClearEntireCostmap>::SharedPtr clear_costmap_global_srv_;
         rclcpp::Client<nav2_msgs::srv::ClearEntireCostmap>::SharedPtr clear_costmap_local_srv_;
+        //obstacle_layer global costmap
+        rclcpp::Client<rcl_interfaces::srv::SetParameters>::SharedPtr set_obstacle_layer_global_client_;
+        rclcpp::Client<rcl_interfaces::srv::GetParameters>::SharedPtr get_obstacle_layer_global_client_;
+        //footprint
+        rclcpp::Client<rcl_interfaces::srv::GetParameters>::SharedPtr get_footprint_local_client_;
+
         //timer
         rclcpp::TimerBase::SharedPtr execute_navigation_timer_;
         rclcpp::TimerBase::SharedPtr send_robot_position_timer_;
         //define var
         geometry_msgs::msg::PoseStamped initial_pose_;
+        geometry_msgs::msg::PoseStamped robot_current_position;
         geometry_msgs::msg::PoseWithCovarianceStamped robot_position_;
         geometry_msgs::msg::PoseStamped goal_position_;
         vector<geometry_msgs::msg::PoseStamped> many_goal_position_, robot_position_covered_;
         vector<geometry_msgs::msg::Polygon> polygons;
-        nav_msgs::msg::Path path_;
+        nav_msgs::msg::Path path_, coverage_path_;
+        std::unique_ptr<nav2_costmap_2d::Costmap2D> costmap_;
+        geometry_msgs::msg::PoseStamped safePoint_;
+        nav2_costmap_2d::Footprint robot_footprint_;
         string mvibot_seri_,mvibot_seri_f_;
         json parameters;
         int status = Finish_;
@@ -220,7 +257,7 @@ class navigation_function : public rclcpp::Node{
         string mode;
         int number_of_poses_remaining;
         int request = 0; //request = 1: yeu cau thuc thi, request = 0: khong co yeu cau thuc thi
-        result states, state_planner, state_controller ;
+        result states, states_pose, states_coverage, state_planner, state_controller ;
 };
 float navigation_function::getyaw(double data1, double data2){
     geometry_msgs::msg::Quaternion quat_msg;
@@ -341,7 +378,7 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
     //wait action server 
     if(!nav_complete_coverage_client_->wait_for_action_server(std::chrono::duration<float>(5))){
         RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"), "'NavigateCompleteCorverage' action server not available");
-        states = REJECT;
+        states_coverage = REJECT;
         return;
     }
     //goal message
@@ -354,12 +391,12 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"),"Goal was rejected by server!");
             // send_history("error","NavigateCompleteCorverage was rejected by server!");
-            states = REJECT;
+            states_coverage = REJECT;
         }
         else{
             RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"),"Goal was accepted by server, waiting for result");
             // send_history("normal","NavigateCompleteCorverage was accepted by server, waiting for result");
-            states = ACCEPT;
+            states_coverage = ACCEPT;
         }
     };
     options.feedback_callback = [this](std::shared_ptr<rclcpp_action::ClientGoalHandle<opennav_coverage_msgs::action::NavigateCompleteCoverage>>,
@@ -369,13 +406,13 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
                     feedback->current_pose.pose.position.y,
                     feedback->current_pose.pose.position.z,
                     feedback->current_pose.pose.orientation.w);
-        states = ACTIVE;
+        states_coverage = ACTIVE;
     };
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<opennav_coverage_msgs::action::NavigateCompleteCoverage>::WrappedResult & result) {
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage succeeded!");
             // send_history("normal","NavigateCompleteCorverage succeeded!");
-            states = SUCCESS;
+            states_coverage = SUCCESS;
         } else {
             string info;
             info = "";
@@ -383,18 +420,18 @@ void navigation_function::navCompleteCoverage(const vector<geometry_msgs::msg::P
             if(result.code == rclcpp_action::ResultCode::ABORTED){
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage failed with status: ABORTED");
                 info+= "ABORTED";
-                states = ERROR;
+                states_coverage = ERROR;
             }
             else if(result.code == rclcpp_action::ResultCode::CANCELED){
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage failed with status: CANCELED");
                 info+= "CANCELED";
-                states = CANCEL;
+                states_coverage = CANCEL;
             }
             else if(result.code == rclcpp_action::ResultCode::UNKNOWN){
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateCompleteCorverage"), "NavigateCompleteCorverage failed with status: UNKNOWN");
                 info+= "UNKNOWN";
                 // states = ERROR;
-		        states = CANCEL;
+		        states_coverage = CANCEL;
             }
             // send_history("error",info);
         }
@@ -491,12 +528,12 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
         if(!goal_handle){
             RCLCPP_ERROR(rclcpp::get_logger("NavigateToPose"),"Goal was rejected by server!");
             // send_history("error","Goal was rejected by server!");
-            states = REJECT;
+            states_pose = REJECT;
         }
         else{
             RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"),"Goal was accepted by server, waiting for result");
             // send_history("normal","Goal was accepted by server, waiting for result");
-            states = ACCEPT;
+            states_pose = ACCEPT;
         }
     };
     options.feedback_callback = [this](std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>>,
@@ -506,13 +543,13 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
                     feedback->current_pose.pose.position.y,
                     feedback->current_pose.pose.position.z,
                     feedback->current_pose.pose.orientation.w);
-        states = ACTIVE;
+        states_pose = ACTIVE;
     };
     options.result_callback = [this](const rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>::WrappedResult & result) {
         if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
             RCLCPP_INFO(rclcpp::get_logger("NavigateToPose"), "NavigateToPose succeeded!");
             // send_history("normal","NavigateToPose succeeded!");
-            states = SUCCESS;
+            states_pose = SUCCESS;
         } else {
             string info;
             info = "";
@@ -520,17 +557,17 @@ void navigation_function::goToPose(const geometry_msgs::msg::PoseStamped &pose, 
             if(result.code == rclcpp_action::ResultCode::ABORTED){
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateToPose"), "NavigateToPose failed with status: ABORTED");
                 info+= "ABORTED";
-                states = ERROR;
+                states_pose = ERROR;
             }
             else if(result.code == rclcpp_action::ResultCode::CANCELED){
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateToPose"), "NavigateToPose failed with status: CANCELED");
                 info+= "CANCELED";
-                states = CANCEL;
+                states_pose = CANCEL;
             }
             else if(result.code == rclcpp_action::ResultCode::UNKNOWN){
                 RCLCPP_ERROR(rclcpp::get_logger("NavigateToPose"), "NavigateToPose failed with status: UNKNOWN");
                 info+= "UNKNOWN";
-                states = ERROR;
+                states_pose = ERROR;
             }
             // send_history("error",info);
         }
@@ -743,7 +780,7 @@ void navigation_function::clearLocalCostmap(){
 void navigation_function::clearGlobalCostmap(){
     RCLCPP_INFO(rclcpp::get_logger("Navigation"), "Clear Global costmap");
     if(!clear_costmap_global_srv_->wait_for_service(std::chrono::duration<float>(0.5))){
-        RCLCPP_INFO(rclcpp::get_logger("Navigation"),"Clear Global costmap service not available, waiting ...");
+        RCLCPP_INFO(rclcpp::get_logger("Navigation"),"Clear Global costmap service not available");
     }
     //send request
     auto req = std::make_shared<nav2_msgs::srv::ClearEntireCostmap_Request>();
@@ -849,15 +886,219 @@ void navigation_function::process_data(){
         //many polygons
     }
 }
+int navigation_function::get_footprint(){
+    //
+    static bool wait_callback = false;
+    static string footprint_string = "";
+    if(wait_callback) return 0;
+    if(footprint_string.empty()){
+        cout<<"navigation|before send footprint"<<endl;
+        get_param<std::string>(get_footprint_local_client_,"footprint",
+            [&](std::optional<std::string> v){
+                if (!v.has_value()) {
+                    RCLCPP_ERROR(this->get_logger(), "footprint not found");
+                    footprint_string = "";
+                    return;
+                }
+                else{
+                    footprint_string = v.value();
+                    RCLCPP_INFO(this->get_logger(), "Footprint received: %s", footprint_string.c_str());
+                }
+                wait_callback = false;
+            }
+        );
+        cout<<"navigation|after send footprint"<<endl;
+        wait_callback = true;
+        return 0;
+    }
+    nav2_costmap_2d::makeFootprintFromString(footprint_string,robot_footprint_);
+    footprint_string.clear();
+    return 1;
+}
+bool navigation_function::isPointInPolygon(double px, double py, double rx, double ry, double theta)
+{
+    double cos_th = std::cos(theta);
+    double sin_th = std::sin(theta);
+
+    // Chuyển điểm world về hệ quy chiếu robot (ngược lại xoay + dịch chuyển)
+    double local_x = (px - rx) * cos_th + (py - ry) * sin_th;
+    double local_y = -(px - rx) * sin_th + (py - ry) * cos_th;
+
+    // Ray casting algorithm để kiểm tra point-in-polygon
+    bool inside = false;
+    size_t n = robot_footprint_.size();
+
+    for (size_t i = 0, j = n - 1; i < n; j = i++) {
+        const auto& a = robot_footprint_[i];
+        const auto& b = robot_footprint_[j];
+
+        if ((a.y > local_y) != (b.y > local_y) &&
+            (local_x < a.x + (b.x - a.x) * (local_y - a.y) / (b.y - a.y))) {
+            inside = !inside;
+        }
+    }
+
+    return inside;
+}
+bool navigation_function::isPointSafe(double x, double y, double theta){
+    // //check costmap
+    // if (!costmap_) {
+    //     RCLCPP_WARN(this->get_logger(), "Costmap empty!");
+    //     return false;
+    // }
+    
+    // //convert world to map
+    // unsigned int mx, my;
+    // if (costmap_->worldToMap(x, y, mx, my)) {
+    //     RCLCPP_WARN(this->get_logger(), "Point (%.2f, %.2f) out of costmap", x, y);
+    //     return false;
+    // }
+    // //
+    // double resolution = costmap_->getResolution();
+    // int radius_cells = static_cast<int>(std::ceil(radius / resolution)) + 2;
+    // //check x,y is safe
+    // for (int dy = -radius_cells; dy <= radius_cells; ++dy) {
+    //     for (int dx = -radius_cells; dx <= radius_cells; ++dx) {
+    //         unsigned int cx = mx + dx;
+    //         unsigned int cy = my + dy;
+
+    //         if (cx >= costmap_->getSizeInCellsX() || cy >= costmap_->getSizeInCellsY()) {
+    //             continue;
+    //         }
+
+    //         double dist = std::hypot(static_cast<double>(dx) * resolution, static_cast<double>(dy) * resolution);
+    //         if (dist > radius) continue;
+
+    //         unsigned char cost = costmap_->getCost(cx, cy);
+    //         if (cost >= 253) {
+    //             RCLCPP_DEBUG(this->get_logger(), "obstacle at cell (%u,%u), cost=%d, dist=%.2f m", cx, cy, cost, dist);
+    //             return false;
+    //         }
+    //     }
+    // }
+    // return true;
+    
+   //check costmap
+   if (!costmap_ || costmap_->getSizeInCellsX() == 0 || costmap_->getSizeInCellsY() == 0) {
+        RCLCPP_WARN(this->get_logger(), "Costmap empty!");
+        return false;
+    }
+   //check footprint
+   if (robot_footprint_.empty()) {
+        RCLCPP_WARN(this->get_logger(), "Footprint robot empty!");
+        return false;
+    }
+    //
+    double cos_theta = std::cos(theta);
+    double sin_theta = std::sin(theta);
+    double min_wx = -0.7, max_wx = 0.7, min_wy = -0.3, max_wy = 0.3;
+    for (const auto& fp : robot_footprint_) {
+        double wx = x + fp.x * cos_theta - fp.y * sin_theta;
+        double wy = y + fp.x * sin_theta + fp.y * cos_theta;
+        min_wx = std::min(min_wx, wx);
+        max_wx = std::max(max_wx, wx);
+        min_wy = std::min(min_wy, wy);
+        max_wy = std::max(max_wy, wy);
+    }
+    //
+    unsigned int min_mx, min_my, max_mx, max_my;
+    if (!costmap_->worldToMap(min_wx, min_wy, min_mx, min_my) ||
+        !costmap_->worldToMap(max_wx, max_wy, max_mx, max_my)) {
+        return false;  // Bounding box ngoài costmap
+    }
+    for (unsigned int my = min_my; my <= max_my; ++my) {
+        for (unsigned int mx = min_mx; mx <= max_mx; ++mx) {
+            double cell_wx, cell_wy;
+            costmap_->mapToWorld(mx, my, cell_wx, cell_wy);
+
+            // // Kiểm tra điểm trung tâm cell có nằm trong footprint không
+            // if (isPointInPolygon(cell_wx, cell_wy, x, y, theta)) {
+                unsigned char cost = costmap_->getCost(mx, my);
+                if (cost >= 253) {
+                    RCLCPP_DEBUG(this->get_logger(), "Vùng footprint va chạm: cell(%u,%u), cost=%d, world(%.2f,%.2f)", mx, my, cost, cell_wx, cell_wy);
+                    return false;
+                }
+            // }
+        }
+    }
+
+    return true;
+}
+bool navigation_function::getSafetyPose(){
+    //get pose of path closet current robot
+    double min_distance = 100;
+    int closest_index = -1;
+    geometry_msgs::msg::PoseStamped closest_pose;
+    if (coverage_path_.poses.empty()) {
+        RCLCPP_ERROR(this->get_logger(), "Path empty");
+        return false;
+    }
+    for(size_t i =0; i < coverage_path_.poses.size(); i++){
+        const auto& p = coverage_path_.poses[i].pose.position;
+        const auto& c = robot_current_position.pose.position;
+        double dx = p.x - c.x;
+        double dy = p.y - c.y;
+        double dist = std::hypot(dx, dy);
+        if (dist < min_distance) {
+            min_distance = dist;
+            closest_index = i;
+            closest_pose = coverage_path_.poses[i];
+        }
+    }
+    RCLCPP_DEBUG(this->get_logger(), "Closest point| x: %f, y: %f , distance: %.3f m", closest_pose.pose.position.x, closest_pose.pose.position.y, min_distance);
+    //check get closest pose
+    if (closest_index == -1 || closest_index >= coverage_path_.poses.size()) {
+        RCLCPP_ERROR(this->get_logger(), "Path empty or index is not");
+        return false;
+    }
+    //find pose of path closet robot and safe
+    size_t current_index = closest_index + 1; //next to pose
+    // Filter point on path
+    double current_accumulated = 0.0;
+    while (current_index < coverage_path_.poses.size()) {
+        const auto& candidate_pose = coverage_path_.poses[current_index].pose;
+        double candidate_x = candidate_pose.position.x;
+        double candidate_y = candidate_pose.position.y;
+        double candidate_theta = tf2::getYaw(candidate_pose.orientation);
+
+        // sum distance between the points
+        if (current_index > closest_index + 1) {
+            const auto& prev_pose = coverage_path_.poses[current_index - 1].pose;
+            double dx = candidate_x - prev_pose.position.x;
+            double dy = candidate_y - prev_pose.position.y;
+            current_accumulated += std::hypot(dx, dy);
+        }
+
+        // Only check isPointSafe with step = 0.35
+        if (current_accumulated >= 0.35) {
+            if (isPointSafe(candidate_x, candidate_y, candidate_theta)) { //candidate_theta
+                safePoint_ = coverage_path_.poses[current_index];
+                RCLCPP_INFO(this->get_logger(),
+                            "Find safety pose: index=%zu, "
+                            "pos=(%.2f, %.2f), accumulated_dist≈%.2f m",
+                            current_index, candidate_x, candidate_y, current_accumulated);
+                return true;
+            }
+            // Reset accumulated if point is not safe
+            current_accumulated = 0.0;
+        }
+        current_index++;
+    }
+
+    RCLCPP_WARN(rclcpp::get_logger("FindSafePoint"), "Not find the safety pose on coverage path");
+    return false;
+}
 int navigation_function::action(){
     //declare var
     static int complete_position = 0;
     static float x=0, y=0, z=0, w=0;
     static float x1=0, y1=0, z1=0, w1=0;
-    static geometry_msgs::msg::PoseStamped robot_current_position;
+    // static geometry_msgs::msg::PoseStamped robot_current_position;
     static float dis;
     static float angle1, angle2;
     static int t = 0;
+    static bool set_result_global = false;
+    static bool set_done_global = false;
 
     //check active status 
     if(status == Active_){
@@ -891,7 +1132,7 @@ int navigation_function::action(){
             }
             else if(step == 1){
                 //check states
-                if(states == SUCCESS){
+                if(states_pose == SUCCESS){
                     cancel_navToPose();
                     goal_position_ = geometry_msgs::msg::PoseStamped();
                     path_ = nav_msgs::msg::Path();
@@ -901,12 +1142,12 @@ int navigation_function::action(){
 		            pub_user_path(path_);
                     return Finish_;
                 }
-                else if(states == REJECT){
+                else if(states_pose == REJECT){
                     cancel_navToPose();
                     step = 0;
                     return Active_;
                 }
-                else if(states == ERROR || states == CANCEL){
+                else if(states_pose == ERROR || states_pose == CANCEL){
                     if(complete_position == 1){
                         goal_position_ = get_robot_position();
                         step = 0;
@@ -1090,39 +1331,101 @@ int navigation_function::action(){
             }
             //kiem tra trang thai dang hoat dong
             if(step == 0){
+                //set obstacle layer global costmap
+                if(!set_done_global){
+                    check_param(set_obstacle_layer_global_client_,get_obstacle_layer_global_client_,"obstacle_layer.enabled",true,
+                        [&](bool res){
+                            set_result_global = res;
+                        }
+                    );
+                    set_done_global = true;
+                }
+                if(!set_result_global) return Active_;
+                else {
+                    set_result_global = false;
+                    set_done_global = false;
+                    step = 1;
+                    return Active_;
+                }
+            }
+            else if(step == 1){
                 //send goal
                 clearAllCostmap();
                 navCompleteCoverage(polygons);
                 step = 1;
                 return Active_;
             }
-            else if(step == 1){
+            else if(step == 2){
                 //check state of active
-                if(states == REJECT || states == CANCEL){
+                if(states_coverage == REJECT || states_coverage == CANCEL){
                     cancel_navCompleteCoverage();
-                    step = 0;
+                    step = 1;
                     return Active_;
                 }
-                else if(states == ERROR){
+                else if(states_coverage == ERROR){
                     //update polygon
                     cancel_navCompleteCoverage();
                     //update_polygon();
-                    step = 0;
+                    step = 3;
 		            //request = 0;
 		            //status = Error_;
                     //return Error_;
 		            return Active_;
                 }
-                else if(states == SUCCESS){
+                else if(states_coverage == SUCCESS){
                     cancel_navCompleteCoverage();
                     polygons.resize(0);
                     robot_position_covered_.resize(0);
-                    path_ = nav_msgs::msg::Path();
+                    coverage_path_ = nav_msgs::msg::Path();
                     step = 0;
                     request = 0;
                     status = Finish_;
-		            pub_user_path(path_);
+		            pub_user_path(coverage_path_);
                     return Finish_;
+                }
+                else return Active_;
+            }
+            else if (step == 3){
+                if(get_footprint()) step = 4;
+                return Active_;
+            }
+            else if (step == 4){
+                //send goal
+                clearAllCostmap();
+                if(getSafetyPose()){
+                    goToPose(safePoint_);
+                    step = 5;
+                    return Active_;
+                }
+                else{
+                    cancel_navCompleteCoverage();
+                    polygons.resize(0);
+                    robot_position_covered_.resize(0);
+                    coverage_path_ = nav_msgs::msg::Path();
+                    step = 0;
+                    request = 0;
+                    status = Finish_;
+		            pub_user_path(coverage_path_);
+                    return Finish_;
+                }
+            }
+            else if (step == 5){
+                //check states
+                if(states_pose == SUCCESS){
+                    cancel_navToPose();
+                    goal_position_ = geometry_msgs::msg::PoseStamped();
+                    path_ = nav_msgs::msg::Path();
+                    pub_user_path(path_);
+                    step = 1;
+                    return Active_;
+                }
+                else if(states_pose == REJECT || states_pose == ERROR || states_pose == CANCEL){
+                    cancel_navToPose();
+                    goal_position_ = geometry_msgs::msg::PoseStamped();
+                    path_ = nav_msgs::msg::Path();
+                    pub_user_path(path_);
+                    step = 4;
+                    return Active_;
                 }
                 else return Active_;
             }

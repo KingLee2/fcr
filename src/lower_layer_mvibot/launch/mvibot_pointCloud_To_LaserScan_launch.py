@@ -27,11 +27,11 @@ def generate_launch_description():
 			"angle_min": -3.1400001049,
 			"angle_max": 3.1400001049,
 			"angle_increment": 0.0174532923847,
-			"scan_time": 0.03333,   #0.3333
+			"scan_time": 0.3333,   #0.3333
 			"range_min": 0.0,
-			"range_max": 4.0,   #3.0
+			"range_max": 3.0,   #3.0
 			"use_inf": True,
-			"queue_size": 50
+			# "queue_size": 50
 			# "inf_epsilon": 1.0
 		}],
 	)
@@ -54,11 +54,11 @@ def generate_launch_description():
 			"angle_min": -3.1400001049,
 			"angle_max": 3.1400001049,
 			"angle_increment": 0.0174532923847,
-			"scan_time": 0.03333,  #0.3333
+			"scan_time": 0.3333,  #0.3333
 			"range_min": 0.0,
-			"range_max": 4.0,     #3.0
+			"range_max": 3.0,     #3.0
 			"use_inf": True,
-			"queue_size": 50
+			# "queue_size": 50
 			# "inf_epsilon": 1.0
 		}],
 	)

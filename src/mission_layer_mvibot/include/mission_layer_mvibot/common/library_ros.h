@@ -14,6 +14,7 @@
 #include <tf2_ros/buffer.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/convert.h>
+#include <tf2/utils.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
 #include <sensor_msgs/msg/point_cloud.hpp>
 #include <sensor_msgs/msg/image.hpp>
@@ -39,6 +40,9 @@
 #include "std_msgs/msg/u_int8_multi_array.hpp"
 #include "opennav_coverage_msgs/action/navigate_complete_coverage.hpp"
 #include "opennav_coverage_msgs/action/compute_coverage_path.hpp"
+#include "nav2_costmap_2d/costmap_2d.hpp"
+#include <nav2_costmap_2d/footprint_collision_checker.hpp>
+#include "nav2_costmap_2d/footprint.hpp"
 //#include <nav_msgs/GetPlan.h>
 //#include <slam_toolbox_msgs/SerializePoseGraph.h>
 

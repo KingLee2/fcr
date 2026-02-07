@@ -268,6 +268,10 @@ using namespace std;
             //
             // name_map_active = "28_11ok";
             // run map server
+            while(!load_map_srv_->wait_for_service(std::chrono::duration<float>(0.5))){
+                RCLCPP_INFO(rclcpp::get_logger("Map"),"Load Map service not available");
+                sleep(1);
+            }
             if(name_map_active!=""){
                 string map_url;
                 map_url = package_path + "maps/" + name_map_active + ".yaml";

@@ -361,7 +361,7 @@ int marker_function::get_footprint(){
             [&](std::optional<std::string> v){
                 if (!v.has_value()) {
                     RCLCPP_ERROR(this->get_logger(), "footprint not found");
-                    footprint_string = false;
+                    footprint_string = "";
                     return;
                 }
                 else{
